@@ -1,1 +1,7 @@
-just added readme
+the list of my games:
+
+FindBurriedTreasure
+Twins
+PlaceMemories
+PlusMultiply
+
