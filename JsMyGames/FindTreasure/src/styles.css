@@ -1,0 +1,90 @@
+body {
+  text-align: center;
+  background: #f2f6f8;
+}
+
+span {
+  font-weight: bold;
+}
+.img {
+  position: relative;
+  z-index: 1;
+}
+.treasureStyle {
+  position: absolute;
+  z-index: 21;
+  top: 0px;
+  left: 0px;
+  visibility: hidden;
+}
+
+#container {
+  display: flex;
+}
+
+#mapContainer {
+  float: left;
+  /*display: inline-block;*/
+  width: 70%;
+  height: 480px;
+  margin: 0 0 0 10%;
+  background: black;
+  border: 5px solid black;
+  border-radius: 10px;
+  box-shadow: 0 5px 50px #333;
+}
+#btnStartStop {
+  margin: 0px auto 5px 0px;
+}
+.float-child2 {
+  width: 20%;
+  float: right;
+  padding: 20px;
+  border: 2px solid red;
+}
+
+.btn {
+  background-color: pink;
+  padding: 15px 40px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  text-decoration: none;
+  color: black;
+  position: relative;
+  overflow: hidden;
+  width: 70%;
+}
+
+#gameCanvas {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+}
+#results {
+  margin-left: 20px;
+}
+
+#results th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 4px;
+  padding-right: 4px;
+  text-align: center;
+  background-color: #0b2d21;
+  color: yellow;
+}
+.scoreCell {
+  text-align: right;
+  font-weight: bold;
+}
+
+divScore {
+  font-family: "Open Sans", sans-serif;
+  font-weight: 300;
+  line-height: 1.42em;
+  color: #2f2835;
+  /*background-color: #1f2739;*/
+}

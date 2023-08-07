@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>FindTreasure</title>
+  </head>
+  <body>
+    <h1>Find the buried treasure</h1>
+    <div id="container">
+      <div id="mapContainer">
+        <img
+          id="img1"
+          class="img"
+          style="width: 100%; height: 100%"
+          src="../Images/treasuremap1.png"
+        />
+        <img
+          id="treasureImg"
+          style="width: 5%; height: 5%"
+          src="../Images/treasure2.png"
+          class="treasureStyle"
+        />
+        <!-- "https://natureconservancy-h.assetsadobe.com/is/image/content/dam/tnc/nature/en/photos/Zugpsitze_mountain.jpg" -->
+
+        <canvas id="gameCanvas"> </canvas>
+      </div>
+      <div class="floatChild2">
+        <divScore>
+          <button id="btnStartStop" class="btn" onclick="onStartGame()">
+            Start
+          </button>
+          <!-- <button id="btnChangeMap" class="btn" onclick="onChangeMap()">
+            Change Map
+          </button> -->
+          <p>Games played: <span id="gamesCount">0</span></p>
+          <table id="results">
+            <tr>
+              <th>Info</th>
+              <th>Score</th>
+              <th>Clicks</th>
+            </tr>
+            <tr>
+              <td>Total</td>
+              <td class="scoreCell" id="totScore">0</td>
+              <td class="scoreCell" id="totClicks">0</td>
+            </tr>
+            <tr>
+              <td>Last game</td>
+              <td class="scoreCell" id="gameScore">0</td>
+              <td class="scoreCell" id="gameClicks">0</td>
+            </tr>
+            <tr>
+              <td>Best game</td>
+              <td class="scoreCell" id="bestScore">0</td>
+              <td class="scoreCell" id="bestClicks">0</td>
+            </tr>
+            <tr>
+              <td>Average</td>
+              <td class="scoreCell" id="avgScore">0</td>
+              <td class="scoreCell" id="avgClicks">0</td>
+            </tr>
+          </table>
+        </divScore>
+      </div>
+    </div>
+    <script type="text/javascript">
+      // calculation of the score on clicks
+      // for (let i = 1; i <= 30; i++) {
+      //   console.log(i, 5000 / (i * i + 50));
+      // }
+    </script>
+    <script src="bubble.js" type="text/javascript"></script>
+    <script src="hint.js" type="text/javascript"></script>
+    <script src="FindTreasure.js" type="text/javascript"></script>
+  </body>
+</html>
