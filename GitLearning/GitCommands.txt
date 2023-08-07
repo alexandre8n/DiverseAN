@@ -1,0 +1,251 @@
+git play list videos: https://www.youtube.com/playlist?list=PLIU76b8Cjem5B3sufBJ_KFTpKkMEvaTQR
+
+My site: 
+https://alexandre8n.github.io/JsJqTraining/GameFindBuriedTreasure.htm
+
+
+--begin the work in some folder you want to commit to github later on
+git init -- just init
+git add *.html
+git add *.js
+git commit -m "initial files of the proj committed"
+
+-- get status
+git status                    -- just to be sure it was Ok
+git status -s  -- short status
+
+
+-- discard changes
+git checkout -- <file>..." to discard changes in working directory
+
+
+-- Inspecting a Remote
+git remote show origin
+
+-- setting remote repository for current git folder
+-- first you have to create remote repository, if it is not yet created.
+-- let it be done with github, and from there  you have it url like: https://github.com/alexandre8n/DiverseAN.git
+example:
+echo "# hello proj" > read.me
+git init
+git add read.me    -- say git I want to track this file(s)
+git commit -m "some msg to identify the snapshot of your rep. as note for you"  
+-- say git I want to save current state (cur. snapshot) of my repository to my local version of repository
+-- now I want push my changes to my repository to github
+git remote add origin https://github.com/alexandre8n/DiverseAN.git  -- THIS is setting of remote repository
+git push -u origin master -- THIS pushing (sending) your changes to remote rep...
+-- MUCH simple to begin just with the FIRST git command git clone.
+-- SEE git clone below...
+
+
+-- pushing your local git changes to remote repository
+git push origin master
+--This command works only if you cloned from a server to which you have write access and if
+-- nobody has pushed in the meantime.
+
+
+-- get initial info from remote repository: git will add your remote repository with name origin
+git clone <repository-url>
+--example: where to get <repository-url>, 
+--see the doc: gitLearning.docx, section "Create your repository in github and take url of it"
+
+git clone https://github.com/alexandre8n/DiverseAN.git
+-- the folder related to repository DiverseAN will be created with all subfolders.
+
+---get last changes done by other people in remote repository
+git fetch origin              
+--this means just fetch from origin the changes but in the internal, before merging them to your folders
+--now you can see what is new:
+git log --oneline --graph --decorate --all
+--if Ok, just merge and the changes will appear for you:
+git merge origin/master
+
+-- the same as above but a bit shorter: 
+-- get last changes done by other people in remote repository 
+-- in one step:
+-- get changes to my local and merge with my changes
+git pull
+-- if you are sure that you need simple getting new changes, independent of yours
+git pull --rebase origin master --> just try to get it updated from others
+
+--if conflicts with your local changes you can put them on (отложить)
+git stash   -> отложить в тайник!=put in a hiding place
+git pull --rebase origin master --> 
+git stash pop  -> roll your changes from cache
+-- you can use more stash options: list, show, apply, clear, .... use -h for help
+
+
+
+
+-- merge conflicts!! you can get it after push or after pull. See "Merging conflicts" in docx file.
+-- your action 
+
+
+
+
+
+Add folder with files into existing repository DiverseAN
+from GitBush execute the commands
+cd DiverseAN
+git init
+git add MoleculeGenTest
+git commit -m "adding MoleculeGenTest proj."
+git remote add origin https://github.com/alexandre8n/DiverseAN.git
+git pull https://github.com/alexandre8n/DiverseAN.git
+git push -f origin master   (forced update in remote master)
+
+-- a bit shorter add and commit
+git commit -am "your commit message"
+
+
+Other set of standard commands to commit to master some existing project (new repository)
+stockAnalyzer git: https://github.com/alexandre8n/stockAnalyzer.git
+git init
+// here create .gitignore for that kind of project and put it in the folder of the project see: cSharpExampleOf.gitignore
+git add . 
+git commit            the link of gitHub repository        
+git remote add origin https://github.com/alexandre8n/stockAnalyzer.git
+git remote -v
+git push --set-upstream origin master
+git status                    * just to be sure it was Ok
+-------------------------------------------------------
+
+
+git clone "https://github.com/alexandre8n/JsJqTraining.git"
+
+// just to get list of branches
+git branch
+
+// add new branch named: game2Branch
+git branch game2Branch
+
+// now git branch will give as list of branches also this new one: game2Branch
+
+// move to the new branch: game2Branch
+git checkout game2Branch
+// after that if we do git branch -> we shall see that actual branch is not master as it was, but *game2Branch
+
+// combine add +commit
+git commit -am "first commit of new files..."
+
+// see the changes of the 
+git log
+
+// merge into master
+git checkout master
+git merge game2Branch
+
+
+
+
+
+// push, i.e. save you local commits/ or even branch to the github
+git push
+
+-- or if new branch to github
+git push --set-upstream origin game2Branch
+
+-- get the commits that have been done into remote origin/master, and run them on 
+git fetch
+-- and merge them with my master to origin/master in my local repository
+git merge origin/master
+
+-- these 2 above are so frequent that one command is given for that.
+git pull
+
+Forks - independent repository made from some other repository
+Pull request - request to merge from one repository to another, with posibility of the owner of repository to review your changes...
+
+--how to delete one file
+git rm -f --cached 'OneElmTransfPossibleDictionary.txt'
+git commit -m "remove file1.txt"
+
+-- how to delete one wrong commit
+git revert HEAD
+-- if to do revert without editing:
+git revert HEAD --no-edit
+-- after that have a look to log
+git log
+-- if conflicts in git revert? you can either abort revert
+git revert --abort
+-- or you can resolve conflicts... for that edit the file with conflict and
+git revert --continue
+-- after this you can edit and add and commit
+git add my.txt
+git commit my.txt -m "finishing revert"
+
+
+-- return to the state of some commit
+git checkout 8975ab65c8f83e52c2b73513bc8a3372e37cd074
+-- to see commits in visual way, with GUI
+gitk
+
+
+
+// remove a folder in a branch
+git checkout <branch name>   -->now you are in this branch
+git pull
+git rm -rf <folder name>
+git commit -m “<commit message>” 
+git push origin <branch name>
+
+
+git log -- get to the history of commits
+
+git reset -- get to the previous commit
+git reset --hard <commit hash>
+
+git reset --hard origin/master -- get to the current version on github
+
+
+-- strategy to work with branches
+master: current production state delivered to the most of clients
+from master there could be also several production branches:
+master-clientGroup1
+master-clientGroup2
+master-clientGroup3
+
+dev: current development branch where new features are being developed
+from dev there could be features branches:
+dev-f1
+dev-f2
+dev-f3
+-------------------------------------------
+-- how to switch branches
+git branch --> see all branches, eg: *master, branchDevF1, branchDevF2
+git checkout master --> now you are in Master
+git checkout branchDevF1 -> now you are in branch branchDevF1
+
+-- how to merge branches:
+git checkout master -> now you are in branch master
+git merge branchDevF1 -> merge into master from branchDevF1
+
+-- if conflicts? -> edit conflicting to reach that they are Ok
+git add <changedFile(s)>
+git commit
+:wq -> finish with saving recommended comment
+-- if you decide to abort merge
+git merge --abort
+
+-- if you work in several branches of your local, and would like that something you have 
+-- added/corrected in one branch, would be repeated in the second
+-- you can do git rebase see https://git-scm.com/docs/git-rebase
+git rebase master
+--or 
+git rebase master devBranch
+-- result will be that as if the devBranch has got it changes after the changes that have been done in Master
+from:     A---B---C devBranch
+         /
+    D---E---F---G master
+
+to:  		  A'--B'--C' devBranch
+                 /
+    D---E---F---G master
+
+--What is git ORIGIN? -> current repository name given by default
+git remote --> gives us the name of repository
+git remote -v -> will give the following:
+	origin  https://github.com/alexandre8n/DiverseAN.git (fetch)
+	origin  https://github.com/alexandre8n/DiverseAN.git (push)
+-- to get updates from remote repository
+git pull --rebase(mode of merging changes) origin(==repository name) master(==the name of branch)
