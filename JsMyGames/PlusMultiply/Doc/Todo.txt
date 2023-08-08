@@ -1,5 +1,12 @@
 - td: more button in done dialog, show the grid with longest and false with
   details, op, res, time, true/false, score
+  remark: one could just open history, but extend the history with:
+    show wrong & longer than: 5 | sec (5 or 6 or ... should be defined)
+    show wrong answers
+    show correct answers
+    
+  
+
 
 + show progress or learning step.
   + if selfTester just step: nn
