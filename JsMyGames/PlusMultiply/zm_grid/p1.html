@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P1</title>
+</head>
+
+<body>
+    <div id="div1">P1 page</div>
+    <a href="p2.html" onclick="onP2click()">Click to go to P2</a>
+    <button onclick="onBtnClick()">Click to change State</button>
+    <script>
+        x = (468) / 3 - 69
+        console.log(x)
+
+        let curState = { v1: "", counter: 1000 };
+        if (history.state != null) {
+            curState = { ...history.state };
+        }
+
+        showState();
+        console.log(div1.innerHTML);
+
+        function showState() {
+            div1.innerHTML = "counter: " + curState.counter;
+        }
+        function onP2click() {
+            window.addEventListener('popstate', function (event) {
+                alert('test');
+            });
+            //window.onpopstate = onPopState;
+            history.pushState(curState, "p1", "p1.html");
+        }
+        function onBtnClick() {
+            curState.counter++;
+            showState();
+        }
+        function onPopState(event) {
+            console.log(
+                `location: ${document.location}, state: ${JSON.stringify(event.state)}`
+            );
+        };
+    </script>
+</body>
+
+</html>

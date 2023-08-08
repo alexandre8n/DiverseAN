@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+    <title>Multiplication App</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="modalWnd.css">
+    <style>
+        header {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            grid-gap: 10px;
+            justify-content: center;
+        }
+
+        /* .Flex-item {
+            width: 200px;
+        margin: 10px;
+        border: 3px solid #333;
+        background-color: #dfdfdf;
+        } */
+
+        .Column1 {
+            min-height: 90px;
+            background-color: #dfdfdf;
+        }
+
+        .Column2 {
+            min-height: 90px;
+            background-color: #dfdfdf;
+        }
+
+        .Column3 {
+            min-height: 90px;
+            background-color: #dfdfdf;
+        }
+
+        .btnClear {
+            background-color: green;
+            color: white;
+            font-size: 18px;
+            visibility: hidden;
+        }
+
+        .itemsInBox {
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Check your calculation skills</h1>
+    <div class="headerPos">
+        <header>
+            <button class="btnSmall" id="btnTutor" onclick="onTutor()">Tutor</button>
+            <button class="btnSmall" id="btnSelfTest" onclick="onSelfTest()">Self-Test</button>
+            <button class="btnSmall" id="btnQuiz" onclick="onQuiz()">Quiz</button>
+            <button class="btnSmall" id="btnHistory" onclick="onClickHistory()">History</button>
+        </header>
+    </div>
+    <form class="form" id="form">
+        <header>
+            <div class="Column1">
+                <div id="dropDnId" class="dropdown">
+                    <input class="text-box" type="text" placeholder="Select on" readonly>
+                    <div class="options">
+                        <div onclick="onChangeOpr('Addition(+)')">Addition(+)</div>
+                        <div onclick="onChangeOpr('Multiplication(*)')">Multiplication(*)</div>
+                        <div onclick="onChangeOpr('Subtraction(-)')">Subtraction(-)</div>
+                        <div onclick="onChangeOpr('Division(/)')">Division(/)</div>
+                    </div>
+                </div>
+                <div data-tutor class="itemsInBox">
+                    Tutor mode: <button id="btnTutorModeSeqRnd" title="Sequential">s</button>
+                </div>
+                <div data-tutor class="itemsInBox">
+                    Operation: <button id="btnTutorOpr" title="Multiplication">*</button>
+                </div>
+                <div data-tutor class="itemsInBox" id="divRangeId">
+                    Range: (11..19)-(11..19)
+                </div>
+
+            </div>
+            <div class="Column2">Level:
+                <span id="gameLevel">1(,)</span>
+                <button type="button" id="btnUpDn">&#5864</button>
+                <div id="progressId">Progress:</div>
+            </div>
+            <div class="Column3">
+                <div class="score">
+                    <span id="score">score: 0</span>
+                </div>
+            </div>
+        </header>
+        <div id="questionDiv">
+            <span id="question">1 multiply by 1?</span>
+            <button type="button" id="btnHelp" onclick="onClickHelp()">
+                ?
+            </button>
+        </div>
+        <input type="text" class="input" id="input" placeholder="Enter your answer" autofocus autocomplete="off" />
+        <button type="button" id="submitId" class="btn" onclick="onClick()">Submit</button>
+    </form>
+    <p id="ErrorMsg">No, <span id="errorDetails">5 * 5 is not 27!</span></p>
+
+    <!--HERE is modal Help window  -->
+    <!-- Example of button that would automaticaly call a modal window 
+    <button data-modal-target="#modal">Open Modal</button> 
+  -->
+    <divHelp class="modal" id="modal">
+        <div class="modal-header">
+            <div class="title" id="modalHeaderId">Tip for calculation</div>
+            <button id="clrHistoryId" class="btnClear" onclick="onClearHistory()">
+                Clear History
+            </button>
+            <button data-close-button class="close-button">&times;</button>
+        </div>
+        <template id="tblTmpl">
+            <table id="example" class="display" style="width:90%">
+        </template>
+        <div class="modal-body" id="modalHelpId">
+            Nothing to show yet, just placeholder
+        </div>
+    </divHelp>
+    <div id="overlay"></div>
+    <dialog id="dlgFinishedTeachingId" class="modalDlg">
+        <div class="modal-header" id="modalHeaderId">
+            <div class="title" id="titleId">
+                Learing Step Is Finished!
+            </div>
+            <button onclick="closeTeachingDlg()" class="close-button">&times;</button>
+        </div>
+        <div id="ranges">
+            You have just finished exersising with all the numbers in ranges:<br />
+            n1: <span id="rng1Id">from - to</span>, n2: <span id="rng2Id">from - to</span>
+        </div>
+        <div>recommandation: to learn the cases that took you more than 5 sec:<br />
+            <textarea id="dlgTextareaId">
+                what to learn more...
+            </textarea>
+            <button style="position: relative;top: -7px;">More...</button>
+        </div>
+        <div>
+            <button class="btnSmall" onclick="onDlgCancel()">Cancel</button>
+            <button class="btnSmall" onclick="onDlgFollow()">Follow recommendation</button>
+            <button class="btnSmall" onclick="onDlgRandom()">Randomly</button>
+            <button class="btnSmall" onclick="onDlgYou()">Test youself</button>
+            <button class="btnSmall" onclick="onDlgRanges()">Select other ranges</button>
+        </div>
+    </dialog>
+
+
+    <script src="../../JsUtils/utils1.js"></script>
+    <script src="history.js"></script>
+    <script src="SrvBase.js"></script>
+    <script src="SrvTutor.js"></script>
+    <script src="SrvSelfTester.js"></script>
+    <script src="SrvQuizer.js"></script>
+    <script src="modalWnd.js"></script>
+    <script src="index.js"></script>
+
+</body>
+
+</html>

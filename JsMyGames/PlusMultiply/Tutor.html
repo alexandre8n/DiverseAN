@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+    <title>Calculation Tutor</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="modalWnd.css">
+    <style>
+        header {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            grid-gap: 10px;
+            margin-left: 20%;
+            margin-right: 20%;
+        }
+
+        .Column1 {
+            min-height: 90px;
+            background-color: #dfdfdf;
+        }
+
+        .Column2 {
+            min-height: 90px;
+            background-color: #dfdfdf;
+            text-align: left;
+        }
+
+        .Column3 {
+            min-height: 90px;
+            background-color: #dfdfdf;
+        }
+
+
+        .radioInp {
+            margin-left: 15%;
+        }
+
+        .centerTxt {
+            text-align: center;
+        }
+
+        .dropdownOpr {
+            cursor: pointer;
+            background: #fff;
+            font-size: 1em;
+            border: none;
+            outline: none;
+            box-shadow: 0 5px 2px rgba(0, 0, 0, 0.05);
+            padding: 6px 2px;
+            border-radius: 4px;
+        }
+
+        .btn2 {
+            width: 25%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Calculation Tutor</h1>
+    <div id="selectOperation" style="color: yellow; display: inline-block; padding-bottom: 20px;">
+        Select operation to learn:
+        <select id="oprSelect" class="dropdownOpr" onchange="onOprSelect()" name="countrySelect">
+            <option value="0">Addition(+)</option>
+            <option value="1">Multiplication(*)</option>
+            <option value="2">Subtraction(-)</option>
+            <option value="3">Division(/)</option>
+        </select>
+        <!-- <label>Test:<select id="countrySelect" name="countrySelect">
+                    <option>Addition(+)</option>
+                    <option>Multiplication(*)</option>
+                    <option>Subtraction(-)</option>
+                    <option>Division(/)</option>
+                </select>
+            </label> -->
+    </div>
+    <header>
+        <div id="col1id" class="Column2">
+            <p class="centerTxt">Please select first number range:</p>
+            <input class="radioInp" type="radio" id="range1" name="rangeL" value="10" checked="checked">
+            <label for="range1">2 - 9</label><br>
+            <input class="radioInp" type="radio" id="range2" name="rangeL" value="20">
+            <label for="range2">11 - 19</label><br>
+            <input class="radioInp" type="radio" id="range3" name="rangeL" value="30">
+            <label for="range3">21 - 29</label><br>
+            <input class="radioInp" type="radio" id="range3" name="rangeL" value="40">
+            <label for="range3">31 - 39</label><br>
+            <input class="radioInp" type="radio" id="range3" name="rangeL" value="50">
+            <label for="range3">41 - 49</label><br>
+            <input class="radioInp" type="radio" id="range3" name="rangeL" value="60">
+            <label for="range3">51 - 59</label><br>
+            <input class="radioInp" type="radio" id="range3" name="rangeL" value="70">
+            <label for="range3">61 - 69</label><br>
+            <input class="radioInp" type="radio" id="range3" name="rangeL" value="80">
+            <label for="range3">71 - 79</label><br>
+            <input class="radioInp" type="radio" id="range3" name="rangeL" value="90">
+            <label for="range3">81 - 89</label><br>
+            <input class="radioInp" type="radio" id="range3" name="rangeL" value="100">
+            <label for="range3">91 - 99</label><br>
+            <br>
+        </div>
+        <div id="col2id" class="Column2">
+        </div>
+
+    </header>
+    <!-- <div class="centerTxt" id="res">here you will get the result</div> -->
+    <div>
+        <button class="btn btn2" onclick="onPreview()">What you learn...</button>
+        <button class="btn btn2" onclick="onDone()">Done</button>
+    </div>
+
+    <script src="../../JsUtils/utils1.js"></script>
+    <script src="history.js"></script>
+    <script src="SrvBase.js"></script>
+    <script src="SrvTutor.js"></script>
+    <script>
+        var oprTexts = {
+            "+": "Addition(+)",
+            "*": "Multiplication(*)",
+            "-": "Subtraction(-)",
+            "/": "Division(/)",
+            "+short": "plus",
+            "*short": "multiply by",
+            "-short": "minus",
+            "/short": "devide by",
+        };
+        var curOpr = "+";
+        copyChildElements(col1id, col2id, emlPrcByCopy);
+        var textElms = col2id.getElementsByClassName('centerTxt');
+        var t1 = textElms[0];
+        t1.innerHTML = "Please select second number range:";
+
+        const tutor = new Tutor();
+        // these lines just remove when ready
+        //tutor.testRnd();
+        // tutor.getLocalStorageKeys();
+        // tutor.clearLocalStorage();
+        // todo: remove above-----------
+
+        tutor.retrieveState();
+        let h = tutor.history();
+
+        //showOperations(oprTexts[curOpr]);
+        //let dropdown = document.querySelector(".dropdown");
+        // dropdown.onclick = function () {
+        //     dropdown.classList.toggle("active");
+        // };
+
+        function onOprSelect() {
+            const idx = oprSelect.selectedIndex;
+            const val = parseInt(oprSelect.value);
+            const keys = Object.keys(oprTexts);
+            curOpr = keys[val];
+        }
+        // copy all elements of parent1 and add them to parent2
+        function copyChildElements(parent1, parent2, prcFunc) {
+            let childs = parent1.childNodes;
+            for (var i = 0; i < childs.length; i++) {
+                const clonedElm = childs[i].cloneNode(true);
+                if (prcFunc) {
+                    prcFunc(clonedElm);
+                }
+                parent2.appendChild(clonedElm);
+            }
+        }
+        function emlPrcByCopy(elm) {
+            if (elm.className == "centerTxt") {
+                elm.innerHTML = "Please select second number range:";
+            }
+            else if (elm.name == "rangeL") {
+                elm.name = "rangeR";
+            }
+        }
+        function onPreview() {
+            // save ranges
+            location.href = "multiTable.html";
+        }
+        function onDone() {
+            // save tutor-state range is calculated like this
+            // from: r-9 to: r-1;
+            let r1 = getChecked("rangeL");
+            let r2 = getChecked("rangeR");
+            let tutorState = tutor.getState(); // it's just a ref
+            tutorState.opr = curOpr;
+            tutorState.mode = "s"; // start with sequential
+            tutorState.range1 = getRangeArr(r1);
+            tutorState.range2 = getRangeArr(r2);
+            tutor.setLastNumbers(0, 0);
+
+            tutor.saveState();
+            //tutor.testOutNumbers();
+            location.href = "index.html";
+        }
+        function getRangeArr(rangeStr) {
+            const arr = [0, 0];
+            arr[0] = parseInt(rangeStr) - 9;
+            if (arr[0] == 1) {
+                arr[0] = 2;
+            }
+            arr[1] = parseInt(rangeStr) - 1;
+            return arr;
+        }
+
+        function getChecked(name) {
+            const expr = `input[name="${name}"]:checked`
+            let res = document.querySelector(expr).value;
+            if (res)
+                return res;
+            var ranges = document.getElementsByName(name);
+            var r_value;
+            for (var i = 0; i < ranges.length; i++) {
+                if (ranges[i].checked) {
+                    return ranges[i].value;
+                }
+            }
+            return -1;
+
+        }
+    </script>
+</body>
+
+</html>

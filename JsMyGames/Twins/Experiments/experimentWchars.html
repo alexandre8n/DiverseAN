@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>special chars</title>
+  </head>
+  <body>
+    <h1>Special chars</h1>
+    <p>
+      Input: from ... to <input id="input" type="text" width="150" />
+      <button onclick="onClick()">Show</button>
+      <button name="btnUpDn" id="btnUpDn" >&#5864</button>
+      <!-- onclick="onClick1(btnUpDn)" -->
+    </p>
+    <p id="out">result:</p>
+  </body>
+  <script>
+      var btnUpDn = document.getElementById("btnUpDn");
+      btnUpDn.addEventListener("click", onClick1);
+
+    function onClick1(event){
+      var h = btnUpDn.clientHeight;
+      if(event.offsetY < h/2) console.log("up");
+      else console.log("Down");
+      //console.log(event);
+    }
+    function onClick() {
+      var inp = document.getElementById("input");
+      var str = inp.value;
+
+      var strNumbers = str.match(/(\d+)(\s+|$)/gm); //(\d+)(\s+|$)(\d+)
+      var strNumbers1 = /(\d+)(\s+)(\d+)(\s*)/.exec("1 22"); //["1 22","1"," ", "2", ""]
+      var from = parseInt(strNumbers[0].trim());
+      var to = parseInt(strNumbers[1].trim());
+      var p1 = document.getElementById("out");
+      var t = "";
+      for (let i = from; i < to; i++) {
+        var t1 = "&#" + i;
+        t += " " + t1;
+      }
+      p1.innerHTML = t;
+      console.log(strNumbers);
+      //console.log("I love you".match(/(lo)(ve)/g));
+      console.log("Elena Litvinova".replace(/(\w+) (\w+)/, "$2 $1"));
+
+      // examples with regexp
+      var r = /a+/.exec("aaaaa");
+      // r[0]=aaaa gridy
+      
+      r = /a+?/.exec("aaaaa")
+      // r[0]=a lazy
+      // 
+
+      // groupping with catching:
+      // with catching
+      r = /(boo)/.test("boo");
+      r = /(?:boo)/.test("boo"); // without catch
+
+      r = /(bo)o+(b)/.exec("the boooob")
+      r = /((foo) (b(a)r))/.exec("foo bar") // every opening ( gives $.N)
+      //['foo bar', 'foo bar', 'foo', 'bar', 'a', index: 0, input: 'foo bar', groups: undef
+      r = /best(?= match)/.exec("best match"); // look ahead > best
+      r = /best(?! match)/.exec("best match best apple"); // look ahead > best
+      //['best', index: 11, input: 'best match best apple', groups: undefined]
+      
+      // backreferences
+      r = /(red|green) apple is \1/.exec("red apple is red"); // will match
+      
+      // chars representation
+      // \x09 = \t, \u20AC = євро
+      // \(\)-> (), \\n....
+      // flags: gimsx
+      // g global, i-ignore match, m-multi line for ^ and $
+      // s . as single line
+      // x extend pattern (for comments)
+      // alt syntax for flags
+      // /(?i)bla../   
+      // /(?i)bla.(?-i)BLA/   -i switch off
+      
+
+
+    }
+  </script>
+</html>

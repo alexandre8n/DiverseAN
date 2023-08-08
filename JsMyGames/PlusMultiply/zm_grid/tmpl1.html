@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <p>Please select your age:</p>
+    <input type="radio" id="age1" name="age" value="30" checked="checked">
+    <label for="age1">0 - 30</label><br>
+    <input type="radio" id="age2" name="age" value="60">
+    <label for="age2">31 - 60</label><br>
+    <input type="radio" id="age3" name="age" value="100">
+    <label for="age3">61 - 100</label><br><br>
+    <button onclick="onClick()">Done</button>
+    <div id="res">here you will get the result</div>
+    <template>
+        <p>Please select your age:</p>
+        <input type="radio" id="age1" name="age" value="30">
+        <label for="age1">0 - 30</label><br>
+        <input type="radio" id="age2" name="age" value="60">
+        <label for="age2">31 - 60</label><br>
+        <input type="radio" id="age3" name="age" value="100">
+        <label for="age3">61 - 100</label><br><br>
+    </template>
+    <script>
+        function onClick() {
+            val = findSelection("age")
+            res.innerHTML = val
+        }
+        function findSelection(field) {
+            var test = document.getElementsByName(field);
+            for (i = 0; i < test.length; i++) {
+                if (test[i].checked == true) {
+                    return test[i].value;
+                }
+            }
+        }
+
+    </script>
+</body>
+
+</html>

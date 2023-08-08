@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>test 1</title>
+  <style>
+    .center {
+      border: 5px solid;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background-color: brown;
+      width: 50%;
+      margin: auto;
+    }
+
+    .row {
+      float: left;
+      margin: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="centerDivId" class="center">
+    <div class="row">
+      <img src="../Images/1.png" alt="Lights" />
+      <img src="../Images/2.png" alt="Lights" />
+      <img src="../Images/3.png" alt="Lights" />
+      <img src="../Images/4.png" alt="Lights" />
+      <img src="../Images/5.png" alt="Lights" />
+    </div>
+    <div class="row">
+      <img src="../Images/1.png" alt="Lights" />
+      <img src="../Images/2.png" alt="Lights" />
+      <img src="../Images/3.png" alt="Lights" />
+      <img src="../Images/4.png" alt="Lights" />
+      <img src="../Images/5.png" alt="Lights" />
+    </div>
+  </div>
+  <img src="../Images/-1.png" id="showScreen" alt="-1" style="border: 2px solid red">
+  <button onclick="onBeginDemo()">begin demo</button>
+  <script>
+    var mainDiv = document.getElementById("centerDivId");
+    var rect = mainDiv.getBoundingClientRect();
+    const showScreen = document.getElementById('showScreen');
+    setShowScreenPos();
+
+    function setShowScreenPos() {
+      var rectShSc = showScreen.getBoundingClientRect();
+
+      showScreen.style.position = 'absolute';
+      var posY = Math.floor(rect.y + 2 + rectShSc.height / 2);
+      var posX = Math.floor(rect.x + 7);
+      showScreen.style.top = "" + posY + 'px';
+      showScreen.style.left = "" + posX + 'px';
+    }
+    function onBeginDemo() {
+
+      const delay = ms => new Promise(res => setTimeout(res, ms));
+      const yourFunction = async () => {
+        for (let i = 0; i < 10; i += 2) {
+          showScreen.src = `../Images/${i - 1}.png`;
+          await delay(1000);
+        }
+      };
+      yourFunction();
+
+    }
+  </script>
+</body>
+
+</html>

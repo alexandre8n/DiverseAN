@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multiplication App</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="modalWnd.css">
+    <style>
+        header {
+            display: flex;
+            justify-content: center;
+            /* uncomment if you like items to be centered vertically */
+            /* align-items: center; */
+        }
+
+        .Flex-item {
+            /* width: 200px; */
+            margin: 10px;
+            border: 3px solid #333;
+            background-color: #dfdfdf;
+        }
+
+        .Column1 {
+            min-height: 90px;
+            flex-shrink: 0;
+            background-color: #dfdfdf;
+        }
+
+        .Column2 {
+            min-height: 90px;
+            flex-grow: 2;
+            background-color: #dfdfdf;
+        }
+
+        .Column3 {
+            min-height: 90px;
+            flex-grow: 1;
+            background-color: #dfdfdf;
+        }
+    </style>
+</head>
+
+<body>
+    <form class="form" id="form">
+        <header>
+            <div class=".Flex-item Column1">
+                <div class="dropdown">
+                    <input class="text-box" type="text" placeholder="Select on" readonly>
+                    <div class="options">
+                        <div onclick="show('Addition(+)')">Addition(+)</div>
+                        <div onclick="show('Multiplication(*)')">Multiplication(*)</div>
+                        <div onclick="show('Subtraction(-)')">Subtraction(-)</div>
+                        <div onclick="show('Division(/)')">Division(/)</div>
+                    </div>
+                </div>
+
+            </div>
+            <div class=".Flex-item Column2">Level:
+                <span id="gameLevel">1(,)</span>
+                <button type="button" id="btnUpDn">&#5864</button>
+            </div>
+            <div class=".Flex-item Column3">
+                <div class="score" id="score">score: 0</div>
+            </div>
+        </header>
+        <div id="questionDiv">
+            <span id="question">1 multiply by 1?</span>
+            <button type="button" id="btnHelp" onclick="onClickHelp()">
+                ?
+            </button>
+        </div>
+        <input type="text" class="input" id="input" placeholder="Enter your answer" autofocus autocomplete="off" />
+        <button type="button" id="submitId" class="btn" onclick="onClick()">Submit</button>
+    </form>
+    <p id="ErrorMsg">No, <span id="errorDetails">5 * 5 is not 27!</span></p>
+
+    <!--HERE is modal Help window  -->
+    <!-- Example of button that would automaticaly call a modal window 
+    <button data-modal-target="#modal">Open Modal</button> 
+    -->
+    <divHelp class="modal" id="modal">
+        <div class="modal-header">
+            <div class="title">Tip for calculation</div>
+            <button data-close-button class="close-button">&times;</button>
+        </div>
+        <div class="modal-body" id="modalHelpId">
+            Nothing to show yet, just placeholder
+        </div>
+    </divHelp>
+    <div id="overlay"></div>
+
+    <script src="../../JsUtils/utils1.js"></script>
+    <script src="history.js"></script>
+    <script src="Tutor.js"></script>
+    <script src="modalWnd.js"></script>
+    <script src="index.js"></script>
+
+</body>
+
+</html>

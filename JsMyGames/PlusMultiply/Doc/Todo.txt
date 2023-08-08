@@ -1,0 +1,123 @@
+- td: more button in done dialog, show the grid with longest and false with
+  details, op, res, time, true/false, score
+
++ show progress or learning step.
+  + if selfTester just step: nn
+  + if tutor: progress: nn/NN
+  + if progress is 100% dialog dlgFinishedTeachingId
+          in it the recommandation should be taken from history
+
++bug in progress, it starts from 2
++ for more generality make next2Numbers return an object n1, n2, opr;
+
+todo: clear history
+todo: after finishing tutoring, dialog:
++ do you like to repeat all or the most difficult cases?
+  this scenario: first - errors, second - the longest 10, that took more than 5 sec.
++ do you like to test your skills in a random way?
+   ---> postponed: this should be done by quizer? ask the most difficult 20 and get estimate.
+
+
+-todo: recommended triks to use: tutor: nn*25 nn/4 r:0 00 r:1 25, r:2 50, r:3 75
+96*25= 2400 97*25 = 2425 98*25=2450, 99*25=2475
+
+-todo: recommended tricks
+ 1x*1x = (1x +x)*10 + x*x 
+ 9x*9x = [y=10-x] -> (9x-y)*100 + y*y
+ Example: 14*14 = (14+4)*10 +16 = 180+16=196
+ 19*19 = 280+81=361
+ 17*17 = (17+7=24)*10+49=289
+ 13*13 = 160+9=169
+ 97*97 = (100*100-2*3*100+9) = 100*100 - 2*300 + 9 = 
+ ->(97-3)*100+9 = 9400 + 9 = 9409
+92*92 -> (92-8)*100 + 8*8 = 8464
+
++todo: in onClick update the empty history record with answer and score
++Test the above
++todo: make right score calculation for all servers
+
+todo: finish and debug history records.
++ by preparing question - create and add it, after the answer, fill the answer
+
+
+todo: save history
+  for selfTester
+  for tutor
+  
+
++: make selfTester working
+      +clear old question, make a new one.
+      +make it random, even if by tutor was sequential
+      +refresh score - should be 0.
+
+todo:      ??clear history
+      
++: remove state from index.js
+
+
+refactoring:
++    create parrent for server - common funcs there...
+
++: refactoring, introduce servers:
+     +tutor
+     +selfTester
+todo: quizer
+
+    all of them have the state
+
+     common methods:
+      
+      changes of the state
+      next2Numbers
+      getOpr
+      saveHistory
+      saveState
+    method prepareQuestion(curService) i.e. tutor, selfTester, quizer
+
+
+
++show in left area:
+Tutor: sequential/random
+operation: +/*...
+step n of Ntotal
+
++ Tutor: state obj to introduce:
+n1range
+n2range
+mode: sequential, random
+currentStep
+totalSteps
+
+save Tutor setting in tutor.html send it to main
+save tutor setting by every tutor step
+
+repeatFrequency: - how often to repeat, selecting the worst answer 
+by false and time. example: every 7th time select the worst from history
+if there remain 0, not tried: every step select the worst.
+if all answers are ok, stop. Ok means correct answer in 3 sec.
+
+Tutor functionality:
+getNextNumbers()
+
+
+
+<!-- button clear history to popup wnd -->
+<!-- todo: add command: clear score -->
+<!-- todo: implement: history window: date-time: long-or-wrong operation spent time, hint -->
+<!-- todo: implement teaching effect. wrong or Long answer=> repeat 
+<!-- todo: add Stop/Start/Settings, History -->
+<!-- todo: for deviding first large, then small number -->
+<!-- todo: add multiplication tricks: ab*11 = a(a+b if more that one dig. add 1 to a)b 
+      72*11 = 792 , 76*11 = {7+1}{7+6-10=3}6=836 -->
+<!--+ : correct score in history -->
+<!--+ : add command: history -->
+<!--+ : Show wrong answer reaction: show the additional line "No, x<op>y = xxx (not:eee)(more...)" -->
+<!--+ : more... click should open popup with examples of right calculation " -->
+<!--+ : enable to see details, how to get calculated quickly -->
+<!--+ : use css grid layout for operation, level, score -->
+<!--+ : implement reaction on the wrong answer -->
+<!--+ : implement ? tip ? in the case of long calculation time -->
+  history of mistakes => repeating -->
+<!--+ : implement better score, taking into acc. the time spent to answer -->
+<!--+ : --- measure time as 3 sec + T -->
+<!--+ : --- right, 3 sec: max-score, 6s -10%, 12s -30%, 20s - 50%, 50s+ -70% -->

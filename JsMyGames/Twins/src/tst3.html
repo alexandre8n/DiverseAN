@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    img {
+        width: 25%;
+        height: 25%;
+    }
+
+    .unfiltered-pic {
+        border: 3px solid red;
+    }
+
+    .filtered-pic {
+        animation: filter-animation 5s;
+        /*infinite*/
+        /* filter: drop-shadow(2px 2px 5px rgb(0 0 0 / 0.5)); */
+        /* filter: drop-shadow(4px 4px red); */
+        /* filter: invert(10%); */
+        /*filter: saturate(0.2);*/
+        /*filter: blur(10px);*/
+        /*filter: hue-rotate(
+                degree on color wheel
+                100)*/
+    }
+
+    @keyframes filter-animation {
+        0% {
+            filter: sepia(0) saturate(2);
+        }
+
+        50% {
+            filter: sepia(1) saturate(8);
+        }
+
+        100% {
+            filter: sepia(0) saturate(2);
+        }
+    }
+</style>
+
+<body>
+    <h1>Test 3</h1>
+    <img src="../Images/1.png" id='mug' class='unfiltered-pic' onclick="changeColor(this)" />
+    <script>
+        function changeColor(element) {
+            if (element.className != "filtered-pic")
+                element.setAttribute('class', 'filtered-pic');
+            else
+                element.setAttribute('class', 'unfiltered-pic');
+
+        }
+    </script>
+</body>
+
+</html>

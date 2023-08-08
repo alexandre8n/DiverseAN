@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>ZingGrid Demo</title>
+  <script nonce="undefined" src="https://cdn.zinggrid.com/zinggrid.min.js"></script>
+  <style>
+    body {
+      background: #FFF;
+    }
+
+    zing-grid {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    zing-grid[loading] {
+      height: 229px;
+    }
+  </style>
+</head>
+
+<body>
+  <zing-grid id="example-grid" data='[
+        {
+          "firstName": "John",
+          "lastName": "Doe",
+          "age": 45
+        },
+        {
+          "firstName": "Jane",
+          "lastName": "Doe",
+          "age": 44
+        }
+      ]' theme="default" caption="Meet the Doe Family">
+  </zing-grid>
+  <script>
+    window.addEventListener('load', () => {
+      const zingGridRef = document.querySelector('#example-grid');
+      zingGridRef.executeOnLoad(function() {
+        setInterval(function() {
+          const newData = [{
+              firstName: 'John Jr.',
+              lastName: 'Doe',
+              age: Math.floor(15 * Math.random())
+            },
+            {
+              firstName: 'Jane Jr.',
+              lastName: 'Doe',
+              age: Math.floor(13 * Math.random())
+            }
+          ];
+          zingGridRef.setAttribute('data', JSON.stringify(newData));
+        }, 1000);
+      });
+    });
+  </script>
+</body>
+
+</html>

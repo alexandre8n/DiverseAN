@@ -1,0 +1,25 @@
+configuration: 
+level: 0, size: 3 to 2
+level: 1, size: 3 to 3
+level: 2, size: 4 to 3
+level: 3, size: 4 to 4
+level: 4, size: 5 to 4
+level: 5, size: 5 to 5
+level: 6, size: 6 to 5
+level: 7, size: 6 to 6
+
+functions:
+drawField(level)
+
+drawCell(i, j, cellInfo)
+
+var imagesNo = [1,2,...,   nMax];
+
+imagesNo = getRandomImageSet(m*n);
+
+showImages(level, imegesNo);
+
+coordXY = {x:0, y:0};
+var coordXY = getClickCoord();
+
+// set of actions

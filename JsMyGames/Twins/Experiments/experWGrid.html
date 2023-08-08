@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exp W Grid</title>
+  </head>
+  <style>
+    .grid {
+      display: grid;
+      grid-template-columns: 3fr 1fr;
+    }
+    .grid div {
+      background-color: #28314e;
+      border: 1px solid #212941;
+      border-radius: 5px;
+      color: yellow;
+    }
+    .row {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      margin-right: 7%;
+    }
+    img {
+      margin-left: 2px;
+      width: 50px;
+      height: 50px;
+    }
+    #gameArea {
+      margin-right: 2px;
+    }
+    .btn {
+      background-color: pink;
+      padding: 15px 40px;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      text-decoration: none;
+      color: black;
+      position: relative;
+      overflow: hidden;
+      width: 70%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .flex {
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+  <body>
+    <h1 style="text-align: center">Grid Experiments</h1>
+    <div class="grid">
+      <div id="gameArea">
+        <div class="row">
+          <img src="../Images/1.png" alt="Lights" />
+          <img src="../Images/2.png" alt="Lights" />
+          <img src="../Images/3.png" alt="Lights" />
+        </div>
+        <div class="row">
+          <img src="../Images/1.png" alt="Lights" />
+          <img src="../Images/2.png" alt="Lights" />
+          <img src="../Images/3.png" alt="Lights" />
+        </div>
+        <div class="row">
+          <img src="../Images/1.png" alt="Lights" />
+          <img src="../Images/2.png" alt="Lights" />
+          <img src="../Images/3.png" alt="Lights" />
+        </div>
+        <div class="row">
+          <img src="../Images/1.png" alt="Lights" />
+          <img src="../Images/2.png" alt="Lights" />
+          <img src="../Images/3.png" alt="Lights" />
+        </div>
+        <div class="row">
+          <img src="../Images/1.png" alt="Lights" />
+          <img src="../Images/2.png" alt="Lights" />
+          <img src="../Images/3.png" alt="Lights" />
+        </div>
+      </div>
+      <div>
+        <button id="btnStartStop" class="btn" onclick="onStartGame()">
+          Start
+        </button>
+        <divScore>
+          <p>
+            Games played:
+            <span id="gamesCount">0</span>, Level: <span id="gameLevel">1</span>
+          </p>
+          <table id="results">
+            <tr>
+              <th>Info</th>
+              <th>Score</th>
+              <th>Clicks</th>
+            </tr>
+            <tr>
+              <td>Total</td>
+              <td class="scoreCell" id="totScore">0</td>
+              <td class="scoreCell" id="totClicks">0</td>
+            </tr>
+            <tr>
+              <td>Last game</td>
+              <td class="scoreCell" id="gameScore">0</td>
+              <td class="scoreCell" id="gameClicks">0</td>
+            </tr>
+            <tr>
+              <td>Best game</td>
+              <td class="scoreCell" id="bestScore">0</td>
+              <td class="scoreCell" id="bestClicks">0</td>
+            </tr>
+            <tr>
+              <td>Average</td>
+              <td class="scoreCell" id="avgScore">0</td>
+              <td class="scoreCell" id="avgClicks">0</td>
+            </tr>
+          </table>
+        </divScore>
+      </div>
+      <!-- <div>Item 3</div>
+      <div>Item 4</div>
+      <div>Item 5</div> -->
+    </div>
+
+    <div
+      style="
+        display: flex;
+        justify-content: space-around;
+        background-color: green;
+      "
+    >
+      <div>
+        <img src="../Images/1.png" alt="Lights" />
+      </div>
+      <div>
+        <img src="../Images/2.png" alt="Lights" />
+      </div>
+      <div>
+        <img src="../Images/3.png" alt="Lights" />
+      </div>
+    </div>
+    <div
+      style="display: flex; justify-content: center; background-color: green"
+    >
+      <div>
+        <img src="../Images/1.png" alt="Lights" />
+      </div>
+      <div>
+        <img src="../Images/2.png" alt="Lights" />
+      </div>
+      <div>
+        <img src="../Images/3.png" alt="Lights" />
+      </div>
+    </div>
+    <div
+      style="display: flex; justify-content: flex-end; background-color: green"
+    >
+      <div>
+        <img src="../Images/1.png" alt="Lights" />
+      </div>
+      <div>
+        <img src="../Images/2.png" alt="Lights" />
+      </div>
+      <div>
+        <img src="../Images/3.png" alt="Lights" />
+      </div>
+    </div>
+  </body>
+</html>

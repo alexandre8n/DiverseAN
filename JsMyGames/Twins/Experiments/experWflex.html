@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exp W Flex</title>
+  </head>
+  <style>
+    .grid {
+      display: grid;
+      grid-template-columns: 3fr 1fr;
+    }
+    .grid div {
+      background-color: #28314e;
+      border: 1px solid #212941;
+      border-radius: 5px;
+      color: yellow;
+    }
+    .row {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      margin-right: 7%;
+    }
+    img {
+      margin-left: 2px;
+      width: 50px;
+      height: 50px;
+    }
+    #gameArea {
+      margin-right: 2px;
+    }
+    .btn {
+      background-color: pink;
+      padding: 15px 40px;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      text-decoration: none;
+      color: black;
+      position: relative;
+      overflow: hidden;
+      width: 70%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .flexSpaceBetween {
+      display: flex;
+      justify-content: space-between;
+      background-color: #28314e;
+    }
+    .flex {
+      display: flex;
+      background-color: #28314e;
+    }
+    .img1 {
+      margin-right: auto;
+    }
+    .img4 {
+      margin-left: auto;
+    }
+  </style>
+  <body>
+    <h1 style="text-align: center">Flex Experiments</h1>
+    <div
+      class="flex"
+      style="justify-content: flex-end; background-color: green"
+    >
+      <div>
+        <img src="../Images/1.png" alt="Lights" />
+      </div>
+      <div>
+        <img src="../Images/2.png" alt="Lights" />
+      </div>
+      <div>
+        <img src="../Images/3.png" alt="Lights" />
+      </div>
+      <div>
+        <img src="../Images/4.png" alt="Lights" />
+      </div>
+    </div>
+    <div
+      class="flex"
+      style="justify-content: flex-start; background-color: green"
+    >
+      <div>
+        <img src="../Images/1.png" alt="Lights" />
+      </div>
+      <div>
+        <img src="../Images/2.png" alt="Lights" />
+      </div>
+      <div>
+        <img src="../Images/3.png" alt="Lights" />
+      </div>
+      <div>
+        <img src="../Images/4.png" alt="Lights" />
+      </div>
+    </div>
+    <div class="flex" style="justify-content: center; background-color: green">
+      <div>
+        <img src="../Images/1.png" alt="Lights" />
+      </div>
+      <div>
+        <img src="../Images/2.png" alt="Lights" />
+      </div>
+      <div>
+        <img src="../Images/3.png" alt="Lights" />
+      </div>
+      <div>
+        <div style="width: 16; height: 16; background: yellow">A</div>
+        <!-- <img src="../Images/4.png" alt="Lights">A</img> -->
+        <!-- <span style="border-color: black">A</span> -->
+      </div>
+    </div>
+    <div
+      class="flex"
+      style="justify-content: space-around; background-color: blue"
+    >
+      <div>
+        <img src="../Images/1.png" alt="Lights" />
+      </div>
+      <div>
+        <img src="../Images/2.png" alt="Lights" />
+      </div>
+      <div>
+        <img src="../Images/3.png" alt="Lights" />
+      </div>
+      <div>
+        <img src="../Images/4.png" alt="Lights" />
+      </div>
+    </div>
+    <div class="flexSpaceBetween">
+      <div>
+        <img src="../Images/1.png" alt="Lights" />
+      </div>
+      <div>
+        <img src="../Images/2.png" alt="Lights" />
+      </div>
+      <div>
+        <img src="../Images/3.png" alt="Lights" />
+      </div>
+      <div>
+        <img src="../Images/4.png" alt="Lights" />
+      </div>
+    </div>
+    <div class="flex">
+      <div class="img1">
+        <img src="../Images/1.png" alt="Lights" />
+      </div>
+      <div>
+        <img src="../Images/2.png" alt="Lights" />
+      </div>
+      <div>
+        <img src="../Images/3.png" alt="Lights" />
+      </div>
+      <div class="img4">
+        <img src="../Images/4.png" alt="Lights" />
+      </div>
+    </div>
+  </body>
+</html>

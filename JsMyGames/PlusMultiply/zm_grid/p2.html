@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P2</title>
+</head>
+
+<body>
+    <div id="div1">P2 page</div>
+    <button onclick="onP1click()">Back to P1</button>
+    <!-- <a href="p1.html" onclick="onP1click()">Click to go to P1</a> -->
+    <button onclick="onBtnClick()">Click to change State</button>
+    <script>
+        initStateCounter = 1000
+        let p2State = { v1: "" + initStateCounter }
+        let curState = history.state;
+        div1.innerHTML = div1.innerHTML.substring(0, 7) + p2State.v1;
+        function onP1click() {
+            history.back();
+            //history.pushState(p2State, "p2", "p2.html");
+        }
+        function onBtnClick() {
+            initStateCounter++
+            p2State.v1 = "" + initStateCounter;
+            div1.innerHTML = div1.innerHTML.substring(0, 5) + p2State.v1;
+        }
+    </script>
+</body>
+
+</html>

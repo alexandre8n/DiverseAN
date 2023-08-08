@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Place and Memories</title>
+  <link rel="stylesheet" href="modalWnd.css" />
+  <style>
+    body {
+      background: #f2f6f8;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .center {
+      border: 5px solid;
+      display: flex;
+      float: left;
+      flex-direction: column;
+      background-color: brown;
+      margin: auto 10% auto auto;
+      padding-left: auto;
+    }
+
+    #rightCol {
+      float: left;
+      margin-left: 20px;
+      width: 30%;
+    }
+
+    .row {
+      float: left;
+      margin: auto;
+    }
+
+    img {
+      margin: 0px 2px 0px 2px;
+    }
+
+    .btn {
+      background-color: pink;
+      padding: 15px 40px;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      text-decoration: none;
+      color: black;
+      position: relative;
+      overflow: hidden;
+      width: 70%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #btnUpDn {
+      margin-left: 1px;
+      margin-right: 1px;
+      border-radius: 5px;
+    }
+
+    .container {
+      display: flex;
+      background-color: #28314e;
+      justify-content: space-around;
+    }
+
+    #results th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      padding-left: 4px;
+      padding-right: 4px;
+      text-align: center;
+      background-color: #0b2d21;
+      color: yellow;
+    }
+
+    .scoreCell {
+      text-align: right;
+      font-weight: bold;
+    }
+
+    divScore {
+      font-family: "Open Sans", sans-serif;
+      font-weight: 300;
+      line-height: 1.42em;
+      color: white;
+      /*background-color: #1f2739;*/
+    }
+
+    .guessResultCentered {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Place and Memories Game</h1>
+  <div class="container">
+    <div id="mainDiv" class="center"></div>
+    <div id="rightCol">
+      <button id="btnStartStop" class="btn" onclick="onStartGame()">
+        Start Game
+      </button>
+      <divScore>
+        <p>
+          Games played:
+          <span id="gamesCount">0</span>,
+          Level: <span id="gameLevel">1</span>
+          <button name="btnUpDn" id="btnUpDn">&#5864</button>
+        </p>
+        <table id="results" width="70%">
+          <tr>
+            <th>Info</th>
+            <th>Score</th>
+            <th>Time in sec</th>
+          </tr>
+          <tr>
+            <td>Total</td>
+            <td class="scoreCell" id="totScore">0</td>
+            <td class="scoreCell" id="totTime">0</td>
+          </tr>
+          <tr>
+            <td>Last game</td>
+            <td class="scoreCell" id="gameScore">0</td>
+            <td class="scoreCell" id="gameTime">0</td>
+          </tr>
+          <tr>
+            <td>Best game</td>
+            <td class="scoreCell" id="bestScore">0</td>
+            <td class="scoreCell" id="bestGameTime">0</td>
+          </tr>
+          <tr>
+            <td>Average</td>
+            <td class="scoreCell" id="avgScore">0</td>
+            <td class="scoreCell" id="avgTime">0</td>
+          </tr>
+        </table>
+      </divScore>
+    </div>
+    <img src="../Images/-1.png" id="showScreen" alt="-1" style="display:none; border: 3px solid red">
+
+  </div>
+  <button data-modal-target="#modal">Open Modal</button>
+
+  <divFinishGame class="modal" id="modal">
+    <div class="modal-header">
+      <div class="title">Example Modal</div>
+      <button data-close-button class="close-button">&times;</button>
+    </div>
+    <div class="modal-body">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse quod alias
+      ut illo doloremque eum ipsum obcaecati distinctio debitis reiciendis
+      quae quia soluta totam doloribus quos nesciunt necessitatibus,
+      consectetur quisquam accusamus ex, dolorum, dicta vel? Nostrum
+      voluptatem totam, molestiae rem at ad autem dolor ex aperiam. Amet
+      assumenda eos architecto, dolor placeat deserunt voluptatibus tenetur
+      sint officiis perferendis atque! Voluptatem maxime eius eum dolorem
+      dolor exercitationem quis iusto totam! Repudiandae nobis nesciunt sequi
+      iure! Eligendi, eius libero. Ex, repellat sapiente!
+    </div>
+  </divFinishGame>
+  <div id="overlay"></div>
+
+  <script src="../../../JsUtils/utils1.js"></script>
+  <script src="modalWnd.js"></script>
+  <script src="placeMem.js"></script>
+</body>
+
+</html>

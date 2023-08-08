@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        //https://stackoverflow.com/questions/6451169/load-html-template-with-javascript
+        let tmpl = "f:/Work/GitHub/JsMyGames/PlusMultiply/zm_grid/tmpl1.html";
+        //          F:\Work\GitHub\JsMyGames\PlusMultiply\zm_grid\tmpl1.html
+        let t1 = fetch1();
+        const text = fetchTemplateSomehowAsText(tmpl);
+        document.head.append(
+            new DOMParser().parseFromString(text, 'text/html')
+                .querySelector('template')
+        )
+        async function fetch1() {
+            let text = await fetch(tmpl);
+            readText(await text.text());
+            //let t2 = fetch('tmpl1.html')
+            //            await fetch(t1);
+            // .then(response => response.text())
+            // .then(text => console.log(text))
+            return t1;
+        }
+        function readText(text) {
+            //here you can continue with your JS normal logic
+            console.log(text);
+        }
+        function fetchTemplateSomehowAsText(file) {
+            var rawFile = new XMLHttpRequest();
+            var fileStr = "file:///"
+            var f1 = "file:///F:/Work/GitHub/JsMyGames/PlusMultiply/zm_grid/tmpl1.html";
+            rawFile.open("GET", f1, false);
+            rawFile.onreadystatechange = function () {
+                if (rawFile.readyState === 4) {
+                    if (rawFile.status === 200 || rawFile.status == 0) {
+                        var allText = rawFile.responseText;
+                        alert(allText);
+                    }
+                }
+            }
+            rawFile.send(null);
+        }
+
+        // const parsedDocument = new DOMParser().parseFromString(text, 'text/html');
+        // template.content.append(parsedDocument.querySelector('#my-snippet'));
+    </script>
+</body>
+
+</html>

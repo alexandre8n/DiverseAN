@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>Twins - game</title>
+  <style>
+    .container2 {
+      position: relative;
+      text-align: center;
+      color: blue;
+    }
+
+    .top-left {
+      position: absolute;
+      top: 8px;
+      left: 16px;
+    }
+
+    /* Top right text */
+    .top-right {
+      position: absolute;
+      top: 8px;
+      right: 16px;
+    }
+
+    /* Bottom right text */
+    .bottom-right {
+      position: absolute;
+      bottom: 8px;
+      right: 16px;
+    }
+
+    /* Centered text */
+    .centered {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .bottom-left {
+      position: absolute;
+      bottom: 8px;
+      left: 16px;
+    }
+
+    .bottom-left {
+      position: absolute;
+      bottom: 8px;
+      left: 16px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Twins game</h1>
+  <div id="divCont" class="container">
+    <div class="row">
+      <div class="column">
+        <img id="img1" src="../Images/5.png" alt="Nature" style="width: 100%" onclick="myFunction(this);" />
+      </div>
+      <div class="column">
+        <img src="../Images/1.png" alt="Snow" style="width: 100%" onclick="myFunction(this);" />
+      </div>
+      <div class="column">
+        <img id="img3" src="../Images/1.png" alt="Mountains" style="width: 100%" onclick="myFunction(this);" />
+      </div>
+      <div class="column">
+        <img src="../Images/1.png" alt="Lights" style="width: 100%" onclick="myFunction(this);" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="column">
+        <img src="../Images/1.png" alt="Nature" style="width: 100%" onclick="myFunction(this);" />
+      </div>
+      <div class="column">
+        <img src="../Images/2.png" alt="Snow" style="width: 100%" onclick="myFunction(this);" />
+      </div>
+      <div class="column">
+        <img src="../Images/3.png" alt="Mountains" style="width: 100%" onclick="myFunction(this);" />
+      </div>
+      <div class="column">
+        <img src="../Images/4.png" alt="Lights" style="width: 100%" onclick="myFunction(this);" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="column">
+        <img src="../Images/1.png" alt="Nature" style="width: 100%" onclick="myFunction(this);" />
+      </div>
+      <div class="column">
+        <img src="../Images/2.png" alt="Snow" style="width: 100%" onclick="myFunction(this);" />
+      </div>
+      <div class="column">
+        <img src="../Images/3.png" alt="Mountains" style="width: 100%" onclick="myFunction(this);" />
+      </div>
+      <div class="column">
+        <img id="img4" src="../Images/4.png" alt="Lights" style="width: 100%" onclick="myFunction(this);" />
+      </div>
+    </div>
+  </div>
+  <div class="cell">
+    <img class="i1" src="../Images/3.png" />
+    <img class="i1" src="../Images/3.png" />
+    <img class="i1" src="../Images/3.png" />
+  </div>
+  <div class="container2">
+    <img src="../Images/-1.png" alt="Snow" style="width:50%;">
+    <div class="bottom-left">Bottom Left</div>
+    <div class="top-left">Top Left</div>
+    <div class="top-right">Top Right</div>
+    <div class="bottom-right">Bottom Right</div>
+    <div class="centered">Centered</div>
+  </div>
+  <script>
+    function myFunction() {
+      //var img1 = document.getElementById("img1");
+      var img = document.getElementById("img4");
+      var divCont = document.getElementById("divCont");
+      var rect = img.getBoundingClientRect();
+      var par1 = img.parentElement;
+      var rectParent = divCont.getBoundingClientRect();
+      var myTop = rect.top - rectParent.top;
+      var myLeft = rect.left - rectParent.left;
+      g = document.createElement('div');
+      g.setAttribute("id", "Div1");
+      //g.textContent = "+30";
+      g.style = `position:absolute; left:${myLeft}px; top:${myTop}px;`;
+      //g.textContent = "+30";
+      g.innerHTML = '+30';
+      divCont.appendChild(g);
+    }
+    // create div with text and position it..
+  </script>
+</body>
+
+</html>

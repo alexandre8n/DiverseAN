@@ -1,0 +1,94 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial;
+}
+
+h1 {
+  text-align: center;
+}
+
+/* The grid: Four equal columns that floats next to each other */
+.column {
+  float: left;
+  width: 15%;
+  padding: 10px;
+}
+
+/* Style the images inside the grid */
+.column img {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.column img:hover {
+  opacity: 1;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* The expanding image container */
+.container {
+  position: relative;
+  margin: auto;
+  width: 30%;
+  background-color: red;
+  /*display: flex;
+  justify-content: center;*/
+}
+
+/* Expanding image text */
+#imgtext {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  color: white;
+  font-size: 20px;
+}
+
+/* Closable button inside the expanded image */
+.closebtn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  color: white;
+  font-size: 35px;
+  cursor: pointer;
+}
+div {
+  border: solid 1px;
+}
+
+.i1 {
+  border: solid 1px #0000ff;
+  height: 32px;
+  width: 32px;
+}
+
+.cell {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  /*float: left;*/
+  min-height: 22px;
+  border-bottom: 1px solid #000;
+  border-right: 1px solid #000;
+
+  line-height: 22px;
+  font-family: Arial, Verdana;
+  font-size: 12px;
+  color: #000;
+  text-decoration: none;
+  text-align: center;
+
+  margin-bottom: 2px;
+  margin-right: 2px;
+}
