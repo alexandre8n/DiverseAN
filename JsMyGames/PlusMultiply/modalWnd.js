@@ -64,9 +64,31 @@ function openModalHistory(modal, columns, historyArr) {
     columns: cols4Table,
     order: [[0, "desc"]],
   });
+
+  // how to process click on the row
+  //let table = new DataTable('#example');
+  // table.on('click', 'tbody tr', function () {
+  //   let data = table.row(this).data();
+  //alert('You clicked on ' + data[0] + "'s row");
+  //});
+  // how to filter()
+  // https://datatables.net/reference/api/filter()
+  // example: var table = $('#example').DataTable();
+  // var filteredData = table
+  //   .columns([0, 1])
+  //   .data()
+  //   .flatten()
+  //   .filter(function (value, index) {
+  //     return value > 20 ? true : false;
+  //   });
 }
 
 function onClearHistory() {
+  let table = new DataTable("#example", {
+    data: [], // empty array
+    columns: cols4Table,
+    order: [[0, "desc"]],
+  });
   console.log("on clear history");
 }
 

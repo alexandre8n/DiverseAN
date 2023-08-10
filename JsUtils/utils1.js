@@ -113,3 +113,38 @@ function getElapsedTime(time0) {
   const d = new Date();
   return d.getTime() - time0;
 }
+
+// returns: dd/mm/yyyy HH:MM:SS
+function datetimeToString(date) {
+  var month = date.getMonth() + 1;
+  var day = date.getDate();
+  var dateOfString = (("" + day).length < 2 ? "0" : "") + day + "/";
+  dateOfString += (("" + month).length < 2 ? "0" : "") + month + "/";
+  dateOfString += date.getFullYear();
+  dateOfString +=
+    " " + date.getHours() + ":" + date.getMinutes() + ":" + getSeconds();
+  return dateOfString;
+}
+
+function str2Date(str) {
+  if (str == null) return null;
+  var tp = typeof str;
+  try {
+    var dt = new Date(str);
+    return dt;
+  } catch (err) {
+    return null;
+  }
+  return null;
+}
+
+function parseOperationStr(oprStr) {
+  // receives: a (+) b = c, returns obj
+  const regExp1 = /(\d+)\s*([*-+/])\s*(\d+)/g;
+  let res = regExp1.exec(oprStr);
+  if (!res) return null;
+  let n1 = parseInt(res[1]);
+  let n2 = parseInt(res[3]);
+  let opr = res[2];
+  return { n1: n1, n2: n2, opr: opr };
+}
