@@ -55,6 +55,7 @@ class Tutor extends SrvBase {
     let recommendedStr = arrRecomm.join(", ");
     return recommendedStr + "\n" + `(${arrRecomm.length} case(s))`;
   }
+
   lastUpdDt() {
     return super.str2Date(this.settings.lastUpdated);
   }
@@ -204,6 +205,11 @@ class Tutor extends SrvBase {
       // random!
       return this.prepareTheRandomSet();
     }
+    return this.prepareTheLearningSetFromHistory();
+  }
+
+  // prepare the learning set considering last answers and time spent...
+  prepareTheLearningSetFromHistory() {
     let h = this.history();
     return h.getRecsLongerThen(longAnswerInMs, this.historyIdOfNextSession);
   }

@@ -248,10 +248,16 @@ function onClickHelp() {
 }
 
 function onClickHistory() {
+  let historyArr = numServer.history().getHistoryArray(0);
+  showHistory4Array(historyArr);
+}
+
+// second param callBackAfterClose - means this func must be call
+// when modal dlg is closed, null if nothing to call
+function showHistory4Array(historyArr, callBackAfterClose) {
   var modal = document.getElementById("modal");
   let columns = numServer.history().getHistoryArrayColumns();
-  let historyArr = numServer.history().getHistoryArray(0);
-  openModalHistory(modal, columns, historyArr);
+  openModalHistory(modal, columns, historyArr, callBackAfterClose);
 }
 
 function onTutor() {
@@ -316,6 +322,14 @@ function closeTeachingDlg() {
 
 function onDlgCancel() {
   closeTeachingDlg();
+}
+function onDlgMore() {
+  let ar = tutor.prepareTheLearningSetFromHistory();
+  // now open history dlg based on this set...
+  // todo:
+  //now
+  closeTeachingDlg();
+  showHistory4Array(ar, opnDlgFinished);
 }
 function onDlgFollow() {
   const isModeOk = tutor.setMode("l"); // learning your the most difficult cases...

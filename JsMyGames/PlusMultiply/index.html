@@ -122,6 +122,14 @@
             <button data-close-button class="close-button">&times;</button>
         </div>
         <template id="tblTmpl">
+            <select id="filterSelectInvisible" class="dropdownOpr" onchange="onFilterSelect()" name="fltCtlName">
+                <!-- name="countrySelect" -->
+                <option value="0">Select all</option>
+                <option value="1">Quick</option>
+                <option value="2">Only wrong</option>
+                <option value="3">Slow or wrong</option>
+            </select>
+
             <table id="example" class="display" style="width:90%">
         </template>
         <div class="modal-body" id="modalHelpId">
@@ -144,7 +152,7 @@
             <textarea id="dlgTextareaId">
                 what to learn more...
             </textarea>
-            <button style="position: relative;top: -7px;">More...</button>
+            <button style="position: relative;top: -7px;" onclick="onDlgMore()">More...</button>
         </div>
         <div>
             <button class="btnSmall" onclick="onDlgCancel()">Cancel</button>
