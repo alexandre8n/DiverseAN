@@ -1,13 +1,32 @@
-- td: more button in done dialog, show the grid with longest and false with
+- todo: from pause to continue (follow recom. should be Resume progress)
+      in this case on onDlgFollowResume() should inititate the prevous progress.
+
+- todo: style buttons: progress, ...
+- todo: from follow recommandation in pause to continue?
++ todo: add progress button? by clicking it stop current run, show recommendation
+  (Learing Step Is Finished! - > in case if not finished it should be:
+  Learing Step Is Paused!)
+
+- todo: history, check if works for all
+- todo: Quizer, concept and implementation
+    idea: run quiz from 30 questions, give recommendation
+          estimate the skill for each level: 100%, ... 1%
+- todo: multiply 5x*5x=2500+100x+x*x= (25+x)*100+x*x
+51*51 = (25+1)*100+1 = 2601
+59**2 = 3400+81=3481
+53**2 = 2809
+
+
+
+
++ td: more button in done dialog, show the grid with longest and false with
   details, op, res, time, true/false, score
   remark: one could just open history, but extend the history with:
     show wrong & longer than: 5 | sec (5 or 6 or ... should be defined)
     show wrong answers
     show correct answers
++ todo: restore help
     
-  
-
-
 + show progress or learning step.
   + if selfTester just step: nn
   + if tutor: progress: nn/NN
@@ -24,11 +43,14 @@ todo: after finishing tutoring, dialog:
 + do you like to test your skills in a random way?
    ---> postponed: this should be done by quizer? ask the most difficult 20 and get estimate.
 
++todo: tricks for mult *11 -> a*11=aa, ab*11=a{a+b}b,19*11=209
 
--todo: recommended triks to use: tutor: nn*25 nn/4 r:0 00 r:1 25, r:2 50, r:3 75
+-todo: recommended triks to use: tutor: 
+nn*25 nn/4 r:0 00 r:1 25, r:2 50, r:3 75
 96*25= 2400 97*25 = 2425 98*25=2450, 99*25=2475
 
 -todo: recommended tricks
+1x * 1y = (1x+y)*10 + x*y
  1x*1x = (1x +x)*10 + x*x 
  9x*9x = [y=10-x] -> (9x-y)*100 + y*y
  Example: 14*14 = (14+4)*10 +16 = 180+16=196

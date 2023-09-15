@@ -89,8 +89,12 @@
             </div>
             <div class="Column2">Level:
                 <span id="gameLevel">1(,)</span>
-                <button type="button" id="btnUpDn">&#5864</button>
-                <div id="progressId">Progress:</div>
+                <button type="button" id="btnUpDn" title="Level Up/Dn">&#5864</button>
+                <div>
+                    <span id="progressId">Progress:</span>
+                    <button type="button" id="btnShowProgress" title="Show progress"
+                        onclick="opnDlgFinished()">...</button>
+                </div>
             </div>
             <div class="Column3">
                 <div class="score">
@@ -145,7 +149,7 @@
             <button onclick="closeTeachingDlg()" class="close-button">&times;</button>
         </div>
         <div id="ranges">
-            You have just finished exersising with all the numbers in ranges:<br />
+            Exersising with all the numbers in ranges:<br />
             n1: <span id="rng1Id">from - to</span>, n2: <span id="rng2Id">from - to</span>
         </div>
         <div>recommandation: to learn the cases that took you more than 5 sec:<br />
@@ -156,7 +160,7 @@
         </div>
         <div>
             <button class="btnSmall" onclick="onDlgCancel()">Cancel</button>
-            <button class="btnSmall" onclick="onDlgFollow()">Follow recommendation</button>
+            <button class="btnSmall" onclick="onDlgFollowResume()" id="btnFollowResumeId">Follow recommendation</button>
             <button class="btnSmall" onclick="onDlgRandom()">Randomly</button>
             <button class="btnSmall" onclick="onDlgYou()">Test youself</button>
             <button class="btnSmall" onclick="onDlgRanges()">Select other ranges</button>

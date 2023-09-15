@@ -230,16 +230,12 @@ function prepare4Operation(opr, n1, n2) {
 }
 
 function onClickHelp() {
-  //todo: remove after debug:
-  opnDlgFinished();
-  return;
-  // todo: remove above after debug...
-
   const curHrec = numServer.history().getLast();
   var n1 = curHrec.n1;
   var n2 = curHrec.n2;
   var curOpr = numServer.getOpr();
-  var msg = `${n1} ${curOpr} ${n2} = ${curHrec.result}<br/>`;
+  var msg = `${n1} ${curOpr} ${n2} = ${calcCorrectRes(curOpr, n1, n2)}<br/>`;
+
   msg += "why is it so?<br/>";
   msg += tutor.teachHow(n1, n2, curOpr);
   stateOferror = true; // it means for the answer after this no score
@@ -311,8 +307,18 @@ function loadAllStatesSelectServer() {
 function opnDlgFinished() {
   rng1Id.innerText = tutor.getRangeStr(1);
   rng2Id.innerText = tutor.getRangeStr(2);
-  //todo: check what specific in learn mode??? if (tutor.getMode() == "l")
+  if (tutor.isInProgress()) {
+    const progressVal = tutor.indexInProgress() / tutor.learningSetSize();
+    titleId.innerHTML = `Your progress is ${(100 * progressVal).toFixed(
+      1
+    )}%, currently paused`;
+    btnFollowResumeId.innerHTML = "Resume progress";
+  } else {
+    titleId.innerHTML = `Learing Step Is Finished!`;
+  }
+
   dlgTextareaId.textContent = tutor.getRecommendedToRepeatStr();
+  dlgFinishedTeachingId.numServer = "abc-tutor";
   dlgFinishedTeachingId.showModal();
 }
 
@@ -322,6 +328,9 @@ function closeTeachingDlg() {
 
 function onDlgCancel() {
   closeTeachingDlg();
+  //now : what next?
+  // resume progress, if it was paused
+  // otherwise 2 options: to tutor or self-learning on some reasonable level
 }
 function onDlgMore() {
   let ar = tutor.prepareTheLearningSetFromHistory();
@@ -331,13 +340,21 @@ function onDlgMore() {
   closeTeachingDlg();
   showHistory4Array(ar, opnDlgFinished);
 }
-function onDlgFollow() {
-  const isModeOk = tutor.setMode("l"); // learning your the most difficult cases...
+function onDlgFollowResume() {
   dlgFinishedTeachingId.close();
+  if (tutor.isInProgress()) {
+    return;
+  }
+  const isModeOk = tutor.setMode("l"); // learning your the most difficult cases...
   if (!isModeOk) {
     onDlgRanges();
   }
   prepareQuestion();
+  //now : possible cases:
+  // user finished and follows rec.
+  // user paused and got recommendation: he prob. should proceed with recommended
+  //          and after this resume his main learning s/r?
+  // user paused after following rec. and got new rec. w/o finishing prev.???
 }
 function onDlgYou() {
   onSelfTest();

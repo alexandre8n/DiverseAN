@@ -48,6 +48,10 @@ class SrvBase {
     return; // used only in childs...
   }
 
+  learningSetSize() {
+    return 0;
+  }
+
   str2Date(strDate) {
     const res = str2Date(strDate);
     if (res != null) return res;
@@ -154,6 +158,7 @@ class SrvBase {
   startProgress(progressMax) {
     this.progressStep = 1;
     if (progressMax) this.progressAllSteps = progressMax;
+    else this.progressAllSteps = this.learningSetSize();
   }
   progressInc() {
     this.progressStep++;

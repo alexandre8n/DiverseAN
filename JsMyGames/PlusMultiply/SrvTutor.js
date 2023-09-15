@@ -14,8 +14,8 @@ class Tutor extends SrvBase {
     version: 4,
   };
   // randomSet = []; // array of {n1:n1, n2:n2, opr: opr}
-  longestOps = []; // array of the longest of falsely answered questions
-  indexInLongestOps = 0; // index of the next question
+  lerningSet = []; // array of the longest of falsely answered questions
+  indexInlerningSet = 0; // index of the next question
   historyIdOfNextSession = 0; // for every learning session we should now the lrn results
 
   constructor() {
@@ -87,6 +87,42 @@ class Tutor extends SrvBase {
     this.settings.n2 = n2;
   }
 
+  learningSetSize() {
+    const mode = this.settings.mode;
+
+    if (mode == "s") {
+      const r1Len = this.settings.range1[1] - this.settings.range1[0] + 1;
+      const r2Len = this.settings.range2[1] - this.settings.range2[0] + 1;
+      return r1Len * r2Len;
+    }
+    if (this.lerningSet) return this.lerningSet.length;
+    return 0;
+  }
+
+  indexInProgress() {
+    const mode = this.settings.mode;
+    if (mode == "s") {
+      const r1go = this.n1() - this.settings.range1[0];
+      const r2Len = this.settings.range2[1] - this.settings.range2[0] + 1;
+      const r2go = this.n2() - this.settings.range2[0];
+      return r1go * r2Len + r2go + 1;
+    }
+    return this.indexInlerningSet + 1;
+  }
+
+  isInProgress() {
+    //now
+    // possible states: s, r
+    // check if it was mode s and user has followed recommendation
+    const idx = this.indexInProgress();
+    const size = this.learningSetSize();
+    return idx < size;
+  }
+
+  isActive() {
+    return this.settings.lastUpdated != null;
+  }
+
   setMode(mode) {
     if (!totorMode[mode]) {
       return false;
@@ -98,17 +134,13 @@ class Tutor extends SrvBase {
     }
     // learning mode or random mode: -----------
     // array of the longest of falsely answered questions
-    this.longestOps = this.prepareTheLearningSet();
-    this.startProgress(this.longestOps.length);
-    this.indexInLongestOps = 0; // index of the next question
-    if (this.longestOps == null) return false;
+    this.lerningSet = this.prepareTheLearningSet();
+    this.startProgress(this.lerningSet.length);
+    this.indexInlerningSet = 0; // index of the next question
+    if (this.lerningSet == null) return false;
     // fix history id, your learning history start point.
     this.historyIdOfNextSession = this.history().getNextHistoryRecId();
     return true;
-  }
-
-  isActive() {
-    return this.settings.lastUpdated != null;
   }
 
   initiateTutoring2(settingStr) {
@@ -132,7 +164,7 @@ class Tutor extends SrvBase {
       return this.next2NumbersOut(n1, n2);
     }
     n1 = this.settings.n1;
-    n2 = this.settings.n2 + 1;
+    n2 = this.settings.n2 + 1; //now maybe n2?
 
     if (n2 <= this.settings.range2[1]) {
       return this.next2NumbersOut(n1, n2, null);
@@ -146,16 +178,16 @@ class Tutor extends SrvBase {
   }
 
   next2NumbersLernMode() {
-    if (this.longestOps == null || this.longestOps.length == 0)
-      this.longestOps = this.prepareTheLearningSet();
+    if (this.lerningSet == null || this.lerningSet.length == 0)
+      this.lerningSet = this.prepareTheLearningSet();
     if (
-      this.longestOps == null ||
-      this.indexInLongestOps >= this.longestOps.length
+      this.lerningSet == null ||
+      this.indexInlerningSet >= this.lerningSet.length
     ) {
       return null; //{n1: 0, n2: 0, opr: null};
     }
-    const histRec = this.longestOps[this.indexInLongestOps];
-    this.indexInLongestOps++;
+    const histRec = this.lerningSet[this.indexInlerningSet];
+    this.indexInlerningSet++;
     var oprRes = parseOperationStr(histRec[1]);
     return this.next2NumbersOut(oprRes.n1, oprRes.n2, oprRes.opr);
   }
@@ -250,7 +282,9 @@ class Tutor extends SrvBase {
     if (kDig2 == 1) {
       let lastDigit1 = digitsArr1[digitsArr1.length - 1];
       if (lastDigit1 + n2 <= 10) {
-        msg = `You should just remember that<br/>${n1} + ${n2} = ${n1 + n2}`;
+        const msg = `You should just remember that<br/>${n1} + ${n2} = ${
+          n1 + n2
+        }`;
         return msg;
       }
       let fromLastDigN1to10 = 10 - lastDigit1;
@@ -298,6 +332,10 @@ class Tutor extends SrvBase {
 
   teachMult(n_1, n_2) {
     let msg = "";
+    if (n_1 == 11 || n_2 == 11) {
+      msg = this.teachMult11(n_1, n_2);
+      return msg;
+    }
     var n1 = n_1,
       n2 = n_2;
     let msg1opr2 = `${n1} * ${n2} = `;
@@ -358,9 +396,31 @@ class Tutor extends SrvBase {
       msg += `${resD1n2} + ${digitsArr1[1] * n2} = ${res}`;
       return msg;
     }
-
     return msg;
   }
+
+  teachMult11(n1, n2) {
+    if (n1 == 11) {
+      n1 = n2;
+      n2 = 11;
+    }
+    let msg = "";
+
+    if (n1 < 10) {
+      // one digit
+      msg = `Multiplication on 11 for one digit number -> just duplicate the digit:<br/>`;
+      msg += "example: 2*11 = 22,..., 9*11 = 99";
+      return msg;
+    }
+    var digitsArr1 = digits(n1);
+    msg = "If you multiply the 2 digit number (ab) by 11 <br/>";
+    msg += "just know that the result is: a{a+b}b,<br/>";
+    msg +=
+      "examples: 11*11 = 1{1+1}1 = 121, 12*11= 1{1+2}2 = 132, ..., 17*11 = 187, 19*11=1{10}9=209<br/>";
+    msg += `it means ${n1} * 11 = ${n1 * 11}`;
+    return msg;
+  }
+
   /// area of tests
   testRnd() {
     this.settings.range1 = [2, 3];
