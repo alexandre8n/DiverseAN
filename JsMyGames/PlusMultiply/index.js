@@ -28,7 +28,7 @@ inputEl.addEventListener("keypress", function (event) {
   if (event.key === "Enter") {
     // Cancel the default action, if needed
     event.preventDefault();
-    onClick();
+    onSubmit();
     // Trigger the button element with a click
     //document.getElementById("submitId").click();
   }
@@ -75,6 +75,7 @@ function setSelfTestMode(isOn) {
     setTutorMode(false);
     setQuizMode(false);
     showActiveMode(btnSelfTest);
+    numServer = selfTester;
     changeGameLevel(0);
     doChangeOpr(oprTexts[selfTester.getOpr()]);
   }
@@ -111,7 +112,7 @@ function showActiveMode(btn) {
   btn.innerHTML = `&#${lampCharCode} ${btn.innerHTML}`;
 }
 
-function onClick() {
+function onSubmit() {
   const userAns = +inputEl.value;
   stateOferror = numServer.getErrorState();
   const isOk = numServer.setUserAnswer(userAns);
@@ -157,9 +158,14 @@ function showErrorMsg(show) {
 }
 
 function onLevelUpDown(event) {
+  if (numServer.constructor.name == "Tutor") {
+    return;
+  }
   var h = btnUpDn.clientHeight;
+  const lvlStrOld = numServer.getLevelStr();
   if (event.offsetY < h / 2) changeGameLevel(+1);
   else changeGameLevel(-1);
+  if (numServer.getLevelStr() == lvlStrOld) return;
   prepareQuestion();
 }
 
@@ -261,11 +267,18 @@ function onTutor() {
 }
 function onSelfTest() {
   numServer = selfTester;
+  numServer.startProgress(null);
   setSelfTestMode(true);
   prepareQuestion();
 }
 function onQuiz() {
   location.href = "Quiz.html";
+}
+function onTutorOpr() {
+  // on click btn operation
+}
+function onTutorSeqRnd() {
+  // on click btn SeqRnd
 }
 
 // this function returns the number from "from" to "to";
@@ -315,6 +328,7 @@ function opnDlgFinished() {
     btnFollowResumeId.innerHTML = "Resume progress";
   } else {
     titleId.innerHTML = `Learing Step Is Finished!`;
+    btnFollowResumeId.innerHTML = "Follow recommendation";
   }
 
   dlgTextareaId.textContent = tutor.getRecommendedToRepeatStr();
@@ -328,35 +342,31 @@ function closeTeachingDlg() {
 
 function onDlgCancel() {
   closeTeachingDlg();
-  //now : what next?
-  // resume progress, if it was paused
-  // otherwise 2 options: to tutor or self-learning on some reasonable level
+  // if the learning set has been finished, then switch to self test
+  onSelfTest();
 }
 function onDlgMore() {
   let ar = tutor.prepareTheLearningSetFromHistory();
   // now open history dlg based on this set...
-  // todo:
-  //now
   closeTeachingDlg();
   showHistory4Array(ar, opnDlgFinished);
 }
 function onDlgFollowResume() {
   dlgFinishedTeachingId.close();
   if (tutor.isInProgress()) {
+    // we have to resume the pause
     return;
   }
   const isModeOk = tutor.setMode("l"); // learning your the most difficult cases...
   if (!isModeOk) {
     onDlgRanges();
+    return;
   }
   prepareQuestion();
-  //now : possible cases:
-  // user finished and follows rec.
-  // user paused and got recommendation: he prob. should proceed with recommended
-  //          and after this resume his main learning s/r?
-  // user paused after following rec. and got new rec. w/o finishing prev.???
 }
+
 function onDlgYou() {
+  closeTeachingDlg();
   onSelfTest();
 }
 function onDlgRanges() {

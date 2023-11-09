@@ -48,8 +48,11 @@ class Tutor extends SrvBase {
   getRecommendedToRepeatStr() {
     let h = this.history();
     const ar = h.getRecsLongerThen(longAnswerInMs, this.historyIdOfNextSession);
-    if (ar == null) {
+    const isIn = this.isInProgress();
+    if (ar == null && !isIn) {
       return "It seems you have learned this range! Select new one, or random set";
+    } else if (ar == null) {
+      return "It seems you have well answered proposed questions! Resume your progress to finish this learning set";
     }
     let arrRecomm = ar.map((arEl) => arEl[1]);
     let recommendedStr = arrRecomm.join(", ");
@@ -111,9 +114,6 @@ class Tutor extends SrvBase {
   }
 
   isInProgress() {
-    //now
-    // possible states: s, r
-    // check if it was mode s and user has followed recommendation
     const idx = this.indexInProgress();
     const size = this.learningSetSize();
     return idx < size;
@@ -135,6 +135,7 @@ class Tutor extends SrvBase {
     // learning mode or random mode: -----------
     // array of the longest of falsely answered questions
     this.lerningSet = this.prepareTheLearningSet();
+    if (!this.lerningSet) return false;
     this.startProgress(this.lerningSet.length);
     this.indexInlerningSet = 0; // index of the next question
     if (this.lerningSet == null) return false;
@@ -268,65 +269,68 @@ class Tutor extends SrvBase {
   }
 
   teachPlus(n_1, n_2) {
-    var n1 = n_1,
-      n2 = n_2;
-    let msg1opr2 = `${n1} + ${n2} = `;
-    if (n1 < n2) {
-      n1 = n_2;
-      n2 = n_1;
-      msg1opr2 += `${n1} + ${n2} = `;
+    var n2 = Math.min(n_1, n_2);
+    var n1 = Math.max(n_1, n_2);
+    var msg1opr2 = `${n1} + ${n2} = `;
+    var [d11, d12] = digits(n1);
+    var [d21, d22] = digits(n2);
+    // both 1 digit?
+    if (typeof d12 === "undefined" && typeof d22 === "undefined") {
+      return this.teach1dPlus1d(d11, d21);
     }
-    var digitsArr1 = digits(n1);
-    var digitsArr2 = digits(n2);
-    let kDig2 = digitsArr2.length;
-    if (kDig2 == 1) {
-      let lastDigit1 = digitsArr1[digitsArr1.length - 1];
-      if (lastDigit1 + n2 <= 10) {
-        const msg = `You should just remember that<br/>${n1} + ${n2} = ${
-          n1 + n2
-        }`;
-        return msg;
-      }
-      let fromLastDigN1to10 = 10 - lastDigit1;
-      msg1opr2 += `${n1} + ${fromLastDigN1to10} + ${n2 - fromLastDigN1to10} = ${
+    // 2-dig plus one-dig
+    if (typeof d22 === "undefined") {
+      return this.teach2dPlus1d(d11, d12, d21);
+    }
+    return this.teach2dPlus2d(d11, d12, d21, d22);
+  }
+
+  teach1dPlus1d(n1, n2) {
+    if (n1 + n2 <= 10) {
+      const msg = `You should just remember that<br/>${n1} + ${n2} = ${
         n1 + n2
       }`;
-    } else {
-      // like 37 + 86
-      if (digitsArr1[0] + digitsArr2[0] < 10) {
-        // a) like 72+27 -> (70+20=90) + (2+7=9)=99
-        if (digitsArr1[1] + digitsArr2[1] < 10) {
-          var d10 = digitsArr1[0] * 10 + digitsArr2[0] * 10;
-          var d0 = digitsArr1[1] + digitsArr2[1];
-          msg1opr2 += `(${digitsArr1[0] * 10}+${
-            digitsArr2[0] * 10
-          } = ${d10})<br/>`;
-          msg1opr2 += ` + ${digitsArr1[1]}+${digitsArr2[1] * 10} = ${
-            digitsArr1[1] + digitsArr2[1]
-          }<br/>`;
-          msg1opr2 += `Result: ${d10 + d0}`;
-        } else {
-          // b) like 77+27 -> (77+3=80) + (27-3=24)=80+24=104
-          let fromLastDigN1to10 = 10 - digitsArr1[1];
-          msg1opr2 += `(${n1}+${fromLastDigN1to10}=${
-            n1 + fromLastDigN1to10
-          }) + `;
-          msg1opr2 += `(${n2}-${fromLastDigN1to10}=${
-            n2 + fromLastDigN1to10
-          }) = `;
-          msg1opr2 += `${n1 + n2}`;
-        }
-      } else {
-        // c) 72 + 47-> (70+40=110)+(2+7=9)=119
-        msg1opr2 += `(${digitsArr1[0] * 10}+${digitsArr2[0] * 10} =${
-          digitsArr1[0] * 10 + digitsArr2[0] * 10
-        }) + `;
-        msg1opr2 += `(${digitsArr1[1]}+${digitsArr2[1]}=`;
-        msg1opr2 += `${digitsArr1[1] + digitsArr2[1]}) = `;
-        msg1opr2 += `${n1 + n2}`;
-        // d) 74 + 47 -> (70+40=110) + (4+6+1=11)=110+11=121
-      }
+      return msg;
     }
+    let msg1opr2 = `${n1} + ${n2} = `;
+    let fromLastDigN1to10 = 10 - n1;
+    msg1opr2 += `${n1} + ${fromLastDigN1to10} + ${n2 - fromLastDigN1to10} = ${
+      n1 + n2
+    }`;
+    return msg1opr2;
+  }
+
+  teach2dPlus1d(d11, d12, d21) {
+    // like: 34+ 5, or 34+8
+    const n1 = d11 * 10 + d12;
+    let msg1opr2 = `${n1} + ${d21} = `;
+    if (d12 + d21 < 10) {
+      msg1opr2 += `${d11 * 10} + ${d12} + ${d21} = ${n1 + d21}`;
+    } else {
+      msg1opr2 += `${d11 * 10} + (${d12} + ${d21})(=${d12 + d21}) = `;
+      msg1opr2 += `${d11 * 10 + 10} + ${d12 + d21 - 10} = ${n1 + d21}`;
+    }
+    return msg1opr2;
+  }
+  teach2dPlus2d(d11, d12, d21, d22) {
+    const n1 = d11 * 10 + d12;
+    const n2 = d21 * 10 + d22;
+    let msg1opr2 = `${n1} + ${n2} = `;
+    // a) like 72+27 -> (70+20=90) + (2+7=9)=99
+    if (d12 + d22 < 10) {
+      var d10 = d11 * 10 + d21 * 10;
+      var d0 = d12 + d22;
+      msg1opr2 += `(${d11 * 10}+${d21 * 10} = ${d10}) `;
+      msg1opr2 += ` + (${d12}+${d22} = ${d0})<br/>`;
+      msg1opr2 += `Result: ${n1 + n2}`;
+      return msg1opr2;
+    }
+    // b) like 77+27 -> (77+3=80) + (27-3=24)=80+24=104
+    const additionTo10 = 10 - d12;
+    msg1opr2 += `(${n1}+${additionTo10} =${n1 + additionTo10}) `;
+    msg1opr2 += `+ (${n2}-${additionTo10} =${n2 - additionTo10}) `;
+    msg1opr2 += `= ${n1 + additionTo10} + ${n2 - additionTo10}<br/>`;
+    msg1opr2 += `Result: ${n1 + n2}`;
     return msg1opr2;
   }
 
@@ -345,8 +349,16 @@ class Tutor extends SrvBase {
       n2 = n_1;
       msg1opr2 += `${n1} * ${n2} = `;
     }
+    if (n1 % 11 == 0 || n2 % 11 == 0) {
+      msg = this.teachMultAbNN(n1, n2);
+      return msg;
+    }
     var digitsArr1 = digits(n1);
     var digitsArr2 = digits(n2);
+    const d1a = digitsArr1[0];
+    const d1b = digitsArr2[0];
+    const d2a = digitsArr1[1];
+    const d2b = digitsArr2[1];
     if (digitsArr1.length == 1) {
       msg =
         "You have first to learn the multiplication table<br/>" +
@@ -395,8 +407,17 @@ class Tutor extends SrvBase {
         `${digitsArr1[0] * 10} * ${n2} + ${digitsArr1[1]} * ${n2} = <br/>`;
       msg += `${resD1n2} + ${digitsArr1[1] * n2} = ${res}`;
       return msg;
+    } else if (digitsArr2.length == 2) {
+      // 27*49 = 20*40 + 7*40 * 20*9 + 7*9 = 800+280+180+63 = 1323
+      // 27*46 = 20*40(=800) + 7*40(=280) * 20*6(=120) + 7*6(42) = 1242
+      msg = `${d1a}0*${d1b}0(=${d1a * d1b * 100}) + `;
+      msg += `${d1a}0*${d2b}(=${d1a * d2b * 10}) + `;
+      msg += `${d1b}0*${d2a}(=${d1b * d2a * 10}) + `;
+      msg += `${d2a}*${d2b}(${d2a * d2b})<br/>`;
+      msg += `Result: ${n1 * n2}`;
+
+      return msg;
     }
-    return msg;
   }
 
   teachMult11(n1, n2) {
@@ -418,6 +439,24 @@ class Tutor extends SrvBase {
     msg +=
       "examples: 11*11 = 1{1+1}1 = 121, 12*11= 1{1+2}2 = 132, ..., 17*11 = 187, 19*11=1{10}9=209<br/>";
     msg += `it means ${n1} * 11 = ${n1 * 11}`;
+    return msg;
+  }
+
+  teachMultAbNN(n1, n2) {
+    // n1 or n2 looks like NN
+    // 34*77 = 34*7*10 + 34*7 = 2380 + 238 = 2618
+    let msg = "";
+    if (n1 % 11 == 0) msg = this.teachMultAbNNHelper(n1, n2);
+    else msg = this.teachMultAbNNHelper(n2, n1);
+    return msg;
+  }
+
+  teachMultAbNNHelper(n1, n2) {
+    // n1%11==0
+    const d = n1 / 11;
+    const msg = `${n2}*${d}*10 + ${n2}*${d} = ${n2 * d * 10} + ${n2 * d} = ${
+      n1 * n2
+    }`;
     return msg;
   }
 

@@ -9,8 +9,8 @@
       "request": "launch",
       "name": "Launch Chrome against localhost",
       // "file": "${workspaceFolder}/multiTable.html"
-      "file": "${workspaceFolder}/tutor.html"
-      // "file": "${workspaceFolder}/index.html"
+      // "file": "${workspaceFolder}/tutor.html"
+      "file": "${workspaceFolder}/index.html"
     }
   ]
 }

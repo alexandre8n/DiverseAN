@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .wrap1 {
+            display: grid;
+            grid-template-columns: auto auto;
+            grid-gap: 5px;
+        }
+
+        .dropbtn {
+            background-color: #04AA6D;
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+        }
+
+        /* this one possibly not needed? */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            /* min-width: 160px; */
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: yellow;
+            background-color: black;
+            border: 1px solid gray;
+            border-radius: 5px;
+            padding: 5px 10px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: blue;
+        }
+
+        /* .dropdown:hover .dropdown-content { */
+        .wrap1:hover .dropdown-content {
+            display: block;
+        }
+
+        .wrap1:hover .dropbtn {
+            background-color: #3e8e41;
+        }
+    </style>
+</head>
+
+<body style="background-color:white;">
+
+    <h2>Hoverable Dropdown</h2>
+    <p>Move the mouse over the button to open the dropdown menu.</p>
+
+    <div class="dropdown">
+        <div class="wrap1">
+            some text before button
+            <div>
+                <button class="dropbtn">Dropdown</button>
+                <div class="dropdown-content">
+                    <a href="#" onclick="onLink1('1')">Sequential</a>
+                    <a href="#">Random</a>
+                    <a href="#">Link 3</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function onLink1(x) {
+            console.log("link no=" + x);
+        }
+    </script>
+</body>
+
+</html>

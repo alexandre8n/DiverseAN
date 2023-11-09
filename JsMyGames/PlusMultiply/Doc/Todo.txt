@@ -1,11 +1,6 @@
-- todo: from pause to continue (follow recom. should be Resume progress)
-      in this case on onDlgFollowResume() should inititate the prevous progress.
+- todo: on click btn change tutor operation
+- todo: on click btn change tutor seq/rnd
 
-- todo: style buttons: progress, ...
-- todo: from follow recommandation in pause to continue?
-+ todo: add progress button? by clicking it stop current run, show recommendation
-  (Learing Step Is Finished! - > in case if not finished it should be:
-  Learing Step Is Paused!)
 
 - todo: history, check if works for all
 - todo: Quizer, concept and implementation
@@ -16,7 +11,53 @@
 59**2 = 3400+81=3481
 53**2 = 2809
 
++ : bug: help is shown as history, error by adding
+  16+11 = 10+10 + 6 + 10 = 27???
+  maybe it is worth to use special language?
+  d1d2 [op] b1b2
+  d1:condition cnd1
+  examples: cnd1: d1==1 
+  d2+b2<9 & d1+b1<9 -> result: [b1+d1][b2+d2]  23 + 45 = [2+4][3+5] = 68
+  d2+b2<9 & d1+b1>9 -> result: [b1+d1+1][b2+d2-10]  23 + 48 = [2+4+1][11-10] = 71
+  23+45: 2 plus 4 is 6, 3 plus 5 is 8 so result: 68
+  23+48: 3+7 is 11=(10+1), so result: [2+4+1][1]=71
 
+  27*23 => 2*(2+1)=6, 7*3=21 => 621
+  76*74 => 7*8 56, 6*4=24 -> 5624
+
+  57*57 => 25+7=32, 7*7=49 -> 3249 
+  37*42 = 37*40 + 74 = 1480+74=1554
+  94*67 = 94*60 + 94*7 = (4700+940) + 94*7 = 5640+ 658 =6298
+  95*63 = 6300 - 5*63= 6300-315=5985
+  97*63 = 6300 - 3*63= 6300-189=6111
+  63*78 = (60+3)(70+8)=4200 + 210 + 480 + 24 = 4890 + 24 = 4914
+
+ 
+  d2:condition
+  if d1
+
++ todo: ab*nn -> ab*n*10 + ab*n = 
+  56*77 = 56*70 + 56*7 = 3920 + 392 = 4312
+
+- todo: progress button for selfTester
+  ? maybe this button should be hidden?
+  ? maybe special dialog should show
+    ? % of perfect answers (<5sec, correct)
+      some statistics for the last 100 answers(history)
+        average of correct,
+        average time for correct
+      the same for every range
+      recommendation what to learn with Tutor first
+
+  
++: from pause to continue (follow recom. should be Resume progress)
+      in this case on onDlgFollowResume() should inititate the prevous progress.
+
++: style buttons: progress, ...
++: from follow recommandation in pause to continue?
++ todo: add progress button? by clicking it stop current run, show recommendation
+  (Learing Step Is Finished! - > in case if not finished it should be:
+  Learing Step Is Paused!)
 
 
 + td: more button in done dialog, show the grid with longest and false with

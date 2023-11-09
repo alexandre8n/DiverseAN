@@ -19,13 +19,6 @@
             justify-content: center;
         }
 
-        /* .Flex-item {
-            width: 200px;
-        margin: 10px;
-        border: 3px solid #333;
-        background-color: #dfdfdf;
-        } */
-
         .Column1 {
             min-height: 90px;
             background-color: #dfdfdf;
@@ -50,6 +43,44 @@
 
         .itemsInBox {
             text-align: left;
+        }
+
+        /* .dropdown {position: relative;display: inline-block;} */
+
+        .wrap1 {
+            display: grid;
+            grid-template-columns: auto auto;
+            grid-gap: 5px;
+        }
+
+        .dropdown-content a:hover {
+            background-color: blue;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            /* background-color: #f1f1f1; */
+            box-shadow: 0px 8px 16px 0px rgba(green, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: yellow;
+            background-color: black;
+            border: 1px solid gray;
+            border-radius: 5px;
+            padding: 0px 6px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: blue;
+        }
+
+        .wrap1:hover .dropdown-content {
+            display: block;
         }
     </style>
 </head>
@@ -77,10 +108,34 @@
                     </div>
                 </div>
                 <div data-tutor class="itemsInBox">
-                    Tutor mode: <button id="btnTutorModeSeqRnd" title="Sequential">s</button>
+                    <div class="wrap1">
+                        Tutor mode:
+                        <div>
+                            <button id="btnTutorModeSeqRnd" onclick="onTutorSeqRnd()" class="btnSmall dropbtn">
+                                s
+                            </button>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="onLink1('1')">Sequential</a>
+                                <a href="#">Random</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div data-tutor class="itemsInBox">
-                    Operation: <button id="btnTutorOpr" title="Multiplication">*</button>
+                    <div class="wrap1">
+                        Operation:
+                        <div>
+                            <button id="btnTutorOpr" onclick="onTutorOpr()" class="btnSmall dropbtn">
+                                *
+                            </button>
+                            <div class="dropdown-content">
+                                <a href="#" onclick="onLink1('1')">Addition (+)</a>
+                                <a href="#" onclick="onLink1('1')">Multiplication (*)</a>
+                                <a href="#" onclick="onLink1('1')">Subtraction (-)</a>
+                                <a href="#" onclick="onLink1('1')">Division (/)</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div data-tutor class="itemsInBox" id="divRangeId">
                     Range: (11..19)-(11..19)
@@ -89,10 +144,10 @@
             </div>
             <div class="Column2">Level:
                 <span id="gameLevel">1(,)</span>
-                <button type="button" id="btnUpDn" title="Level Up/Dn">&#5864</button>
+                <button type="button" id="btnUpDn" class="btnSmall" title="Level Up/Dn">&#5864</button>
                 <div>
                     <span id="progressId">Progress:</span>
-                    <button type="button" id="btnShowProgress" title="Show progress"
+                    <button type="button" id="btnShowProgress" class="btnSmall" title="Show progress"
                         onclick="opnDlgFinished()">...</button>
                 </div>
             </div>
@@ -109,7 +164,7 @@
             </button>
         </div>
         <input type="text" class="input" id="input" placeholder="Enter your answer" autofocus autocomplete="off" />
-        <button type="button" id="submitId" class="btn" onclick="onClick()">Submit</button>
+        <button type="button" id="submitId" class="btn" onclick="onSubmit()">Submit</button>
     </form>
     <p id="ErrorMsg">No, <span id="errorDetails">5 * 5 is not 27!</span></p>
 
