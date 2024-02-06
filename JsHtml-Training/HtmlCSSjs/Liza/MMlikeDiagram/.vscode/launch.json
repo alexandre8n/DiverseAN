@@ -8,12 +8,8 @@
       "type": "chrome",
       "request": "launch",
       "name": "Launch Chrome against localhost",
-      "console": "internalConsole",
-      // "file": "${workspaceFolder}/multiTable.html"
-      "file": "${workspaceFolder}/quizer.html"
-      //"file": "${workspaceFolder}/index.html"
-      ///z-DivTests/TestRadioPlusTemplate.html"
-      // index.html"
+      // "url": "http://localhost:8080",
+      "file": "${workspaceFolder}/index.html"
     }
   ]
 }

@@ -1,0 +1,8 @@
+Write a html with js, giving the following functionality:
+
+User should be able to enter a number1 and number2 and click a button.
+The sum of these 2 entered number should be presented to user.
+
+Helping info:
+You can take the following Html file as a basis:
+see file: Task001.html

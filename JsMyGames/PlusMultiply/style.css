@@ -106,16 +106,16 @@ h1 {
 }
 
 /***** dropdown ****************/
-.dropdown {
+/* .dropdown {
   position: relative;
   top: -1px;
   left: 0;
   margin-top: 0px;
   width: 160px;
   height: 15px;
-}
+} */
 
-.dropdown::before {
+/* .dropdown::before {
   content: "";
   position: absolute;
   top: 8px;
@@ -129,14 +129,14 @@ h1 {
   transform: rotate(-45deg);
   transition: 0.5s;
   pointer-events: none;
-}
+} */
 
-.dropdown.active::before {
+/* .dropdown.active::before {
   top: 12px;
   transform: rotate(-225deg);
-}
+} */
 
-.dropdown input {
+/* .dropdown input {
   position: absolute;
   top: 0;
   left: 0;
@@ -150,9 +150,9 @@ h1 {
   box-shadow: 0 5px 2px rgba(0, 0, 0, 0.05);
   padding: 12px 2px;
   border-radius: 10px;
-}
+} */
 
-.dropdown .options {
+/* .dropdown .options {
   position: absolute;
   top: 37px;
   width: 100%;
@@ -161,9 +161,9 @@ h1 {
   border-radius: 10px;
   overflow: hidden;
   display: none;
-}
+}::before */
 
-.dropdown.active .options {
+/* .dropdown.active .options {
   display: block;
 }
 
@@ -175,7 +175,7 @@ h1 {
 .dropdown .options div:hover {
   background: #62baea;
   color: #fff;
-}
+} */
 
 .shakeByError {
   animation: shake 0.8s;

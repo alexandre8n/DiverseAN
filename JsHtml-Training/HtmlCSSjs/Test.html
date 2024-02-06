@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Utils Test</title>
+  </head>
+  <style></style>
+  <body>
+    <div class="form">
+      <label>Your input line1:</label>
+      <input type="text" id="input1" name="input1" />
+    </div>
+    <div class="clearfix">
+      <div class="inputDiv">
+        <label>Your Input line2:</label>
+        <input
+          type="text"
+          id="input2"
+          placeholder="Enter your your input here..."
+        />
+        <button onclick="onProceed()">Proceed</button>
+        <button onclick="onProceed2()">Proceed2</button>
+      </div>
+    </div>
+    <div>
+      <p id="result">Result will be here...</p>
+    </div>
+
+    <script src="utils1.js"></script>
+    <script>
+      var contactLiza = {
+        name: "Liza",
+        age: 22,
+      };
+      var contactMasha = {
+        name: "Masha",
+        age: 12,
+      };
+      var n = 7;
+      change(n);
+      change(contactLiza.age);
+      changeContact(contactLiza);
+      changeContact(contactMasha);
+
+      function change(iVal) {
+        console.log("ival=", iVal);
+        iVal = 999;
+        console.log("ivalNew=", iVal);
+        return;
+      }
+
+      function changeContact(cnt) {
+        cnt.name = "Elizabeth";
+        cnt.age += 1;
+      }
+
+      function outputPerson(contact) {}
+
+      function outputGreeting(name, age) {}
+
+      function onProceed2() {
+        var input = document.getElementById("input2");
+        var pRes = document.getElementById("result");
+        var strInput = input.value;
+        var inputVal = parseInt(strInput);
+        var devided = 0;
+        var strRes = "";
+        for (let i = 2; i <= inputVal; ) {
+          if (inputVal % i == 0) {
+            if (strRes != "") strRes += "*";
+            strRes += i.toString();
+            inputVal = inputVal / i;
+            continue;
+          }
+          i++;
+        }
+        pRes.innerHTML = strRes;
+      }
+      var nPrimes = 10;
+      function onProceed() {
+        var input1 = document.getElementById("input1");
+        var pRes = document.getElementById("result");
+        var strInput = input1.value;
+        var inputVal = parseInt(strInput);
+        var nPrimesFound = 0;
+        for (let i = inputVal; nPrimesFound < nPrimes; i++) {
+          const isValPrime = isPrime(i);
+          if (isValPrime) {
+            pRes.innerHTML += ", " + i;
+            nPrimesFound++;
+          }
+        }
+      }
+
+      // var nMax = 200;
+      // var primeNo = 0;
+      // var txtOut = "";
+      // var arrOfprimes = [];
+
+      // let i = 1;
+      // while (i < nMax) {
+      //   if (isPrime(i)) {
+      //     arrOfprimes.push(i);
+      //   }
+      //   i++;
+      // }
+
+      // for (let i = 1; i < nMax; i++) {
+      //   if (isPrime(i)) {
+      //     arrOfprimes.push(i);
+      //   }
+      // }
+
+      // for (let i = 0; i < arrOfprimes.length; i++) {
+      //   txtOut += `prime#${i + 1} = ${arrOfprimes[i]}`;
+      //   if (i < arrOfprimes.length - 1) txtOut += ", ";
+      //   if (i % 8 == 7) {
+      //     txtOut += "<BR />";
+      //   }
+      // }
+      //document.getElementById("result").innerHTML = txtOut;
+    </script>
+  </body>
+</html>

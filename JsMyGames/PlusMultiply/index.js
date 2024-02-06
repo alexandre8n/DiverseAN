@@ -34,10 +34,11 @@ inputEl.addEventListener("keypress", function (event) {
   }
 });
 
-let dropdown = document.querySelector(".dropdown");
-dropdown.onclick = function () {
-  dropdown.classList.toggle("active");
-};
+// // for special dropdown
+// let dropdown = document.querySelector(".dropdown");
+// dropdown.onclick = function () {
+//   dropdown.classList.toggle("active");
+// };
 
 const selfTester = new SelfTester();
 const tutor = new Tutor();
@@ -46,9 +47,16 @@ const quizer = new Quizer();
 // depending on the latest mode - assign server...
 var numServer = loadAllStatesSelectServer();
 numServer.startProgress(null);
+showGameLevel();
 prepareQuestion();
 
 //----------------------------------------
+function onOprSelect() {
+  const curOpr = oprSelect.value;
+  selfTester.setOpr(curOpr);
+  prepareQuestion();
+}
+
 // todo: if display = ''?
 function hideShowElm(x, isToShow) {
   if (x.style.display === "none" && isToShow) {
@@ -63,6 +71,7 @@ function setQuizMode(isOn) {
     showActiveMode(btnQuiz);
     setSelfTestMode(false);
     setTutorMode(false);
+    quizer.restartSet();
   }
 }
 
@@ -88,7 +97,7 @@ function setTutorMode(isTutorOn) {
     showActiveMode(btnTutor);
     setSelfTestMode(false);
     setQuizMode(false);
-    btnTutorModeSeqRnd.value = tutor.getSettingsModeStr(true);
+    btnTutorModeSeqRnd.innerHTML = tutor.getSettingsModeStr(true);
     const strTooltip = tutor.getSettingsModeStr(false);
     btnTutorModeSeqRnd.setAttribute("title", strTooltip);
     btnTutorOpr.innerHTML = tutor.getOpr();
@@ -158,7 +167,10 @@ function showErrorMsg(show) {
 }
 
 function onLevelUpDown(event) {
-  if (numServer.constructor.name == "Tutor") {
+  if (
+    numServer.constructor.name == "Tutor" ||
+    numServer.constructor.name == "Quizer"
+  ) {
     return;
   }
   var h = btnUpDn.clientHeight;
@@ -211,24 +223,28 @@ function updateLocalStorage() {
   localStorage.setItem("score", JSON.stringify(numServer.score));
 }
 
+function onOprSelectSelfTest() {
+  const idx = oprSelect.selectedIndex;
+  const val = parseInt(oprSelect.value);
+  const keys = Object.keys(oprTexts);
+  const curOpr = keys[val];
+  selfTester.setOpr(curOpr);
+  prepareQuestion();
+}
+
 function onChangeOpr(val) {
   doChangeOpr(val);
   prepareQuestion();
 }
 
+// ?? to check if needed
 function doChangeOpr(val) {
   curOpr = getKeyByValue(oprTexts, val);
   if (!curOpr) curOpr = "+";
   selfTester.setOpr(curOpr);
-  document.querySelector(".text-box").value = val;
+  oprSelect.value = curOpr;
 }
 
-function show(value) {
-  curOpr = getKeyByValue(oprTexts, value);
-  if (!curOpr) curOpr = "+";
-  selfTester.setOpr(curOpr);
-  document.querySelector(".text-box").value = value;
-}
 function prepare4Operation(opr, n1, n2) {
   const oprShort = oprTexts[opr + "short"];
   const questionStr = `${n1} ${oprShort} ${n2}`;
@@ -259,7 +275,7 @@ function onClickHistory() {
 function showHistory4Array(historyArr, callBackAfterClose) {
   var modal = document.getElementById("modal");
   let columns = numServer.history().getHistoryArrayColumns();
-  openModalHistory(modal, columns, historyArr, callBackAfterClose);
+  openModalHistory(modal, columns, historyArr, callBackAfterClose, numServer);
 }
 
 function onTutor() {
@@ -272,13 +288,35 @@ function onSelfTest() {
   prepareQuestion();
 }
 function onQuiz() {
-  location.href = "Quiz.html";
+  // save state?
+  location.href = "Quizer.html";
 }
-function onTutorOpr() {
-  // on click btn operation
+function onTutorOpr(opr) {
+  if (opr == "menu") {
+    tutorMenuOpr.style.visibility = "visible";
+    return;
+  }
+  if (oprTexts[opr]) {
+    tutor.setOpr(opr);
+    tutor.restartSet();
+    setTutorMode(true);
+    tutorMenuOpr.style.visibility = "hidden";
+    prepareQuestion();
+  }
 }
-function onTutorSeqRnd() {
-  // on click btn SeqRnd
+
+function onTutorSeqRnd(mode) {
+  if (mode == "menu") {
+    tutorMenuSeqRnd.style.visibility = "visible";
+  }
+  if (mode == "s" || mode == "r") {
+    tutor.setMode(mode);
+    tutor.restartSet();
+    setTutorMode(true);
+    //tutorMenuSeqRnd.style.display = "none";
+    tutorMenuSeqRnd.style.visibility = "hidden";
+    prepareQuestion();
+  }
 }
 
 // this function returns the number from "from" to "to";
@@ -296,6 +334,8 @@ function getKeyByValue(object, value) {
 }
 
 function loadAllStatesSelectServer() {
+  // todo check history here?
+
   tutor.retrieveState();
   selfTester.retrieveState();
   quizer.retrieveState();
@@ -317,7 +357,20 @@ function loadAllStatesSelectServer() {
   return selfTester;
 }
 
+function opnDlgQuizFinished() {
+  numServer.saveState();
+  location.href = "Quizer.html?Finish=1";
+  //http://yourdomain.com/login?cid=username&pwd=password
+  // window.open(
+  //   "http://localhost:8080/login?cid=" + myu + "&pwd=" + myp,
+  //   "MyTargetWindowName"
+  // );
+}
+
 function opnDlgFinished() {
+  if (numServer.constructor.name == "Quizer") {
+    opnDlgQuizFinished();
+  }
   rng1Id.innerText = tutor.getRangeStr(1);
   rng2Id.innerText = tutor.getRangeStr(2);
   if (tutor.isInProgress()) {

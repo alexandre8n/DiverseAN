@@ -1,0 +1,19 @@
+body {
+  background-color: white;
+}
+h1 {
+  color: rgb(194, 33, 226);
+  text-align: center;
+}
+#canvas-container {
+  width: 100%;
+  text-align: center;
+}
+#mmCanvas {
+  max-width: 98%;
+  max-height: 98%;
+  height: auto;
+  width: 90%;
+  border: black 2px solid;
+  background-image: url(background.jpg);
+}

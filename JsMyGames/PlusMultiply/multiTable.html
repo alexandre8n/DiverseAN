@@ -54,7 +54,8 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="bold">
+                <tr class="bold">
+                    <!--  -->
                     <td>1</td>
                     <td>2</td>
                     <td>3</td>
@@ -187,12 +188,11 @@
         </tbody>
     </template>
     <script>
-        generateTable("*", 11, 19, 2, 9);
+        generateTable("*", 21, 29, 2, 9);
         function generateTable(opr, minRow, maxRow, minCol, maxCol) {
             // creates a <table> element and a <tbody> element
             const tbl = document.createElement("table");
             const tblBody = document.createElement("tbody");
-            const rowHeader = document.createElement("tr");
 
             // creating all cells 
             for (let i = minRow - 1; i <= maxRow; i++) {

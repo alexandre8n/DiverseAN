@@ -1,0 +1,6 @@
++- Enable user to specify text of a node
++- Select a node to be edited
+-- remove selection, keeping text visible
+- Resize the node to optimally put the text in it.
++- Learn how to draw the text in specified position of a canvas
+- Insert child node of the selected node

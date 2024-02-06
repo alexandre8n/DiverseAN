@@ -1,0 +1,32 @@
+1. Output N prime numbers, starting from fixed number.
+example: a) 10 prime numbers, starting from 2, b) 100 prime numbers, starting from 1001
+
+2. Factorize the input number to prime factors.
+Examples: 
+input: 18, output: 2*3*3
+input: 171991, output: 293*587
+
+3. Parse the sentence and arrange its words alphabetically
+Example: 
+input: I would like an apple   ['I', 'would'....]; substring(pos1, leng);
+output: an, apple, I, like, would
+
+4. Given an array of integers, remove all duplicates and return the result:
+Example:
+input: [1, 2, 3,2,4, 1, 1, 4, 2, 19]
+output: [1, 2, 3, 4, 19]
+
+5. Find a largest element in array of integers, having a negative brother. A negative brother of A is 
+an element B of the same array, so that A>0 and B=-A.
+Example: 
+input: [1, 7,-1, 93, -4, -7, -1, 4]
+output: 7
+
+6. Output the special characters with specified codes. User should be able to specify the 
+code as interger, givinig the codes interval as From: NNN to: NNN
+Note: to output the char with code 555 you can specify it as "&#555".
+Code that can help you output:
+var p1 = document.getElementById("p1");
+var t = "&#" + 100;    "&#100"
+t += " " + "&#" + 1000;
+p1.innerHTML += t;

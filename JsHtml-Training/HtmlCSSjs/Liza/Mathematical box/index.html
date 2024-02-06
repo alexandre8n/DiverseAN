@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="./Styles.css" />
+
+    <title>Mathematical box</title>
+  </head>
+
+  <body>
+    <!-- Wrapper -->
+    <div class="wrapper">
+      <!-- Main content -->
+      <div class="main-content">
+        <!-- About this program -->
+        <div class="about-this-program-container">
+          <h1>Program</h1>
+          <h2 class="program-title">Here you can check some math operations</h2>
+
+          <p class="prg-descr">
+            Hi everyone. Here I will help you with some mathematical operations.
+            Here you will be able to factor the input number into prime factors,
+            find the least common multiple of several numbers and find the
+            greatest common divisor of several numbers
+          </p>
+        </div>
+        <!-- Math operation#1 -->
+        <div class="math-operations">
+          <label class="oper-style">
+            Here you can factorize your input value:
+          </label>
+          <p>
+            <input type="text" id="input_1" name="input_1" />
+            <button onclick="Factorize()" class="button-style">To factorize input value</button>
+          </p>
+        </div>
+
+        <div>
+          <p id="result">Result will be here...</p>
+        </div>
+
+        <div class="math-operations">
+          <label>
+            Here you can find a least common multiple of several numbers:
+          </label>
+          <p>
+            <input type="text" id="input_2" name="input_2" />
+            <button onclick="Leastmult()" class="button-style">To find a least common multiple</button>
+          </p>
+        </div>
+
+        <div>
+          <p id="result_2">Result will be here...</p>
+        </div>
+
+        <div class="math-operations">
+          <label class="oper-style">
+            Here you can find the greatest common divisor of several numbers:
+          </label class="oper-style">
+          <p>
+            <input type="text" id="input_3" name="input_3" />
+            <button onclick="Greatestcd()" class="button-style">To find the greatest common divisor</button>
+          </p>
+        </div>
+
+        <div>
+          <p id="result_3">Result will be here...</p>
+        </div>
+
+        <script>
+          function Factorize() {
+            var input = document.getElementById("input_1");
+            var pRes = document.getElementById("result");
+            var strInput = input.value;
+            var inputVal = parseInt(strInput);
+            var devided = 0;
+            var strRes = "";
+            for (let i = 2; i <= inputVal; ) {
+              if (inputVal % i == 0) {
+                if (strRes != "") strRes += "*";
+                strRes += i.toString();
+                inputVal = inputVal / i;
+                continue;
+              }
+              i++;
+            }
+            pRes.innerHTML ="Factorize: " + strRes;
+          }
+
+          function Leastmult() {
+            var input = document.getElementById("input_2");
+            var pRes = document.getElementById("result_2");
+            var strInput = input.value;
+            const valArray = strInput.split(",");
+            var arr3 = valArray.map((v) => {
+              return parseInt(v.trim());
+            });
+
+            var strRes = "";
+            const lcm = (a, b) => {
+              let min = Math.min(a, b);
+              while (min >= 2) {
+                if (a % min === 0 && b % min === 0) {
+                  return (a * b) / min;
+                }
+                min--;
+              }
+              return a * b;
+            };
+            var num1 = arr3[0];
+            var num2 = arr3[1];
+            var lcmVal = lcm(num1, num2);
+            console.log(lcmVal);
+            strRes = "" + lcmVal;
+            pRes.innerHTML = "Least common multiple:" + strRes;
+          }
+          //function Greatestcd() {
+          // var input = document.getElementById("input_3");
+          // var pRes = document.getElementById("result_3");
+          // var strInput = input.value;
+          // const valArray = strInput.split(",");
+          //var arr3 = valArray.map((v) => {
+          //  return parseInt(v.trim());
+          //  });
+          // var greatestComDeviser = (a, b) => {
+          //   var minOf2 = Math.min(a, b);
+          //  for (i = minOf2; i > 1; i--) {
+          //    if (a % i == 0 && b % i == 0) return i;
+          //  }
+          //   return 1;
+          //   };
+          //  var num1 = arr3[0];
+          //  var num2 = arr3[1];
+          //  var gcd = greatestComDeviser(num1, num2);
+          //   strRes = "" + gcd;
+          //pRes.innerHTML = "Greatest common deviser:" + strRes;
+          // }
+
+          //Greatest common deviser
+
+          function Greatestcd() {
+            var input = document.getElementById("input_3");
+            var pRes = document.getElementById("result_3");
+            var strInput = input.value;
+            const valueArray = strInput.split(",");
+            var arr = valueArray.map((v) => {
+              return parseInt(v.trim());
+            });
+
+            var res = findGCD(arr);
+            pRes.innerHTML = "Greatest common deviser: " + res;
+
+            function gcd(a, b) {
+              if (a == 0) return b;
+              return gcd(b % a, a);
+            }
+
+            function findGCD(arr) {
+              var n = arr.length;
+              let result = arr[0];
+              for (let i = 1; i < n; i++) {
+                result = gcd(arr[i], result);
+
+                if (result == 1) {
+                  return 1;
+                }
+              }
+              return result;
+            }
+          }
+        </script>
+      </div>
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <img src="./img/1.jpeg" alt="math" class="photo-math" />
+
+        <!-- Summary -->
+        <div>
+          <h1 class="summary">Summary of this math operations</h1>
+          <div class="calculation-container">
+            <h3 class="main-content-title">Math Operations</h3>
+
+            <ol class="calculation-list">
+              <li class="calculation-item">
+                Factorize the input number to prime factors
+              </li>
+              <li class="calculation-item">
+                Find a least common multiple of several numbers
+              </li>
+              <li class="calculation-item">
+                Find greatest common divisor of several numbers
+              </li>
+            </ol>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </body>
+</html>

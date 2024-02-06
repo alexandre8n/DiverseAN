@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
-    <title>Calculation Tutor</title>
+    <title>Calculation Quizer</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="modalWnd.css">
     <style>
@@ -20,25 +20,13 @@
             margin-right: 20%;
         }
 
-        .Column1 {
-            min-height: 90px;
-            background-color: #dfdfdf;
-        }
-
-        .Column2 {
-            min-height: 90px;
-            background-color: #dfdfdf;
-            text-align: left;
-        }
-
-        .Column3 {
-            min-height: 90px;
-            background-color: #dfdfdf;
-        }
-
-
         .radioInp {
             margin-left: 15%;
+        }
+
+        .basicTxt {
+            color: yellow;
+
         }
 
         .centerTxt {
@@ -59,6 +47,26 @@
         .btn2 {
             width: 25%;
         }
+
+        table {
+            margin-top: 10px;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid white;
+            border-collapse: collapse;
+        }
+
+        .tblRowSelected {
+            background-color: brown;
+            color: #FFF;
+        }
+
+        .bold {
+            font-weight: bold;
+            font-size: 20px;
+            padding: 5px 12px;
+            background-color: blue;
+        }
     </style>
 </head>
 
@@ -72,53 +80,31 @@
             <option value="2">Subtraction(-)</option>
             <option value="3">Division(/)</option>
         </select>
-        <!-- <label>Test:<select id="countrySelect" name="countrySelect">
-                    <option>Addition(+)</option>
-                    <option>Multiplication(*)</option>
-                    <option>Subtraction(-)</option>
-                    <option>Division(/)</option>
-                </select>
-            </label> -->
+        <br />
+        <div>
+            You practiced on the level: <span id="doneLevelId">8</span><br />
+            <div>Numbers from (11..55) * (31..69)</div>
+            Success note: <span id="successNoteId"></span>
+            <div>
+                your answers
+            </div>
+        </div>
+        <div>
+            Select quiz level: <span id="oprBoxId"></span>
+            <div id="LvlTableId"></div>
+        </div>
     </div>
-    <header>
-        <div id="col1id" class="Column2">
-            <p class="centerTxt">Please select first number range:</p>
-            <input class="radioInp" type="radio" id="range1" name="rangeL" value="10" checked="checked">
-            <label for="range1">2 - 9</label><br>
-            <input class="radioInp" type="radio" id="range2" name="rangeL" value="20">
-            <label for="range2">11 - 19</label><br>
-            <input class="radioInp" type="radio" id="range3" name="rangeL" value="30">
-            <label for="range3">21 - 29</label><br>
-            <input class="radioInp" type="radio" id="range3" name="rangeL" value="40">
-            <label for="range3">31 - 39</label><br>
-            <input class="radioInp" type="radio" id="range3" name="rangeL" value="50">
-            <label for="range3">41 - 49</label><br>
-            <input class="radioInp" type="radio" id="range3" name="rangeL" value="60">
-            <label for="range3">51 - 59</label><br>
-            <input class="radioInp" type="radio" id="range3" name="rangeL" value="70">
-            <label for="range3">61 - 69</label><br>
-            <input class="radioInp" type="radio" id="range3" name="rangeL" value="80">
-            <label for="range3">71 - 79</label><br>
-            <input class="radioInp" type="radio" id="range3" name="rangeL" value="90">
-            <label for="range3">81 - 89</label><br>
-            <input class="radioInp" type="radio" id="range3" name="rangeL" value="100">
-            <label for="range3">91 - 99</label><br>
-            <br>
-        </div>
-        <div id="col2id" class="Column2">
-        </div>
-
-    </header>
     <!-- <div class="centerTxt" id="res">here you will get the result</div> -->
     <div>
         <button class="btn btn2" onclick="onPreview()">What you learn...</button>
         <button class="btn btn2" onclick="onDone()">Done</button>
+        <button class="btn btn2" onclick="onTest()">Test</button>
     </div>
 
     <script src="../../JsUtils/utils1.js"></script>
     <script src="history.js"></script>
     <script src="SrvBase.js"></script>
-    <script src="SrvTutor.js"></script>
+    <script src="SrvQuizer.js"></script>
     <script>
         var oprTexts = {
             "+": "Addition(+)",
@@ -130,24 +116,137 @@
             "-short": "minus",
             "/short": "devide by",
         };
+
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const finishState = urlParams.get('Finish');
+
         var curOpr = "+";
-        copyChildElements(col1id, col2id, emlPrcByCopy);
-        var textElms = col2id.getElementsByClassName('centerTxt');
-        var t1 = textElms[0];
-        t1.innerHTML = "Please select second number range:";
-        const tutor = new Tutor();
+        var curLevel = 0;
+        const quizer = new Quizer();
+
+        var selectedRow = null;
+        // set the proposed operation and level
+
+        // generate level table
+        generateLevelTable(quizer.allLevels(), curOpr);
+
+
+        // process selection of the level
+
         // these 2 just remove when ready
         // tutor.getLocalStorageKeys();
         // tutor.clearLocalStorage();
 
-        tutor.retrieveState();
-        let h = tutor.history();
+        quizer.retrieveState();
+        if (finishState == 1) {
+            showFinishStatistics();
+        }
+
 
         //showOperations(oprTexts[curOpr]);
         //let dropdown = document.querySelector(".dropdown");
         // dropdown.onclick = function () {
         //     dropdown.classList.toggle("active");
         // };
+
+        function generateLevelTable(levels, opr) {
+            const maxRow = levels.length;
+            // creates a <table> element and a <tbody> element
+            const tblDiv = document.getElementById("LvlTableId");
+            const tbl = document.createElement("table");
+            const tblBody = document.createElement("tbody");
+            const header = ["Level", "1st Number", "OP", "2nd Number"];
+            // creating all cells 
+            for (let i = -1; i < maxRow; i++) {
+                // creates a table row
+                const row = document.createElement("tr");
+                if (i == - 1) {
+                    row.className = "bold";
+                }
+
+                for (let j = 0; j < header.length; j++) {
+                    // Create a <td> element and a text node, make the text
+                    // node the contents of the <td>, and put the <td> at
+                    // the end of the table row
+                    const cell = document.createElement("td");
+                    var val = "";
+                    if (i == -1) {
+                        val = header[j];
+                        cell.className = "bold";
+                    }
+                    else {
+                        val = genCellInfo(i, opr, j, levels[i]);
+                        cell.className = "basicTxt";
+                    }
+                    const cellText = document.createTextNode(`${val}`);
+                    cell.appendChild(cellText);
+                    row.appendChild(cell);
+                }
+
+                // add the row to the end of the table body
+                tblBody.appendChild(row);
+            }
+
+            // put the <tbody> in the <table>
+            tbl.appendChild(tblBody);
+            // appends <table> into <body>
+            tblDiv.appendChild(tbl);
+            //document.body.appendChild(tbl);
+            // sets the border attribute of tbl to '1'
+            tbl.setAttribute("border", "1px");
+            tbl.onclick = highlightRow;
+
+        }
+        function showFinishStatistics() {
+            let lastRecs = quizer.answeredStatistics();
+            if (lastRecs == null || lastRecs.length == 0) {
+                showNoHistory();
+                return;
+            }
+            // history record 
+            // {opr: "+", n1:0, n2:0, result:0, answer:0, timeInMs:0, score:0}
+            const sumRes = lastRecs.reduce((a, b) => a + b.score, 0);
+            const avg = (sumRes / lastRecs.length) || 0;
+            const strNote = `${avg} of 100`;
+            successNoteId.innerHTML = strNote;
+
+
+            // get last 15 answers:
+
+            // avg score: 75% of 100%
+            // avg time: 7 sec
+            // your tasks detailed results: 15 (details) ->
+            // recomendation: <rcmnd> ->
+            // <rcmnd>: try again / goto next level / try on previous
+            // exit, done, select level
+
+        }
+        function showNoHistory() {
+            successNoteId.innerHTML = "No statistics available";
+        }
+
+
+        function highlightRow(e) {
+            if (selectedRow != null)
+                selectedRow.className = '';
+            var trg = e.target;
+            var trgParent = e.target.parentNode;
+            selectedRow = trgParent;
+            var elm1 = trgParent.cells[0];
+            curLevel = parseInt(elm1.innerHTML);
+            oprBoxId.innerHTML = elm1.innerHTML;
+            selectedRow.className = 'tblRowSelected';
+        }
+
+        function genCellInfo(lvl, opr, cell_Idx, lvlInfo) {
+            if (cell_Idx == 0) return lvl + "";
+            if (cell_Idx == 1) return `${lvlInfo.range1[0]} ... ${lvlInfo.range1[1]}`;
+            if (cell_Idx == 2) return opr;
+            if (cell_Idx == 3) return `${lvlInfo.range2[0]} ... ${lvlInfo.range2[1]}`;
+            return "";
+
+        }
 
         function onOprSelect() {
             const idx = oprSelect.selectedIndex;
@@ -174,51 +273,36 @@
                 elm.name = "rangeR";
             }
         }
+
         function onPreview() {
             // save ranges
             location.href = "multiTable.html";
         }
         function onDone() {
-            // save tutor-state range is calculated like this
-            // from: r-9 to: r-1;
-            let r1 = getChecked("rangeL");
-            let r2 = getChecked("rangeR");
-            let tutorState = tutor.getState(); // it's just a ref
-            tutorState.opr = curOpr;
-            tutorState.mode = "s"; // start with sequential
-            tutorState.range1 = getRangeArr(r1);
-            tutorState.range2 = getRangeArr(r2);
-            tutor.setLastNumbers(0, 0);
-
-            tutor.saveState();
-            //tutor.testOutNumbers();
+            let state = quizer.getState(); // it's just a ref
+            state.opr = curOpr;
+            state.level = curLevel;
+            quizer.saveState();
             location.href = "index.html";
         }
-        function getRangeArr(rangeStr) {
-            const arr = [0, 0];
-            arr[0] = parseInt(rangeStr) - 9;
-            if (arr[0] == 1) {
-                arr[0] = 2;
+        function onTest() {
+            var arr = [[5, 3], [7, 9], [32, 7], [78, 9], [99, 98]];
+            arr.forEach(e => {
+                quizer.settings.n1 = e[0];
+                quizer.settings.n2 = e[1];
+                quizer.settings.opr = "*";
+                //console.log(`opr: ${quizer.n1()} ${quizer.settings.opr} ${quizer.n2()}`);
+                var t = quizer.getExpectedTime();
+                //console.log(`t: ${t} ${quizer.n1()} ${quizer.settings.opr} ${quizer.n2()}`);
+            });
+            // tester
+            var element = document.querySelectorAll('.tblRowSelected');
+            if (element[0] !== undefined) { //it must be selected
+                alert(element[0].children[0].firstChild.data);
             }
-            arr[1] = parseInt(rangeStr) - 1;
-            return arr;
+            quizer.prepareTheQuizerSet();
         }
 
-        function getChecked(name) {
-            const expr = `input[name="${name}"]:checked`
-            let res = document.querySelector(expr).value;
-            if (res)
-                return res;
-            var ranges = document.getElementsByName(name);
-            var r_value;
-            for (var i = 0; i < ranges.length; i++) {
-                if (ranges[i].checked) {
-                    return ranges[i].value;
-                }
-            }
-            return -1;
-
-        }
     </script>
 </body>
 

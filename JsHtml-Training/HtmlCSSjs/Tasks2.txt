@@ -1,0 +1,55 @@
+1. Learning js Objects
+      const person = { firstName: "John", lastName: "Doe", age: 50, eyeColor: "blue" };
+write a function that gets as parameter the object
+this function should convert the object into the string of the following structure:
+object keys: list of keys (or variables)
+key1name: value
+...
+keyNname: value
+
+2. write a function that gets the simple object as string
+key1name: value
+...
+keyNname: value
+that returns the object
+example:
+input:
+x: 10
+y: 12
+output: {x:10, y:12}
+
+
+3. Find all duplicates in the array and output the array of ojects with numbers and their counts.
+[{number: xx, count: yy}, ....]
+example:
+input: [1,2,1,2,3,2]
+output: [{number: 1, count: 2}, {number: 2, count: 3}, {number: 3, count: 1}];
+
+4. Write a small web-app that allows to the user:
+to factorize the input number to prime factors
+to find a least common multiple of several numbers that user enters,
+to find greatest common divisor of several numbers that user enters.
+
+5. Suppose you have an object
+var node = {id: N, next: node}
+Every node references the next node;
+example
+var node3 = {id: 2, next: null} // the last one
+var node2 = {id: 21, next: node3} // reffers to the next node3
+var node1 = {id: 1, next: node2}  // reffers to the next node2
+
+Prepare the function that finds the last node, having the first one as parameter
+It should have the following signature:
+// it should return the last node
+function getLastNode(firstNode)
+Note: the function should not fail in case of an infinite loop, in this case it should return the node, 
+that referse to the previously met node
+Example of an infinite loop:
+node1 -> node2 -> node3 -> node2
+
+
+
+
+Todo: learn about
+regular expressions: https://www.w3schools.com/jsref/jsref_class.asp
+js classes: https://www.w3schools.com/jsref/jsref_class.asp

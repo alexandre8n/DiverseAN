@@ -99,40 +99,46 @@
         <header>
             <div class="Column1">
                 <div id="dropDnId" class="dropdown">
-                    <input class="text-box" type="text" placeholder="Select on" readonly>
+                    <select id="oprSelect" class="dropdownOpr" onchange="onOprSelect()" name="countrySelect">
+                        <option value="+">Addition(+)</option>
+                        <option value="*">Multiplication(*)</option>
+                        <option value="-">Subtraction(-)</option>
+                        <option value="/">Division(/)</option>
+                    </select>
+                    <!-- <input class="text-box" type="text" placeholder="Select on" readonly>
                     <div class="options">
                         <div onclick="onChangeOpr('Addition(+)')">Addition(+)</div>
                         <div onclick="onChangeOpr('Multiplication(*)')">Multiplication(*)</div>
                         <div onclick="onChangeOpr('Subtraction(-)')">Subtraction(-)</div>
                         <div onclick="onChangeOpr('Division(/)')">Division(/)</div>
-                    </div>
+                    </div> -->
                 </div>
                 <div data-tutor class="itemsInBox">
                     <div class="wrap1">
                         Tutor mode:
                         <div>
-                            <button id="btnTutorModeSeqRnd" onclick="onTutorSeqRnd()" class="btnSmall dropbtn">
+                            <button id="btnTutorModeSeqRnd" class="btnSmall dropbtn" onclick="onTutorSeqRnd('menu')">
                                 s
                             </button>
-                            <div class="dropdown-content">
-                                <a href="#" onclick="onLink1('1')">Sequential</a>
-                                <a href="#">Random</a>
+                            <div class="dropdown-content" id="tutorMenuSeqRnd">
+                                <a href="#" onclick="onTutorSeqRnd('s')">Sequential</a>
+                                <a href="#" onclick="onTutorSeqRnd('r')">Random</a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div data-tutor class="itemsInBox">
+                <div data-tutor class=" itemsInBox">
                     <div class="wrap1">
                         Operation:
                         <div>
-                            <button id="btnTutorOpr" onclick="onTutorOpr()" class="btnSmall dropbtn">
+                            <button id="btnTutorOpr" onclick="onTutorOpr('menu')" class="btnSmall dropbtn">
                                 *
                             </button>
-                            <div class="dropdown-content">
-                                <a href="#" onclick="onLink1('1')">Addition (+)</a>
-                                <a href="#" onclick="onLink1('1')">Multiplication (*)</a>
-                                <a href="#" onclick="onLink1('1')">Subtraction (-)</a>
-                                <a href="#" onclick="onLink1('1')">Division (/)</a>
+                            <div id="tutorMenuOpr" class="dropdown-content">
+                                <a href="#" onclick="onTutorOpr('+')">Addition (+)</a>
+                                <a href="#" onclick="onTutorOpr('*')">Multiplication (*)</a>
+                                <a href="#" onclick="onTutorOpr('-')">Subtraction (-)</a>
+                                <a href="#" onclick="onTutorOpr('/')">Division (/)</a>
                             </div>
                         </div>
                     </div>

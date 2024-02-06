@@ -20,7 +20,20 @@ class Tutor extends SrvBase {
 
   constructor() {
     super();
-    super.init(this.settings);
+    this.init();
+  }
+  stgs() {
+    return this.settings;
+  }
+
+  getKey() {
+    return tutorKey;
+  }
+
+  restartSet() {
+    super.restartSet();
+    this.lerningSet = [];
+    this.indexInlerningSet = 0;
   }
 
   getSettingStr() {
@@ -72,10 +85,6 @@ class Tutor extends SrvBase {
   setState(st) {
     this.settings = st;
   }
-  getState() {
-    return this.settings;
-  }
-
   saveState() {
     super.saveStateBase(this.settings, tutorKey);
   }
@@ -142,19 +151,6 @@ class Tutor extends SrvBase {
     // fix history id, your learning history start point.
     this.historyIdOfNextSession = this.history().getNextHistoryRecId();
     return true;
-  }
-
-  initiateTutoring2(settingStr) {
-    // format of msg: opr, from1, to1, from2, to2, mode, step, totalSteps
-    var arrStr = settingStr.split(",");
-    this.settings.opr = arrStr[0];
-    this.settings.range1[0] = parseInt(arrStr[1]);
-    this.settings.range1[1] = parseInt(arrStr[2]);
-    this.settings.range2[0] = parseInt(arrStr[3]);
-    this.settings.range2[1] = parseInt(arrStr[4]);
-    this.settings.mode = arrStr[5];
-    this.settings.currentStep = parseInt(arrStr[6]);
-    this.settings.totalSteps = parseInt(arrStr[7]);
   }
 
   next2NumbersSeqMode() {

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <style type="text/css">
+    button {
+      background-color: rgb(139, 124, 250);
+    }
+
+    body {
+      background-color: rgb(240, 246, 154);
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <p>
+      <label>
+        Enter your values in the format First_Name:a, age:b. For example, First_Name:Maxim, age:9
+      </label>
+      <input type="text" id="input" placeholder="Enter your your input here..." />
+      <button onclick="ObjFromStr()">Object from string</button>
+    </p>
+    <p>
+      input for nodes
+    </p>
+    <input type="text" id="input_2" />
+    <button onclick="processInputOfNodes()">CreateNodes</button>
+
+    <button onclick="ShowVal()">Show values</button>
+    <button onclick="ShowObj()">Show Object</button>
+    <button onclick="ShowDup()">Show duplicates</button>
+
+  </div>
+  <p id="demo"></p>
+  <p id="numbers">here will be output result</p>
+  <script>
+    var pRes = document.getElementById("numbers");
+    var text = "name: alex, age: 30,weight: 75";
+    var error = "";
+    const regExp1 = /\w+:\s*\w+\s*(,|$)/gm;
+    var result = text.match(regExp1);
+    console.log("result after match", result);
+    var resultTest = /\w+:\s*\w+\s*(,|$)/gm.test(text);
+    console.log("resultTest", resultTest);
+    var resultExec = regExp1.exec(text);
+    var resultExec2 = regExp1.exec(text);
+    var resultExec3 = regExp1.exec(text);
+    console.log("resultExec", resultExec);
+    console.log("resultExec2", resultExec2);
+    console.log("resultExec3", resultExec3);
+
+    // "name: alex, age: 30,weight: 75"
+    let endIdx = 0;
+    let foundRes = [];
+    for (let start = 0; endIdx >= 0; start = endIdx + 1) {
+      endIdx = findNameComaVal(start, text);
+      if (endIdx < 0) break;
+      var strFound = text.substring(start, endIdx);
+      foundRes.push(strFound);
+    }
+    if (endIdx < 0) {
+      console.log(error)
+    }
+    console.log(foundRes);
+
+    // returns end index or -1, if not found
+    function findNameComaVal(startIndex, text) {
+      var hasCol = 0;
+      for (let i = startIndex; i < text.length; i++) {
+        if (text[i] == ":")
+          hasCol++;
+        if (text[i] == ",") {
+          if (hasCol == 1) return i;
+          error = "incorrect syntax, expression must have format: name: value";
+          return -1;
+        }
+      }
+      if (hasCol == 1) return text.length;
+      error = "incorrect syntax, expression must have format: name: value";
+      return -1;
+    }
+
+    const arr1 = ["Cecilie", "Lone"];
+    const arr2 = ["Emil", "Tobias", "Linus"];
+    const arr3 = ["Robin", "Emil"];
+    const children = arr1.concat(arr2, arr3);
+    const woDup = new Set(children);
+
+    const obj_1 = {
+      name: "Liza",
+      age: 22,
+      age_1: function () {
+        return 30;
+      },
+      city: "Lviv",
+    };
+
+    const ages = [3, 10, 18, 20, 12, 21, 22];
+    var res = ages.findIndex(checkAge);
+    //var res = ages.find(checkAge);
+    document.getElementById("demo").innerHTML = res;
+
+    function checkAge(age) {
+      return age > 18;
+    }
+
+    var ar = [1, 2, 3, 4, 5];
+
+    const initialValue = 0;
+    const sumWithInitial = ar.reduce(
+      (accumulator, currentValue) => accumulator + currentValue,
+      initialValue
+    );
+
+    var arrHtmlElm = ar.map((v, index, ar) => {
+      return `value:${v}, index:${index}`;
+    });
+
+    document.getElementById("demo").innerHTML = arrHtmlElm.join("<br/>");
+
+    // var arOfQuadrats = ar.map((v, index, ar) => {
+    //     console.log(`value:${v}, index:${index}`);
+    //     return { idx: index, val: v };
+    // });
+    ar.forEach(logArrElm);
+    ar.forEach((v, index, ar) => {
+      console.log(`value:${v}, index:${index}`);
+    });
+
+    function logArrElm(v, index, ar) {
+      var strOut = `from logArrElm value: ${v}, index: ${index}`;
+      console.log(strOut);
+    }
+
+    function ShowObj() {
+      var pRes = document.getElementById("demo");
+      const myJSON = JSON.stringify(obj_1);
+      localStorage.setItem("testJSON", myJSON);
+
+      let text = localStorage.getItem("testJSON");
+      let obj = JSON.parse(text);
+      document.getElementById("demo").innerHTML = myJSON;
+      document.getElementById("demo").innerHTML +=
+        "<br/>First_Name: " + obj.name;
+      document.getElementById("demo").innerHTML += "<br/>Age: " + obj.age;
+      document.getElementById("demo").innerHTML += "<br/>City: " + obj.city;
+      // console.log("First_Name: " + obj.name);
+      // console.log("Age: " + obj.age);
+      // console.log("City: " + obj.city);
+    }
+  </script>
+  <script>
+    const obj_2 = {
+      x: 10,
+      y: 12,
+    };
+    const inputStr = "x: 10, y: 12";
+    function ShowVal() {
+      var pRes = document.getElementById("numbers");
+      var strout = "";
+      document.getElementById("numbers").innerHTML = strout;
+    }
+  </script>
+  <script>
+    const arr_1 = [1, 2, 1, 2, 3, 2];
+
+    arr_1.forEach((v, index, arr_1) => {
+      console.log(`value:${v}, index:${index}`);
+    });
+
+    function ShowDup() {
+      var pRes = document.getElementById("numbers");
+      var res = []; // {number:1, count: 1}
+      var findElmByVal = (val) => {
+        var resOfFind = res.find((x) => x.number === val);
+        if (!resOfFind) {
+          return null;
+        }
+        return resOfFind;
+      };
+      arr_1.forEach((v, idx, arr) => {
+        var foundElm = findElmByVal(v);
+        if (foundElm == null) {
+          var obj = { number: v, count: 1 };
+          res.push(obj);
+        } else {
+          foundElm.count++;
+        }
+      });
+      //var strOut = `from ShowDup value: ${v}, index: ${index}`;
+      //console.log(strOut);
+      const myJSON = JSON.stringify(res);
+      pRes.innerHTML = myJSON;
+    }
+
+    // expected input: key1: val, key2: val, ...., keyN: val
+    // result should be {key1: val, ...., keyN: val}
+    // example: firstName: "Mike", age: 10
+    // error example: firstName: Mike age: 10
+    function ObjFromStr() {
+
+      var inputElement = document.getElementById("input");
+      var strinput = inputElement.value;
+      const keyValArray = strinput.split(",");
+      let resObj = {};
+      keyValArray.forEach((v) => {
+        // v = " key: val"
+        v = v.trim();
+        var ar2KeyVal = v.split(":");
+        resObj[ar2KeyVal[0]] = ar2KeyVal[1].trim();
+      });
+      try {
+        //input == "Name:Maxim age:9"; 
+        //split("")
+
+      }
+      catch (err) {
+        alert("Error!");
+      }
+
+
+      const myJSON = JSON.stringify(resObj);
+      pRes.innerHTML = myJSON;
+
+    }
+
+    function processInputOfNodes() {
+      // 1>2>3>4>1
+      var inputElement = document.getElementById("input_2");
+      var str = inputElement.value;
+      var pRes = document.getElementById("numbers");
+      var arrStrs = str.split(">");
+      var arrOfIds = arrStrs.map((v) => { return parseInt(v); });
+      var firstNode = CreateNodes(arrOfIds);
+      var lastNode = getLastNode(firstNode);
+      var strNodeInfo = (lastNode == null) ? "no nodes" : "" + lastNode.id
+      pRes.innerHTML = "Last node Id: " + strNodeInfo;
+    }
+
+    var numbNodesCreated = [];
+
+    function CreateNodes(arrOfIds) {
+      numbNodesCreated = [];
+      var firstNode = null;
+      var parentNode = null;
+      var isLoopDiscovered = false;
+      for (let id of arrOfIds) {
+        var nodeIfExit = tryToFindExiting(id, firstNode, parentNode);
+        var node = null;
+        if (nodeIfExit == null) node = createNode(id);
+        else {
+          node = nodeIfExit;
+          isLoopDiscovered = true;
+        }
+
+        //numbNodesFound = []
+        if (parentNode != null) {
+          parentNode.next = node;
+        } else {
+          firstNode = node;
+        }
+        parentNode = node;
+        numbNodesCreated.push(node);
+        if (isLoopDiscovered) break;
+      }
+      return firstNode;
+    }
+    //when there is a cycle and the next one is the same as in the array
+    function errInTheCycle() {
+
+    }
+
+    function tryToFindExiting(id, first, parentNode) {
+      var curNode = first;
+      if (parentNode == null || parentNode.id == id) return parentNode;
+
+      while (curNode != null) {
+        if (curNode.id == id) {
+          return curNode;
+        }
+        if (curNode.id == parentNode.id) {
+          return null;
+        }
+        curNode = curNode.next;
+      }
+      return null;
+    }
+
+    function createNode(id) {
+      return { id: id, next: null };
+    }
+
+    //  adrOfNode0 = {id: 1, next: adrOfNode}
+    //    adrOfNode =   {id: 2, next: adrOfNode1 }
+    //      adrOfNode1 =   { id: 3, next: adrOfNode0 }
+
+    var allNodesIds = [];
+    function getLastNode(firstNode) {
+      allNodesIds = [];
+      var strRes = "";
+      var curNode = firstNode;
+      var lastHavingChildOrLoop = null;
+      for (; curNode != null;) {
+        if (allNodesIds.includes(curNode.id)) {
+          break;
+        }
+        allNodesIds.push(curNode.id);
+        lastHavingChildOrLoop = curNode;
+        curNode = curNode.next;
+      }
+      return lastHavingChildOrLoop;
+    }
+  </script>
+</body>
+
+</html>

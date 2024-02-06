@@ -32,9 +32,13 @@ function openModal(modal, msg) {
 
 // this method if !=null is call when closing modal dlg...
 callBackAfterFinish = null;
+numServer = null;
 
 function setAfterFinishCallback(func1) {
   callBackAfterFinish = func1;
+}
+function setNumServer(srv) {
+  numServer = srv;
 }
 
 function closeModal(modal) {
@@ -60,12 +64,19 @@ const fltWrongAndSlow = 3;
 const timeSlow = 5;
 var filterId = fltAll;
 
-function openModalHistory(modal, columns, historyArr, callBackAfterClose) {
+function openModalHistory(
+  modal,
+  columns,
+  historyArr,
+  callBackAfterClose,
+  numServer
+) {
   if (modal == null) return;
 
   if (callBackAfterClose) {
     setAfterFinishCallback(callBackAfterClose);
   }
+  if (numServer) setNumServer(numServer);
 
   setHeader("History");
   modal.classList.add("active");
@@ -155,19 +166,16 @@ function onFilterSelect() {
 //   });
 
 function onClearHistory() {
-  // let t = $("#example");
-
-  //histTableStru.table.destroy();
-  // could be an option for using destroy: true;
-
   histTableStru.table = new DataTable("#example", {
     destroy: true, // this just needed to be able to reinitialize!!
     data: [], // empty array
     columns: histTableStru.cols,
     order: [[0, "desc"]],
   });
-  console.log("on clear history");
-  // todo: here the history is to be deleted!!
+  if (numServer) {
+    numServer.clearHistory();
+    numServer.saveHistory();
+  }
 }
 
 function setHeader(strHeader) {

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Utils Test</title>
+  </head>
+  <style></style>
+  <body>
+    <div class="form">
+      <label>Your input line1:</label>
+      <input type="text" id="input1" name="input1" />
+    </div>
+    <div class="clearfix">
+      <div class="inputDiv">
+        <label>Your Input line2:</label>
+        <input
+          type="text"
+          id="input2"
+          placeholder="Enter your your input here..."
+        />
+      </div>
+    </div>
+    <div>
+      <p id="result">Result will be here...</p>
+    </div>
+
+    <script src="utils1.js"></script>
+    <script>
+      var contactLiza = {
+        name: "Liza",
+        age: 22,
+      };
+
+      var nMax = 200;
+      var primeNo = 0;
+      var txtOut = "";
+      var arrOfprimes = [];
+
+      let i = 1;
+      while (i < nMax) {
+        if (isPrime(i)) {
+          arrOfprimes.push(i);
+        }
+        i++;
+      }
+
+      for (let i = 1; i < nMax; i++) {
+        if (isPrime(i)) {
+          arrOfprimes.push(i);
+        }
+      }
+
+      for (let i = 0; i < arrOfprimes.length; i++) {
+        txtOut += `prime#${i + 1} = ${arrOfprimes[i]}`;
+        if (i < arrOfprimes.length - 1) txtOut += ", ";
+        if (i % 8 == 7) {
+          txtOut += "<BR />";
+        }
+      }
+      document.getElementById("result").innerHTML = txtOut;
+
+      function outputPerson(contact) {}
+
+      function outputGreeting(name, age) {}
+    </script>
+  </body>
+</html>

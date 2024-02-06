@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div class="form">
+    <label>Your input line1:</label>
+    <input type="text" id="input1" name="input1" />
+  </div>
+  <div class="clearfix">
+    <div class="inputDiv">
+      <label>Your Input line2:</label>
+      <input type="text" id="input2" placeholder="Enter your your input here..." />
+      <button onclick="Result()">100 primes</button>
+      <button onclick="Result2()">Result_2</button>
+      <button onclick="Result3()">sort alphabetically input1</button>
+      <button onclick="Result4()">remove Duplicates from input 1</button>
+      <button onclick="Result5()">Find a largest element in array from input 2</button>
+      <button onclick="onSpecChars()">Output the special characters with specified codes from input 1</button>
+      <button onclick="onShowObj()">Show Object</button>
+    </div>
+  </div>
+  <div>
+    <p id="result">Result will be here...</p>
+  </div>
+  <script src="Task_JS.js"></script>
+  <script>
+    var nPrimes = 100;
+    function Result() {
+      var input1 = document.getElementById("input1");
+      var pRes = document.getElementById("result");
+      var strInput = input1.value;
+      var inputVal = parseInt(strInput);
+      var nPrimesFound = 0;
+      var primesToOutput = [];
+      for (let i = inputVal; nPrimesFound < nPrimes; i++) {
+        const isValPrime = isPrime(i);
+        if (isValPrime) {
+          primesToOutput.push(i.toString());
+          nPrimesFound++;
+        }
+        pRes.innerHTML = "Resulting primes:" + primesToOutput.join(", ");
+      }
+    }  
+  </script>
+  <script>
+    function Result2() {
+      var input = document.getElementById("input2");
+      var pRes = document.getElementById("result");
+      var strInput = input.value;
+      var inputVal = parseInt(strInput);
+      var devided = 0;
+      var strRes = "";
+      for (let i = 2; i <= inputVal;) {
+        if (inputVal % i == 0) {
+          if (strRes != "") strRes += "*";
+          strRes += i.toString();
+          inputVal = inputVal / i;
+          continue;
+        }
+        i++;
+      }
+      pRes.innerHTML = strRes;
+    }
+  </script>
+  <script>
+    function Result3() {
+      var input = document.getElementById("input1");
+      var pRes = document.getElementById("result");
+      var strInput = input.value;
+      var inputVal = parseInt(strInput);
+      var myArr = strInput.split(" ");
+
+      const myarray = ["I", "would", "like", "an", "apple"]
+      myArr.sort(function (a, b) {
+        if (a.toLowerCase() < b.toLowerCase()) return -1;
+        if (a.toLowerCase() > b.toLowerCase()) return 1;
+        return 0;
+      });
+      pRes.innerHTML = myArr.join(", ")
+    }
+  </script>
+  <script>
+    function Result4() {
+      var input = document.getElementById("input1");
+      var pRes = document.getElementById("result");
+      var strInput = input.value;
+      var arrStrInts = strInput.split(",");
+      var arrInts = arrStrInts.map((v) => {
+        var intFromStr = parseInt(v);
+        return intFromStr;
+      });
+
+      var uniques = [];
+      // for(let i=0; i<arrInts.length; i++){
+      //   if(uniques.includes(arrInts[i])) continue;
+      //   uniques.push(arrInts[i]);
+      // }
+      uniques = [...new Set(arrInts)];
+      pRes.innerHTML = uniques.join(", ")
+    }
+  </script>
+  <script>
+    function Result5() {
+      var input = document.getElementById("input2");
+      var pRes = document.getElementById("result");
+      var strInput = input.value;
+      //var Array1 = [3, 6, 2, 56, 32, 5, 89, 32];
+      //1,2,3,-1,-2
+      var inputVal = parseInt(strInput);
+      var array1 = strInput.split(",");
+      var arrInts = array1.map((v) => {
+        var intFromStr = parseInt(v);
+        return intFromStr;
+      });
+      var largest = -1;
+      for (var i = 0; i < arrInts.length; i++) {
+        if (arrInts[i] > 0) {
+          var hasnegbrother = arrInts.includes(-arrInts[i]);
+          if (hasnegbrother) {
+            if (arrInts[i] > largest) {
+              largest = arrInts[i];
+            }
+          }
+        }
+      }
+      console.log(largest);
+      pRes.innerHTML = "Largest having brother " + largest;
+    }
+  </script>
+  <script>
+    function onSpecChars() {
+      var p1 = document.getElementById("input1");
+      var pRes = document.getElementById("result");
+      var strInput = p1.value;
+      //var inputVal = parseInt(strInput);
+      var arrOfStrNumbers = strInput.split(",");
+
+      var arrInts = arrOfStrNumbers.map((v) => {
+        v = v.trim();
+        var intFromStr = parseInt(v);
+        return intFromStr;
+      });
+      //var t = "#&" + 100; 
+      //t += " " + "&#" + 1000;
+      //p1.innerHTML += t;
+      var iStart = arrInts[0];
+      var iEnd = arrInts[1];
+      var strOut = "";
+      for (var i = iStart; i <= iEnd; i++) {
+        var t = "&#" + i;
+        strOut += " " + t;
+      }
+
+      //console.log(p1);
+      pRes.innerHTML = strOut;
+    }
+    function onShowObj() {
+      var pRes = document.getElementById("result");
+
+      const person = { firstName: "John", lastName: "Doe", age: 50, eyeColor: "blue" };
+      var strKeys = Object.keys(person);
+      var strVals = Object.values(person);
+
+      var str2 = person[strKeys[0]];
+      pRes.innerHTML = str2;
+      //https://www.w3schools.com/js/js_json_stringify.asp
+          }
+  </script>
+</body>
+
+</html>

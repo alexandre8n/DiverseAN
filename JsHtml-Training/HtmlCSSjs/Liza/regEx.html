@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <label>
+        Enter a line of text
+    </label>
+    <input type="text" id="input" placeholder="Enter your line here..." />
+    <button onclick="onEnter()">Enter</button>
+    <script>
+        var strExample = "Who has understood the life, has no harry";
+
+        // get as a result 1) just a sequential set of words
+        // 2) just a sequential set of words and delimiters(=, . blank, !...)
+        // ["Who"," ", "has', " ", .... "life", "," ...]
+        function onEnter() {
+            var inp = document.getElementById("input");
+            var str = inp.value;
+            const res = strExample.match(/\w+([,. !?"-+/]|$)/g);
+            const array = Object.values(res);
+
+            console.log(array);
+        }
+    </script>
+</body>
+
+</html>

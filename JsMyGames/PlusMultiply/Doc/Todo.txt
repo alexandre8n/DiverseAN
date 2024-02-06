@@ -1,5 +1,30 @@
-- todo: on click btn change tutor operation
-- todo: on click btn change tutor seq/rnd
+- todo: develop the concept of Quizer
+  idea: level of 
+1) 2..9 * 11..39  : 7*26 = 140+42 = 182 (5sec)
+2) 2..9 * 41..99  : 6*87 = 480+
+3) 11..19 * 11..59, 61..99
+4) 21 ..39 * 21..59, 61..99
+5) 31.. 49 * 31..59, 31..99
+6) 51.. 69 * 51.. 79, 81.. 99
+7) 71..99 * 71..99
+8) 11-99 * 11-99
+
+ 
+    77*76 = (70 + 7)(70+6) = 4900 + 70(6+7) + 42 = 4900+910+42=5852 (~5sec)
+    77*77 = 4900 + 490*2 +49 = 5929
+    86*87 = 6400 + 13*80(=1040)+42 = 7482
+
+knowledge of tricks
+11
+n3 * n7
+n3 * n7+small
+25
+5
+75
+x*x
+x*x+small
+
+
 
 
 - todo: history, check if works for all
@@ -11,6 +36,15 @@
 59**2 = 3400+81=3481
 53**2 = 2809
 
+77*57 = 70*50 490+350 49 = 4389
+
+
++ : on click btn change tutor operation
++ : on click btn change tutor seq/rnd
++ : change the operation support for tutor
++ : change the sequential/random support for tutor
++ : operation change in combo doesn't work
++ : by changing the operation step should be set to 1
 + : bug: help is shown as history, error by adding
   16+11 = 10+10 + 6 + 10 = 27???
   maybe it is worth to use special language?

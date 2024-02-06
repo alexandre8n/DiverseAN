@@ -13,7 +13,15 @@ class SelfTester extends SrvBase {
 
   constructor() {
     super();
-    super.init(this.settings);
+    this.init();
+  }
+
+  stgs() {
+    return this.settings;
+  }
+
+  getKey() {
+    return selfTesterKey;
   }
 
   next2Numbers() {
@@ -28,9 +36,6 @@ class SelfTester extends SrvBase {
       n2: this.settings.n2,
       opr: this.settings.opr,
     };
-  }
-  getLevel() {
-    return this.settings.level;
   }
   getLevelStr() {
     const lvl = this.getLevel();
@@ -47,7 +52,7 @@ class SelfTester extends SrvBase {
   lastUpdDt() {
     return super.str2Date(this.settings.lastUpdated);
   }
-  saveHistory() {}
+
   saveState() {
     super.saveStateBase(this.settings, selfTesterKey);
   }

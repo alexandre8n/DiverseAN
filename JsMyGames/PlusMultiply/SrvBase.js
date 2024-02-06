@@ -1,4 +1,5 @@
 const Key = "";
+const historyKeyEnding = "-history";
 const minDate = new Date(-8640000000000000);
 const levelInfo = [
   { lvl: 0, a: 1, b: 1, scoreKoef: 1 },
@@ -10,18 +11,33 @@ class SrvBase {
   score = 0;
   time0 = 0;
   stateOferror = false;
-  settings = null;
-  _history = null;
+  //settings = null;
+  //_history = null;
   progressStep = 0;
   progressAllSteps = 0;
 
-  constructor() {
-    this._history = new History();
+  constructor() {}
+
+  stgs() {
+    return null;
   }
-  init(settings) {
-    settings.history = this._history;
-    this.settings = settings;
+
+  init() {
+    let settings = this.stgs();
+    settings.history = new History();
   }
+
+  getState() {
+    return this.settings;
+  }
+
+  restartSet() {
+    if (this.settings) {
+      this.settings.n1 = 0;
+      this.settings.n2 = 0;
+    }
+  }
+
   next2Numbers() {
     return null; //{ n1: 0, n2: 0, opr: null };
   }
@@ -59,7 +75,13 @@ class SrvBase {
   }
 
   history() {
-    return this._history;
+    return this.stgs().history;
+  }
+
+  clearHistory() {
+    if (this.history()) {
+      this.history().clearAll();
+    }
   }
 
   // todo: stateOfError, calcOfRes, calcScore
@@ -91,35 +113,47 @@ class SrvBase {
   }
 
   addHistoryRec(ans, timeInMs, score) {
-    this.history().addRecord(
-      this.getOpr(),
-      this.n1(),
-      this.n2(),
-      ans,
-      timeInMs,
-      score
-    );
+    let h = this.history();
+    h.addRecord(this.getOpr(), this.n1(), this.n2(), ans, timeInMs, score);
+  }
+
+  saveHistory() {
+    const stgs = this.stgs();
+    const key1 = this.getKey();
+    const hRecs = stgs.history.records();
+    const historyJSON = JSON.stringify(hRecs);
+    localStorage.setItem(key1 + historyKeyEnding, historyJSON);
   }
 
   saveStateBase(settings, key1) {
     settings.lastUpdated = new Date();
-    const myJSON = JSON.stringify(settings);
-    localStorage.setItem(key1, myJSON);
+    const stgsJSON = JSON.stringify(settings);
+    var h = settings.history;
+    const hRecs = settings.history.records();
+    const historyJSON = JSON.stringify(hRecs);
+    localStorage.setItem(key1, stgsJSON);
+    localStorage.setItem(key1 + historyKeyEnding, historyJSON);
   }
 
   retrieveStateBase(settings, key1) {
     const text = localStorage.getItem(key1);
+    const historyText = localStorage.getItem(key1 + historyKeyEnding);
+    let s1 = null;
     if (text != null) {
-      const s1 = JSON.parse(text);
+      s1 = JSON.parse(text);
       if (settings.version != s1.version) {
         this.saveStateBase(settings, key1);
       }
       s1.lastUpdated = str2Date(s1.lastUpdated);
       this.settings = s1;
-      return s1;
-    }
-    this.settings = settings;
-    return settings;
+      this.settings.history = new History();
+      if (historyText != null) {
+        const histArr = JSON.parse(historyText);
+        this.settings.history.setHistoryRecords(histArr);
+      }
+    } else return settings;
+
+    return this.settings;
   }
 
   getLocalStorageKeys() {
@@ -157,7 +191,7 @@ class SrvBase {
 
   startProgress(progressMax) {
     this.progressStep = 1;
-    if (progressMax) this.progressAllSteps = progressMax;
+    if (progressMax > 0) this.progressAllSteps = progressMax;
     else this.progressAllSteps = this.learningSetSize();
   }
   progressInc() {
@@ -166,6 +200,15 @@ class SrvBase {
   progressStr() {
     if (this.progressAllSteps <= 0) return `step: ${this.progressStep}`;
     return `progress: ${this.progressStep} of ${this.progressAllSteps}`;
+  }
+
+  getLevel() {
+    return this.settings.level;
+  }
+
+  getLevelStr() {
+    const lvl = this.getLevel();
+    return `${lvl}`;
   }
 }
 

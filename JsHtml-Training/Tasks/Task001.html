@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div>
+        Number 1:
+        <span id="n1Id" , contenteditable="true"></span>
+    </div>
+    <div>
+        Number 2:
+        <span id="n2Id" , contenteditable="true"></span>
+    </div>
+    <div>
+        Sum:
+        <span id="resId" , contenteditable="true"></span>
+    </div>
+    <button onclick="onCalc()">Calculate</button>
+</body>
+<script>
+    function onCalc() {
+        let n1 = n1Id.innerHTML;
+        let n2 = n2Id.innerHTML;
+        console.log("out: " + n1 + n2);
+    }
+</script>
+
+</html>

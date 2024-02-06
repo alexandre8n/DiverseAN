@@ -21,6 +21,15 @@ class History {
   getHistoryArrayColumns() {
     return ["id", "Operation", "your answer", "time in ms", "score"];
   }
+
+  records() {
+    return this.historyRecords;
+  }
+
+  clearAll() {
+    this.historyRecords = [];
+  }
+
   getHistoryArray(idStartingFrom) {
     var resArr = [];
     this.historyRecords.forEach((rec) => {
@@ -45,6 +54,7 @@ class History {
       lastRec.score = score;
       return;
     }
+
     const rec = {
       id: this.getNextHistoryRecId(),
       opr: opr,
@@ -58,6 +68,11 @@ class History {
       this.historyRecords.shift();
     }
     this.historyRecords.push(rec);
+  }
+
+  setHistoryRecords(histArr) {
+    this.historyRecords = histArr.map((elm) => elm);
+    //histArr.forEach((elm) => this.this.historyRecords.push(elm));
   }
 
   getNextHistoryRecId() {
