@@ -153,3 +153,36 @@ function parseOperationStr(oprStr) {
   let opr = res[2];
   return { n1: n1, n2: n2, opr: opr };
 }
+
+// remove all child nodes of specified node
+function removeAllChilds(node) {
+  if (!node) return;
+  let last = null;
+  while ((last = node.lastChild)) node.removeChild(last);
+}
+
+// find element by one of names and toggle (replace) the name and the text
+function toggle12(nm1, nm2, tx1, tx2) {
+  let hereElm = document.getElementsByName(nm1);
+  if (hereElm.length > 0) {
+    hereElm = hereElm[0];
+    hereElm.name = nm2;
+    hereElm.innerHTML = tx2;
+    return hereElm;
+  }
+  hereElm = document.getElementsByName(nm2);
+  if (hereElm.length > 0) {
+    hereElm = hereElm[0];
+    hereElm.name = nm1;
+    hereElm.innerHTML = tx1;
+    return hereElm;
+  }
+  return null;
+}
+
+function getUrlParam(parName) {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const paramVal = urlParams.get(parName);
+  return paramVal;
+}

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My test</title>
+</head>
+
+<body>
+    <div id='divId'>Hello world!!
+        <p id="pId">This is a paragraph</p>
+    </div>
+    <label for="fn1">Number 1:</label>
+    <input type="text" id="n1Id" name="fn1"><br>
+    <label for="fn2">Number 2:</label>
+    <input type="text" id="n2Id" name="fn2"><br>
+    <button onclick="onChangeParagraph()">Change</button>
+
+    <script>
+        function onChangeParagraph() {
+            const p1 = document.getElementById("pId");
+            p1.innerHTML = "Changed p1";
+        }
+    </script>
+</body>
+
+</html>

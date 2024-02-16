@@ -59,6 +59,16 @@ class Quizer extends SrvBase {
     return { n1: this.n1(), n2: this.n2(), opr: this.getOpr() };
   }
 
+  getLevelRangeStr() {
+    const lvl = this.settings.level;
+    const lvlInfo = quizerLevels[lvl];
+    const str =
+      `${lvlInfo.range1[0]}..${lvlInfo.range1[1]} ` +
+      `${this.getOpr()} ` +
+      `${lvlInfo.range2[0]}..${lvlInfo.range2[1]}`;
+    return str;
+  }
+
   prepareTheQuizerSet() {
     // sets quizerSet with [ [n1, n2], [n1, n2]...] for the current level
     const lvl = this.settings.level;
@@ -137,7 +147,7 @@ class Quizer extends SrvBase {
     return score;
   }
 
-  getExpectedTime() {
+  getExpectedTime2(op, v1, v2) {
     const timeToRead = 1;
     const timeToWrite = 1.5;
     const timeDelay2Dig = 0.5;
@@ -147,15 +157,15 @@ class Quizer extends SrvBase {
 
     let tRW = timeToRead + timeToWrite;
     let t = 0;
-    const n1 = Math.max(this.n1(), this.n2());
-    const n2 = Math.min(this.n1(), this.n2());
+    const n1 = Math.max(v1, v2);
+    const n2 = Math.min(v1, v2);
     var digitsArr1 = digits(n1);
     var digitsArr2 = digits(n2);
     const d1a = digitsArr1[0];
     const d1b = digitsArr2[0];
     const d2a = digitsArr1[1];
     const d2b = digitsArr2[1];
-    if (this.getOpr() == "+") {
+    if (op == "+") {
       if (digitsArr1.length == 1) t = d1a + d1b < 10 ? timePlus1 : timePlus2;
       else if (digitsArr1.length == 2) {
         if (digitsArr2.length == 1) {
@@ -165,7 +175,7 @@ class Quizer extends SrvBase {
           t = 2 * timeDelay2Dig + timePlus1 + timePlus2;
         }
       }
-    } else if (this.getOpr() == "*") {
+    } else if (op == "*") {
       if (digitsArr1.length == 1) t = 1;
       else if (digitsArr1.length == 2) {
         if (digitsArr2.length == 1) {
@@ -177,12 +187,16 @@ class Quizer extends SrvBase {
           t = 2 * timeDelay2Dig + 4 * timeMult1 + 3 * timePlus2;
         }
       }
-    } else if (this.getOpr() == "-") {
+    } else if (op == "-") {
       t = 5;
-    } else if (this.getOpr() == "/") {
+    } else if (op == "/") {
       t = 10;
     }
     return tRW + t;
+  }
+
+  getExpectedTime() {
+    return this.getExpectedTime2(this.getOpr(), this.n1(), this.n2());
   }
 
   answeredStatistics() {

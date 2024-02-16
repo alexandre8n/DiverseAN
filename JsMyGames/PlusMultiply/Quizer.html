@@ -26,7 +26,6 @@
 
         .basicTxt {
             color: yellow;
-
         }
 
         .centerTxt {
@@ -72,7 +71,7 @@
 
 <body>
     <h1>Quizer, test your skils</h1>
-    <div id="selectOperation" style="color: yellow; display: inline-block; padding-bottom: 20px;">
+    <div id="selectOperationId" class="basicTxt">
         Select operation to test:
         <select id="oprSelect" class="dropdownOpr" onchange="onOprSelect()" name="countrySelect">
             <option value="0">Addition(+)</option>
@@ -82,21 +81,26 @@
         </select>
         <br />
         <div>
-            You practiced on the level: <span id="doneLevelId">8</span><br />
-            <div>Numbers from (11..55) * (31..69)</div>
-            Success note: <span id="successNoteId"></span>
-            <div>
-                your answers
-            </div>
-        </div>
-        <div>
             Select quiz level: <span id="oprBoxId"></span>
             <div id="LvlTableId"></div>
         </div>
     </div>
-    <!-- <div class="centerTxt" id="res">here you will get the result</div> -->
+    <div id="youPracticedId" class="basicTxt">
+        You practiced on the level: <span id="doneLevelId">8</span><br />
+        <div>
+            Numbers from:
+            <span id="numbersRangeId"></span>
+        </div>
+        Success note: <span id="successNoteId"></span>
+        <div>
+            your answers details: <a href="#" name="here" onclick="onAnswersDetails(this)">here...</a>
+            <div id="answersDetailsId"></div>
+        </div>
+    </div>
+
     <div>
-        <button class="btn btn2" onclick="onPreview()">What you learn...</button>
+        <button class="btn btn2" id="homeId" onclick="onHome()">Home</button>
+        <button class="btn btn2" id="nqId" onclick="onNewQuiz()">New Quiz</button>
         <button class="btn btn2" onclick="onDone()">Done</button>
         <button class="btn btn2" onclick="onTest()">Test</button>
     </div>
@@ -106,6 +110,9 @@
     <script src="SrvBase.js"></script>
     <script src="SrvQuizer.js"></script>
     <script>
+        var curOpr = "+";
+        var curLevel = 0;
+        var selectedRow = null;
         var oprTexts = {
             "+": "Addition(+)",
             "*": "Multiplication(*)",
@@ -117,20 +124,27 @@
             "/short": "devide by",
         };
 
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const finishState = urlParams.get('Finish');
 
-        var curOpr = "+";
-        var curLevel = 0;
         const quizer = new Quizer();
+        quizer.retrieveState();
 
-        var selectedRow = null;
-        // set the proposed operation and level
+        // if it was called as quizer.html&Finish=1?
+        const finishState = getUrlParam("Finish");
+        if (finishState == 1) {
+            hideDivById("selectOperationId");
+            youPracticedId.style.display = 'block';
+            showFinishStatistics();
+        }
+        else {
+            hideDivById("youPracticedId")
+            showSelectLevel();
+        }
 
-        // generate level table
-        generateLevelTable(quizer.allLevels(), curOpr);
-
+        function showSelectLevel() {
+            // set the proposed operation and level
+            // generate level table
+            generateLevelTable(quizer.allLevels(), curOpr);
+        }
 
         // process selection of the level
 
@@ -138,22 +152,67 @@
         // tutor.getLocalStorageKeys();
         // tutor.clearLocalStorage();
 
-        quizer.retrieveState();
-        if (finishState == 1) {
-            showFinishStatistics();
-        }
-
-
         //showOperations(oprTexts[curOpr]);
         //let dropdown = document.querySelector(".dropdown");
         // dropdown.onclick = function () {
         //     dropdown.classList.toggle("active");
         // };
 
+        function showDivById(id) {
+            const elm = document.getElementById(id);
+            elm.style.display = 'block';
+        }
+        function hideDivById(id) {
+            const elm = document.getElementById(id);
+            elm.style.display = 'none';
+        }
+
+        function onAnswersDetails(obj) {
+            if (obj.name == "back") {
+                removeAllChilds(answersDetailsId);
+                toggleHereToBack();
+                return;
+            }
+            // generate the table with answers
+            // info to be prepared:
+            // header [col1, ..., colN]
+            let header = ["question", "answer", "time", "timeExp", "score"];
+            let lastRecs = quizer.answeredStatistics();
+            let rows = [];
+            for (let i = 0; i < lastRecs.length; i++) {
+                let row1 = prepare1Row(lastRecs[i]);
+                rows.push(row1);
+            }
+            // rows [row1, ... row_m]
+            // where row-i [cell1, ..., cell_N]
+            showTable("answersDetailsId", header, rows);
+            toggleHereToBack();
+
+        }
+
+        function prepare1Row(row) {
+            let resRow = [];
+            const n1 = row.n1;
+            const n2 = row.n2;
+            const op = row.opr;
+            const res = calcCorrectRes(op, n1, n2);
+            let question = `${n1}${op}${n2} = ${res}`;
+            // "question", "answer", "time", "timeExp", "score"
+            resRow.push(question);
+            let ans = (res != row.answer) ? "wrong" : `ok`;
+            resRow.push(ans);
+            resRow.push(`${(row.timeInMs / 1000).toFixed(1)}`);
+            const timeExp = quizer.getExpectedTime2(op, n1, n2);
+            resRow.push(`${timeExp.toFixed(1)}`);
+            resRow.push(`${row.score}`);
+            return resRow;
+        }
+
         function generateLevelTable(levels, opr) {
             const maxRow = levels.length;
             // creates a <table> element and a <tbody> element
             const tblDiv = document.getElementById("LvlTableId");
+            if (tblDiv.lastChild) return;
             const tbl = document.createElement("table");
             const tblBody = document.createElement("tbody");
             const header = ["Level", "1st Number", "OP", "2nd Number"];
@@ -196,32 +255,27 @@
             // sets the border attribute of tbl to '1'
             tbl.setAttribute("border", "1px");
             tbl.onclick = highlightRow;
-
         }
+
         function showFinishStatistics() {
             let lastRecs = quizer.answeredStatistics();
             if (lastRecs == null || lastRecs.length == 0) {
                 showNoHistory();
                 return;
             }
+
             // history record 
             // {opr: "+", n1:0, n2:0, result:0, answer:0, timeInMs:0, score:0}
             const sumRes = lastRecs.reduce((a, b) => a + b.score, 0);
             const avg = (sumRes / lastRecs.length) || 0;
-            const strNote = `${avg} of 100`;
+            const strNote = `${avg.toFixed(1)} of 100`;
             successNoteId.innerHTML = strNote;
 
-
-            // get last 15 answers:
-
-            // avg score: 75% of 100%
-            // avg time: 7 sec
-            // your tasks detailed results: 15 (details) ->
-            // recomendation: <rcmnd> ->
-            // <rcmnd>: try again / goto next level / try on previous
-            // exit, done, select level
-
+            // show practiced level/numbers:
+            doneLevelId.innerHTML = quizer.getLevel() + "";
+            numbersRangeId.innerHTML = quizer.getLevelRangeStr();
         }
+
         function showNoHistory() {
             successNoteId.innerHTML = "No statistics available";
         }
@@ -274,9 +328,16 @@
             }
         }
 
-        function onPreview() {
-            // save ranges
-            location.href = "multiTable.html";
+        function onHome() {
+            location.href = "index.html?Home=1";
+        }
+        function onNewQuiz() {
+            // go to select new quiz level
+            hideDivById("youPracticedId")
+            showDivById("selectOperationId");
+            showSelectLevel();
+            nqId.style.display = "none";
+
         }
         function onDone() {
             let state = quizer.getState(); // it's just a ref
@@ -286,21 +347,59 @@
             location.href = "index.html";
         }
         function onTest() {
-            var arr = [[5, 3], [7, 9], [32, 7], [78, 9], [99, 98]];
-            arr.forEach(e => {
-                quizer.settings.n1 = e[0];
-                quizer.settings.n2 = e[1];
-                quizer.settings.opr = "*";
-                //console.log(`opr: ${quizer.n1()} ${quizer.settings.opr} ${quizer.n2()}`);
-                var t = quizer.getExpectedTime();
-                //console.log(`t: ${t} ${quizer.n1()} ${quizer.settings.opr} ${quizer.n2()}`);
-            });
-            // tester
-            var element = document.querySelectorAll('.tblRowSelected');
-            if (element[0] !== undefined) { //it must be selected
-                alert(element[0].children[0].firstChild.data);
+            hideDivById("selectOperationId");
+            youPracticedId.style.display = 'block';
+            showFinishStatistics();
+        }
+
+        function toggleHereToBack() {
+            toggle12("here", "back", "-> here ...", "<- Back...");
+        }
+
+        function showTable(parentId, header, rows) {
+            const maxRow = rows.length;
+            // creates a <table> element and a <tbody> element
+            const tblDiv = document.getElementById(parentId);
+            removeAllChilds(tblDiv);
+            // if div not empty - make it empty
+            const tbl = document.createElement("table");
+            const tblBody = document.createElement("tbody");
+            // creating all cells 
+            for (let i = -1; i < maxRow; i++) {
+                // creates a table row
+                const row = document.createElement("tr");
+                if (i == - 1) {
+                    row.className = "bold";
+                }
+
+                for (let j = 0; j < header.length; j++) {
+                    // Create a <td> element and a text node, make the text
+                    // node the contents of the <td>, and put the <td> at
+                    // the end of the table row
+                    const cell = document.createElement("td");
+                    var val = "";
+                    if (i == -1) {
+                        val = header[j];
+                        cell.className = "bold";
+                    }
+                    else {
+                        const rowI = rows[i];
+                        val = rowI[j];
+                        cell.className = "basicTxt";
+                    }
+                    const cellText = document.createTextNode(`${val}`);
+                    cell.appendChild(cellText);
+                    row.appendChild(cell);
+                }
+                // add the row to the end of the table body
+                tblBody.appendChild(row);
             }
-            quizer.prepareTheQuizerSet();
+            tbl.appendChild(tblBody);
+            tblDiv.appendChild(tbl);
+            //document.body.appendChild(tbl);
+            // sets the border attribute of tbl to '1'
+            tbl.setAttribute("border", "1px");
+            tbl.onclick = highlightRow;
         }
 
     </script>

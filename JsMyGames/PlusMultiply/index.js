@@ -334,16 +334,18 @@ function getKeyByValue(object, value) {
 }
 
 function loadAllStatesSelectServer() {
-  // todo check history here?
-
   tutor.retrieveState();
   selfTester.retrieveState();
   quizer.retrieveState();
 
+  let home1 = getUrlParam("Home");
+  if (home1 == 1) {
+    setSelfTestMode(true);
+    return selfTester;
+  }
   let slfT = selfTester.lastUpdDt().valueOf();
   let ttr = tutor.lastUpdDt().valueOf();
   let qzr = quizer.lastUpdDt().valueOf();
-
   const maxUpd = Math.max(slfT, ttr, qzr);
   if (ttr == maxUpd) {
     setTutorMode(true);
