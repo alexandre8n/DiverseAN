@@ -1,0 +1,210 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{93BBF269-4393-4C46-ABEE-676FD5493E1A}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PrepareReport</RootNamespace>
+    <AssemblyName>PrepareReport</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Ionic.Zip">
+      <HintPath>Lib\Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI, Version=1.2.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Lib\NPOI\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.DDF, Version=1.2.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\NPOI.DDF.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.HPSF, Version=1.2.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\NPOI.HPSF.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.HSSF, Version=1.2.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\NPOI.HSSF.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.POIFS, Version=1.2.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\NPOI.POIFS.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.Util, Version=1.2.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\NPOI.Util.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="RibbonControlsLibrary" />
+    <Reference Include="Microsoft.Windows.Shell" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="AppInfo.cs" />
+    <Compile Include="DeveloperEffortRecords.cs" />
+    <Compile Include="EqualFilesAnalizer\Afile.cs" />
+    <Compile Include="EqualFilesAnalizer\EqualFilesAnalizer.cs" />
+    <Compile Include="EqualFilesAnalizer\GroupOfEqualFiles.cs" />
+    <Compile Include="EqualFilesAnalizer\Utl.cs" />
+    <Compile Include="SubForms\HelperCtlFileMover.xaml.cs">
+      <DependentUpon>HelperCtlFileMover.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SubForms\ProblemCheckWnd.xaml.cs">
+      <DependentUpon>ProblemCheckWnd.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SubForms\HelperCtlReportMover.xaml.cs">
+      <DependentUpon>HelperCtlReportMover.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SubForms\WndAskJoinParams.xaml.cs">
+      <DependentUpon>WndAskJoinParams.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PrpRptCommands.cs" />
+    <Compile Include="RelayCommand.cs" />
+    <Compile Include="ReportsMover.cs" />
+    <Compile Include="Tests.cs" />
+    <Compile Include="Utl\FilesCopyMover.cs" />
+    <Compile Include="Utl\FilesMoverOld.cs" />
+    <Compile Include="Utl\FilesMoverTask.cs" />
+    <Compile Include="Utl\GraphicsProcessor.cs" />
+    <Compile Include="Utl\InvoiceGenerator.cs" />
+    <Compile Include="Utl\PaneSwitcher.cs" />
+    <Compile Include="Utl\utls.cs" />
+    <Compile Include="Utl\WndUtl.cs" />
+    <Page Include="SubForms\HelperCtlFileMover.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SubForms\ProblemCheckWnd.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SubForms\HelperCtlReportMover.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SubForms\WndAskJoinParams.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReportTemplateFile.xls" />
+    <None Include="app.config" />
+    <EmbeddedResource Include="CompanyInvoiceTemplate.xlsx" />
+    <EmbeddedResource Include="ManagerInvoiceTemplate.xlsx" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\LargeIcon.png" />
+    <Resource Include="Images\SmallIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\zip.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ok_24_trnsp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="EPPlus">
+      <Version>5.7.2</Version>
+    </PackageReference>
+    <PackageReference Include="System.ValueTuple">
+      <Version>4.5.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Archive.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\FilesMover.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

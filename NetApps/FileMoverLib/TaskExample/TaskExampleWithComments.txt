@@ -1,0 +1,41 @@
+﻿// recommended for the task file to have the extention: .filesmover
+// IsActive: true or false
+// move IsToMove: true  or copy IsToMove: false?
+
+IsActive: true
+IsToMove: false
+
+// FromFolder: can be one or several folders, in this case the files of this task will be searched
+// example: 
+// FromFolder: F1
+// FromFolder: F2
+// it means the files will be searched in F1 and F2
+// take from current: FromFolder: .
+// sub-folder of current: FromFolder: .\sub-folder
+// folder of exe module: {exe} or FromFolder: {exe}\sub-folder
+
+FromFolder: C:\Users\Alex\Dropbox\Projects\AppVpro-AnarGorkhmaz\VproDev\AC-VPro 
+FromFolder: C:\Users\Alex\Dropbox\Projects\AppVpro-AnarGorkhmaz\VproDev\SM-VPro
+
+// ToFolder can alse be specified several times, it means every matching file will be copied to all 'ToFolder's
+// Example:
+// ToFolder: .\inv1     
+// ToFolder: f:\inv2     
+
+ToFolder: {exe}\sub-folder1
+ToFolder: {exe}\sub-folder2
+
+// if in ToFolder folder there are any files matching pattern, move them to this archive folder
+// if ArciveFolder is not specified or empty -> no archiving will be done
+
+ArciveFolder: {exe}\archiv  
+
+// supported expression {Date}, {EndOfThisWeekDate}, {TodayDate}, {EndOfThisMonthDate}, {ThisMonthDate}
+// {EndOfThisWeekDate} = YYYY-MM-DD 
+// example for file: SM.VPro.Timebooking report 2024-02-25.xlsx -> \w\w\.VPro\.Timebooking report {EndOfThisWeekDate}.xlsx
+// FilePattern can alse be specified several times, it means for all specified matching files will be considered
+// Example:
+// FilePattern: {Date}*.*
+// FilePattern: \w\w\.ProjName\.Timebooking report {EndOfThisWeekDate}.xlsx
+
+FilePattern: \w\w\.VPro\.Timebooking report {EndOfThisWeekDate}.xlsx

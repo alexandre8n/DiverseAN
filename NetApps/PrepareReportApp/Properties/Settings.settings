@@ -1,0 +1,67 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="PrepareReport.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ManagerFolder" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">_AN</Value>
+    </Setting>
+    <Setting Name="ManagerReportPhraseToAdd" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Progress review.</Value>
+    </Setting>
+    <Setting Name="MessageToAddInClipboard" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Weekly timesheet and invoices ({Date})
+Hi Gorkhmaz
+
+Please find attached time-sheets and invoices.
+
+Best regards
+Sasha
+            </Value>
+    </Setting>
+    <Setting Name="PasswordForZip" Type="System.String" Scope="User">
+      <Value Profile="(Default)">SoftwareAces99</Value>
+    </Setting>
+    <Setting Name="SourceFolder" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">C:\Users\Alex\Dropbox\CleverCAD_Timebooking</Value>
+    </Setting>
+    <Setting Name="TargetFolder" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">F:\CleverCAD\Reporting</Value>
+    </Setting>
+    <Setting Name="TargetFolderArchive" Type="System.String" Scope="User">
+      <Value Profile="(Default)">F:\CleverCAD\Reporting\Archive</Value>
+    </Setting>
+    <Setting Name="GenerateManagerReport" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="IsToSaveTasksToFiles" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="IsToGenerateInvoices" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="IsToDoFileMoverTasks" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SubFolderInvoices" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Inv</Value>
+    </Setting>
+    <Setting Name="SourceFolderTest" Type="System.String" Scope="User">
+      <Value Profile="(Default)">F:\Work\Temp\PrepareReportTest\Src</Value>
+    </Setting>
+    <Setting Name="TargetFolderTest" Type="System.String" Scope="User">
+      <Value Profile="(Default)">F:\Work\Temp\PrepareReportTest\Trg</Value>
+    </Setting>
+    <Setting Name="IsTestMode" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="FilesMoverTasksFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">F:\CleverCAD\Reporting\FilesMoverTasks</Value>
+    </Setting>
+    <Setting Name="FilesMoverTasksToDo" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ToYR;</Value>
+    </Setting>
+    <Setting Name="SummarizeReportFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\Alex\Dropbox\AN_YR\SoftwareAces\CleverCAD</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

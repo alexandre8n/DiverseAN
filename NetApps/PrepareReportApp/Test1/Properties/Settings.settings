@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Test1.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Instruments" Type="System.String" Scope="User">
+      <Value Profile="(Default)">BTC, BCH, ETH, ETC, XRP, LTC, DASH</Value>
+    </Setting>
+    <Setting Name="ObservationFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Temp\CryptoObservations</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

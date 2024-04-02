@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "FileMoveHelper": {
+      "commandName": "Project",
+      "commandLineArgs": "1"
+    }
+  }
+}

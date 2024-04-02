@@ -1,0 +1,44 @@
+// file should have the extention: .excelModify
+IsActive: true
+
+// FromFolder: can be one or several folders, in this case the files of this task will be searched
+FromFolder: {exe}\DermoVisionReports
+FromFolderPattern: \w\w\.VPro\.Timebooking report {EndOfThisWeekDate}.xlsx
+OutputFileTemplateFolder: {exe}\DermoVisionReports
+OutputFileTemplatePattern: DermoVisionInv.xlsx
+OutputFileToFolder: {exe}\DermoVisionReports
+OutputFileName: NGSA-Inv-{EndOfThisWeekDate}.xlsx
+
+// if in ToFolder folder there are any files matching pattern, move them to this archive folder
+// if ArciveFolder is not specified or empty -> no archiving will be done
+
+ArciveFolder: {exe}\archiv  
+
+// supported expression {Date}, {EndOfThisWeekDate}, {TodayDate}, {EndOfThisMonthDate}
+// {EndOfThisWeekDate} = YYYY-MM-DD 
+// example for file: SM.VPro.Timebooking report 2024-02-25.xlsx -> \w\w\.VPro\.Timebooking report {EndOfThisWeekDate}.xlsx
+// FilePattern can alse be specified several times, it means for all specified matching files will be considered
+// Example:
+// FilePattern: {Date}*.*
+// FilePattern: \w\w\.ProjName\.Timebooking report {EndOfThisWeekDate}.xlsx
+
+// Processing of input files and creation of output file:
+<script>
+for(file in FromFiles){
+	var o = createObj()	//create empty obj
+	o.name = file.name.Left(2)
+	var b = searchVertically("D1", "Total hours", 100)
+	o.totalHours = getCellValue(b.x, b.y+1)
+	Memory.add(o)
+}
+
+var of = openOutputFile()
+var cell = searchVertically("A10", "VPro - \w\w", 100)
+for(o in Memory){
+	var cellOfDev = searchVertically(cell.name, "VPro - "+o.name, 100)
+	var cellH = getCell(cellOfDev.x+6, cellOfDev.y)
+	cellH.SetValue(o.totalHours);
+}
+of.save()
+of.close()
+</script>

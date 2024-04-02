@@ -1,0 +1,111 @@
+﻿<ribbon:RibbonWindow x:Class="PrepareReport.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ribbon="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
+        xmlns:custom="clr-namespace:PrepareReport"
+        Title="MainWindow"
+		x:Name="RibbonWindow"
+		Width="640" Height="680">
+
+    <Window.CommandBindings>
+        <CommandBinding Command="custom:PrpRptCommands.MoveReportFiles"
+                    Executed="MoveReports"
+                    CanExecute="MoveReportsCanExecute"/>
+        <CommandBinding Command="custom:PrpRptCommands.ZipReportFiles"
+                    Executed="ZipReports"
+                    CanExecute="ZipReportsCanExecute"/>
+        <CommandBinding Command="custom:PrpRptCommands.SummarizeReportFiles"
+                    Executed="SummarizeReports"
+                    CanExecute="SummarizeReportsCanExecute"/>
+        <CommandBinding Command="custom:PrpRptCommands.RegExpTester"
+                    Executed="RegExpTester"
+                    CanExecute="RegExpTesterCanExecute"/>
+        <CommandBinding Command="custom:PrpRptCommands.OpenReportsFolder" Executed="OpenReprotsFolder" CanExecute="OpenReprotsFolderCanExecute"/>
+    </Window.CommandBindings>
+
+
+    <Grid x:Name="LayoutRoot">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <ribbon:Ribbon x:Name="Ribbon">
+            <ribbon:Ribbon.ApplicationMenu>
+                <ribbon:RibbonApplicationMenu SmallImageSource="Images\SmallIcon.png">
+                    <ribbon:RibbonApplicationMenuItem Header="Hello _Ribbon"
+                                                      x:Name="MenuItem1"
+                                                      ImageSource="Images\LargeIcon.png"/>
+                </ribbon:RibbonApplicationMenu>
+            </ribbon:Ribbon.ApplicationMenu>
+            <ribbon:RibbonTab x:Name="HomeTab" 
+                              Header="Home">
+                <ribbon:RibbonGroup x:Name="Group1" 
+                                    Header="Group1">
+                    <ribbon:RibbonButton x:Name="BtnMoveReports"
+                                         LargeImageSource="Images\LargeIcon.png"
+                                         Label="Move Reports" Command="custom:PrpRptCommands.MoveReportFiles"/>
+                    <ribbon:RibbonButton x:Name="BtnZipReportFiles"
+                                         LargeImageSource="Images\zip.png"
+                                         Label="Zip Reports" Command="custom:PrpRptCommands.ZipReportFiles"/>
+                    <ribbon:RibbonButton x:Name="BtnSummarizeReportFiles"
+                                         LargeImageSource="Images\LargeIcon.png"
+                                         Label="Sum-ze Reports" Command="custom:PrpRptCommands.SummarizeReportFiles"/>
+                    <ribbon:RibbonButton x:Name="BtnArchiveOldReportInvoicesFiles"
+                                         LargeImageSource="Images\Archive.png"
+                                         Label="Old to Archive" Click ="BtnArchiveOldReportInvoicesFiles_Click"/>
+                    <ribbon:RibbonButton x:Name="BtnMoveFilesTasks"
+                                         LargeImageSource="Images\FilesMover.png"
+                                         Label="File Mover Tasks" Click ="BtnFilesMoverTasks_Click"/>
+                    <ribbon:RibbonButton x:Name="BtnOpenReportsFolder"
+                                         LargeImageSource="Images\LargeIcon.png"
+                                         Label="Report Folder" Command="custom:PrpRptCommands.OpenReportsFolder"/> 
+
+                    <ribbon:RibbonButton x:Name="btnShowTasks" Click ="showTasks_Click"
+                                         SmallImageSource="Images\SmallIcon.png"
+                                         Label="Show Tasks" />
+                    <ribbon:RibbonButton x:Name="btnJoinTxtFiles" Click ="btnJoinTxtFiles_Click"
+                                         SmallImageSource="Images\SmallIcon.png"
+                                         Label="Join Text Files" />
+                    <ribbon:RibbonButton x:Name="btnCheckDuplicateFiles" Click ="btnCheckDuplicateFiles_Click"
+                                         SmallImageSource="Images\SmallIcon.png"
+                                         Label="Check Duplicate Files" />
+                </ribbon:RibbonGroup>
+                <ribbon:RibbonGroup x:Name="GrpTools" 
+                                    Header="Tools">
+                    <ribbon:RibbonButton x:Name="btnRegExpTest"
+                                         LargeImageSource="Images\LargeIcon.png"
+                                         Label="Test RegExp" Command="custom:PrpRptCommands.RegExpTester"/>
+                </ribbon:RibbonGroup>
+
+            </ribbon:RibbonTab>
+        </ribbon:Ribbon>
+        <Grid Name="grid1" Grid.Row="1" Visibility="Visible">
+            <RichTextBox Name="logBox" />            
+        </Grid>
+        <Grid Name="grid2" Grid.Row="1" Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Image Source="Images\FilesMover.png" Stretch="Uniform" Grid.Column="1" Grid.Row="2" Margin="5" />
+        </Grid>
+        <Grid Name="grid3" Grid.Row="1" Visibility="Collapsed">
+            <Canvas Name="canvasToDraw" Background="LightGray" >
+                <Button x:Name="playBtn" Canvas.Left="10" Canvas.Top="20">Play</Button>
+                <Button Canvas.Top="20">Close</Button>
+                
+                <Rectangle Fill="LightCyan" Canvas.Left="75" Canvas.Top="75" Width="50" Height="50" />
+                <Image Source="Images\FilesMover.png" Stretch="Uniform" Grid.Column="2" Grid.Row="1" Margin="5" />
+            </Canvas>
+        </Grid>
+    </Grid>
+</ribbon:RibbonWindow>
