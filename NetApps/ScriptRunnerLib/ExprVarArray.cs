@@ -44,5 +44,12 @@ namespace ScriptRunnerLib
             int iLen = ((List<ExprVar>)m_objVal).Count;
             return $"Name: {m_Name}, type: {GetStringType()}, length: {iLen}";
         }
+
+        public override ExprVar GetProperty(ExprVar exprVar2)
+        {
+            string propName = exprVar2.AsString();
+            if (propName == "length") return Length();
+            throw new Exception($"Error: undefined property {propName}, array variable: {this.ToString()}");
+        }
     }
 }

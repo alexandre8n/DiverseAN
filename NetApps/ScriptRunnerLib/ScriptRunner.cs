@@ -194,6 +194,7 @@ namespace ScriptRunnerLib
         {
             // currently used for if, for(...), while(...) or general {}
             var resSkipped = UtlParserHelper.SkipEmpties(script, prevRes.end);
+            if (resSkipped.end >= script.Length) return false;
             var res = resSkipped.Clone();
             if (UtlParserHelper.Subs(script, res.end, blockName.Length) == blockName)
             {

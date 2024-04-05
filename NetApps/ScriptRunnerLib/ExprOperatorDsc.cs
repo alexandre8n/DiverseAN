@@ -65,7 +65,7 @@ namespace ScriptRunnerLib
             afxOperators.Add(new ExprOperatorDsc(OperationCode.OPR_AND, 6, "&&", ") ", "( ", false, true)); //"AND"
             afxOperators.Add(new ExprOperatorDsc(OperationCode.OPR_OR, 7, "||", ") ", "( ", false, true));  // OR
 			afxOperators.Add(new ExprOperatorDsc(OperationCode.OPR_BRACKETS, 0, "[]", "", "", false, false, true));
-			afxOperators.Add(new ExprOperatorDsc(OperationCode.OPR_POINT, 8, ".", "", "", false, false));
+			afxOperators.Add(new ExprOperatorDsc(OperationCode.OPR_POINT, 0, ".", "", "", false, false));
         }
 
         public OperationCode m_Code;
@@ -264,7 +264,25 @@ namespace ScriptRunnerLib
             {
                 return OprBrackets(args[0], args[1]);
             }
+            else if (m_Code == OperationCode.OPR_POINT)
+            {
+                return OprPoint(args[0], args[1]);
+            }
+            else
+            {
+                throw new Exception($"Internal Error: Failed to Calculate, unknown operation {m_Code}");
+            }
             return var;
+        }
+
+        private ExprVar OprPoint(ExprVar exprVar1, ExprVar exprVar2)
+        {
+            if (exprVar1.m_Type == EType.E_ARRAY)
+            {
+                var vRes = ((ExprVarArray)exprVar1).GetProperty(exprVar2);
+                return vRes;
+            }
+            return exprVar1.GetProperty(exprVar2);
         }
 
         private ExprVar OprBrackets(ExprVar exprVar1, ExprVar exprVar2)

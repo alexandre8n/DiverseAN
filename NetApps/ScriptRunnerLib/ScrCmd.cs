@@ -26,7 +26,7 @@ namespace ScriptRunnerLib
         protected CmdType type = CmdType.Undefined;
         protected string name="";
         ExprNode expressionNode = null;
-        ScrMemory globalMemMngr = null;
+        protected ScrMemory globalMemMngr = null;
         ScrBlock blockOwner = null;
         protected ScriptRunner runOwner = null;
         protected ScrCmd(ScriptRunner runOwner) 
@@ -47,6 +47,10 @@ namespace ScriptRunnerLib
         public ScrBlock GetOwner()
         {
             return this.blockOwner;
+        }
+        public ExprNode GetExprNode()
+        {
+            return expressionNode;
         }
         public string IdStr()
         {
@@ -117,12 +121,27 @@ namespace ScriptRunnerLib
             {
                 result = ExecuteFunction(node.GetFuncName(), node.GetOperands());
             }
+            else if (node.IsBreakOrContinue())
+            {
+                result = new ExprVar();
+                int bORc = (node.nodeType==NodeType.BREAK) ? 
+                        ScrBlock.afxBreak : ScrBlock.afxContinue;
+                result.SetVal(bORc);
+            }
+            else if(node.IsVarNode())
+            {
+                string varName = node.GetVarName();
+                return GetVarFromMemory(varName);
+            }
             return result;
         }
 
         private ExprVar ExecuteFunction(string funcName, ArrayList operands)
         {
-            throw new NotImplementedException();
+            var vars = PrepareOperands(operands, "Function: "+funcName);
+            var func = ScrSysFuncList.GetFunc(funcName);
+            var vRes = func(vars);
+            return vRes;
         }
 
         private ExprVar ExecuteOperation(ExprOperatorDsc opr, ArrayList operands)
@@ -156,6 +175,12 @@ namespace ScriptRunnerLib
                 {
                     vars.Add(subNode.GetVar());
                 }
+                else if (subNode.IsProperty())
+                {
+                    string varName = subNode.GetVarName();
+                    ExprVar var = new ExprVar(varName, EType.E_STRING, varName, null);
+                    vars.Add(var);
+                }
                 else if (subNode.IsVarNode())
                 {
                     string varName = subNode.GetVarName();
@@ -181,7 +206,7 @@ namespace ScriptRunnerLib
             return result;
         }
 
-        private ExprVar GetVarFromMemory(string varName)
+        public ExprVar GetVarFromMemory(string varName)
         {
             ExprVar definedVar = null;
             var owner = blockOwner;
@@ -213,7 +238,7 @@ namespace ScriptRunnerLib
             if(isAlreadyDefined)
             {
                 string info = UtlParserHelper.Subs(body, 0, 100);
-                throw new Exception($"Error: variable{varName} is already defined:\n{info}...");
+                throw new Exception($"Error: variable {varName} is already defined:\n{info}...");
             }
         }
     }

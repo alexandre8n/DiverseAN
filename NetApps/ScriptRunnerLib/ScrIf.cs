@@ -72,10 +72,11 @@ namespace ScriptRunnerLib
             return res.m_intVal != 0;
         }
 
-        internal void Run(ScrMemory globalMemMngr, ScrBlock scrBlock)
+        internal ExprVar Run(ScrMemory globalMemMngr, ScrBlock scrBlock)
         {
             ifBodyBlock.SetBlockOwner(scrBlock);
-            ifBodyBlock.Run(globalMemMngr);
+            var vRes = ifBodyBlock.Run(globalMemMngr);
+            return vRes;
         }
     }
     public class ScrIf : ScrBlock
@@ -133,16 +134,16 @@ namespace ScriptRunnerLib
             var ifBase = IfBlockParts[0];
             if(ifBase.IsConditionOk(globalMemMngr, GetOwner()))
             {
-                ifBase.Run(globalMemMngr, GetOwner());
-                return null;
+                var vRes = ifBase.Run(globalMemMngr, GetOwner());
+                return vRes;
             }
             for(int i=1; i<IfBlockParts.Count; i++)
             {
                 var ifPart = IfBlockParts[i];
                 if(ifPart.IsConditionOk(globalMemMngr, GetOwner()))
                 {
-                    ifPart.Run(globalMemMngr, GetOwner());
-                    return null;
+                    var vRes = ifPart.Run(globalMemMngr, GetOwner());
+                    return vRes;
                 }
             }
             return null;

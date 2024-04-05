@@ -155,9 +155,8 @@ namespace ScriptRunnerLib
             else v2.SetVal(ToInt() / v1.ToInt());
             return v2;
         }
-        public override string ToString()
+        public string AsString()
         {
-            string nm = (string.IsNullOrEmpty(m_Name)) ? "NoN" : m_Name;
             string val = m_Value;
             switch (m_Type)
             {
@@ -171,10 +170,16 @@ namespace ScriptRunnerLib
                     val = $"Undef.Obj.";
                     break;
             }
+            return val;
+        }
+        public override string ToString()
+        {
+            string nm = (string.IsNullOrEmpty(m_Name)) ? "NoN" : m_Name;
+            string val = AsString();
             return $"Name: {nm}, type: {GetStringType()}, val: {val}";
         }
 
-        internal int Compare(ExprVar v1)
+        public int Compare(ExprVar v1)
         {
             // returns: 0 ==, 1 this>v1, -1 this<v1;
             if (m_Type == EType.E_STRING || v1.m_Type == EType.E_STRING)
@@ -206,5 +211,19 @@ namespace ScriptRunnerLib
             }
             return v;
         }
+
+        public virtual ExprVar GetProperty(ExprVar exprVar2)
+        {
+            ExprVar v = new ExprVar();
+            string propName = exprVar2.AsString();
+            if (m_Type == EType.E_STRING && propName == "length") 
+            {
+                int iLen = m_Value.Length;
+                v.SetVal(iLen);
+            }
+            else throw new Exception($"Error: undefined property {propName}, variable: {this.ToString()}");
+            return v;
+        }
+
     }
 }

@@ -11,7 +11,8 @@ namespace ScriptRunnerLib
     {
         UNDEF,
         VARIABLE,
-		CONSTANT,
+        PROPERTY,
+        CONSTANT,
         OPERATOR,
         FUNCTION,
         ARRAY,
@@ -51,6 +52,9 @@ namespace ScriptRunnerLib
 		
 		// m_Var is to save variable name or constant
 		private ExprVar m_Var = new ExprVar();
+
+        // is a DotFollower or property - if this node follows . (DOT) operator
+        bool isDotFollower = false;				
 		
 		private ArrayList m_Nodes = new ArrayList();
 		
@@ -126,7 +130,7 @@ namespace ScriptRunnerLib
 			if (IsName(m_ExprBuff))
 			{
 				m_Var.m_Name = m_ExprBuff;
-				nodeType = NodeType.VARIABLE;
+				nodeType = (isDotFollower) ? NodeType.PROPERTY : NodeType.VARIABLE;
                 return;
 			}
 			if (CheckConstant(ref m_ExprBuff))
@@ -167,6 +171,10 @@ namespace ScriptRunnerLib
 			if (Operand2 != "")
 			{
 				pNode = new ExprNode(Operand2);
+				if(m_pOperDsc.m_Code == OperationCode.OPR_POINT)
+				{
+					pNode.isDotFollower = true;
+                }
 				m_Nodes.Add(pNode);
 				pNode.BuildExprTree();
 			}
@@ -245,26 +253,12 @@ namespace ScriptRunnerLib
 		
 		public string GetNodeType()
 		{
-			if (GetOperationText() == ".")
-			{
-				return "Dot";
-			}
-			if (IsVarNode())
-			{
-				return "Variable";
-			}
-			if (IsFunctionNode())
-			{
-				return "Function";
-			}
-			if (IsConstNode())
-			{
-				return "Const:" + m_Var.GetStringType();
-			}
-            if (IsArray())
-            {
-                return "Array";
-            }
+			if (GetOperationText() == ".") return "Dot";
+			if (IsVarNode()) return "Variable";
+			if (IsProperty()) return "Property";
+			if (IsFunctionNode()) return "Function";
+			if (IsConstNode()) return "Const:" + m_Var.GetStringType();
+            if (IsArray()) return "Array";
             return "Expression";
 		}
 		
@@ -273,17 +267,25 @@ namespace ScriptRunnerLib
             //m_Function == "" && m_pOperDsc == null && GetVarName() != "";
             return nodeType == NodeType.VARIABLE;
         }
+        public bool IsProperty()
+        {
+            return nodeType == NodeType.PROPERTY;
+        }
         public bool IsFunctionNode()
 		{
 			return m_Function != "";
 		}
 		public bool IsOperationNode()
 		{
-            return nodeType == NodeType.OPERATOR;
+			return nodeType == NodeType.OPERATOR;
         }
         public bool IsArray()
         {
             return nodeType == NodeType.ARRAY;
+        }
+		public bool IsBreakOrContinue()
+		{
+			return nodeType == NodeType.BREAK || nodeType == NodeType.CONTINUE;
         }
 
         public static bool FindSafeNextOperation(ref string sBuf, int iBeginScan, ref int iPosFound, ref ExprOperatorDsc pOper)

@@ -53,6 +53,7 @@
     <Compile Include="ScriptRunner.cs" />
     <Compile Include="ScrLoop.cs" />
     <Compile Include="ScrMemory.cs" />
+    <Compile Include="ScrSysFuncList.cs" />
     <Compile Include="Utl.cs" />
     <Compile Include="UtlParserHelper.cs" />
   </ItemGroup>
