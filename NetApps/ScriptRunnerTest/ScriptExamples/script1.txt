@@ -1,0 +1,2 @@
+﻿let filePath = "F:\Work\Temp\PrepareReportTest\CopyTo1\NGSA-Inv-2024-05-19.xlsx";
+let res = openExcelFile(filePath);

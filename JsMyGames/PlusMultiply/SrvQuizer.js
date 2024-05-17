@@ -204,7 +204,6 @@ class Quizer extends SrvBase {
     let historyRecs = h == null ? [] : h.records();
     let recs = [];
     let idxInHistory1 = historyRecs.length - this.progressStep;
-
     for (let i = idxInHistory1; i < historyRecs.length; i++) {
       recs.push(historyRecs[i]);
     }

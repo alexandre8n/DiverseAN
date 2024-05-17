@@ -9,9 +9,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileMoverLib", "..\FileMove
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileMoveHelper", "..\FileMoveHelper\FileMoveHelper.csproj", "{D6974489-ED11-41D8-A337-CF451C2EACAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptRunnerTest", "..\ScriptRunnerTest\ScriptRunnerTest.csproj", "{596A4B88-9B38-459C-9D1F-7D4F6E0F9AA2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScriptRunnerTest", "..\ScriptRunnerTest\ScriptRunnerTest.csproj", "{596A4B88-9B38-459C-9D1F-7D4F6E0F9AA2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptRunnerLib", "..\ScriptRunnerLib\ScriptRunnerLib.csproj", "{B3B3E732-D07C-4D95-BEDE-9A4D284F5DD3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C964CDC6-2BA6-4942-80AB-C6A0F7762427}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

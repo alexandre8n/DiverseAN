@@ -1,0 +1,4 @@
+Find first duplicate in array
+
+[1,2,3,7,2, 3]
+2 has duplicate

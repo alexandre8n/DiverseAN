@@ -24,21 +24,65 @@ ArciveFolder: {exe}\archiv
 
 // Processing of input files and creation of output file:
 <script>
-for(file in FromFiles){
-	var o = createObj()	//create empty obj
-	o.name = file.name.Left(2)
-	var b = searchVertically("D1", "Total hours", 100)
-	o.totalHours = getCellValue(b.x, b.y+1)
-	Memory.add(o)
+var Memory = createObject("Dictionary");
+var wrkSheet = 0;
+for(file in _FromFiles){
+	var name = file.getFileName().Left(2)
+	var of = openXlsFile(file)
+	var iRow = of.findRowNumber( wrkSheet, 1, 4, "Total hours", 100)
+	var totalHours = of.getCellValue(wrkSheet, iRow, 4+1)
+	Memory.add(name, totalHours);
+	of.close()
 }
 
-var of = openOutputFile()
-var cell = searchVertically("A10", "VPro - \w\w", 100)
-for(o in Memory){
-	var cellOfDev = searchVertically(cell.name, "VPro - "+o.name, 100)
-	var cellH = getCell(cellOfDev.x+6, cellOfDev.y)
-	cellH.SetValue(o.totalHours);
+var outf = openXlsFile(_OutputFile)
+var iRowStart = outf.findRowNumber(wrkSheet, 10, 1, "RegExp:^VPro - \w\w", 100)
+for(var name in Memory.Keys()){
+	var iRowOfDev = outf.findRowNumber(wrkSheet, iRowStart, 1, "VPro - "+name, 100)
+	var totalHours =Memory[name];
+	outf.setCellVal(wrkSheet, iRowOfDev, 7, totalHours)
 }
-of.save()
-of.close()
+outf.save()
+outf.close()
+</script>
+
+
+<script>
+var fmTask = createObject("Dictionary");
+var fm = createObject("FileMover");
+fmTask.FromFolders = 
+"C:\Users\Alex\Dropbox\Projects\AppVpro-AnarGorkhmaz\VproDev\AC-VPro;"+
+"C:\Users\Alex\Dropbox\Projects\AppVpro-AnarGorkhmaz\VproDev\SM-VPro";
+fmTask.FromFilePatterns = "RegExp:\w\w\.VPro\.Timebooking report {EndOfThisWeekDate}.xlsx;"+
+"NG.SoftwareAces.YYYY-MM-DD-VproDev_InvoiceTemplate.xlsx";
+fmTask.ToFolders = "{exe}\DermoVisionReports";
+
+fm.run(fmTask);
+
+var FromFiles = fmTask.ListOfMovedFiles;
+fmTask.Clear();
+fmTask.FromFolders = "{exe}\DermoVisionReports";
+fmTask.Rename = "RegEx:DermoVision(Inv).(xlsx) -> NGSA-($1)-{EndOfThisWeekDate}($2);";
+fm.run(fmTask);
+var OutputFile = fmTask.RenamedFiles[0];
+
+var Memory = createObject("Dictionary");
+var wrkSheet = 0;
+for(var file in FromFiles){
+	var name = file.getFileName().Left(2)
+	var of = openXlsFile(file)
+	var iRow = of.findRowNumber( wrkSheet, 1, 4, "Total hours", 100)
+	var totalHours = of.getCellValue(wrkSheet, iRow, 4+1)
+	Memory.add(name, totalHours);
+	of.close()
+}
+var outf = openXlsFile(OutputFile)
+var iRowStart = outf.findRowNumber(wrkSheet, 10, 1, "RegExp:^VPro - \w\w", 100)
+for(var name in Memory.Keys()){
+	var iRowOfDev = outf.findRowNumber(wrkSheet, iRowStart, 1, "VPro - "+name, 100)
+	var totalHours =Memory[name];
+	outf.setCellVal(wrkSheet, iRowOfDev, 7, totalHours)
+}
+outf.save()
+outf.close()
 </script>

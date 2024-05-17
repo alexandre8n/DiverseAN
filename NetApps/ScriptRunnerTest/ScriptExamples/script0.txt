@@ -1,0 +1,23 @@
+﻿var fmTask = createObject("Dictionary");
+var fm = createObject("FileMover");
+fmTask.FromFolders = 
+"F:\Work\Temp\PrepareReportTest\CopyFrom\F1;F:\Work\Temp\PrepareReportTest\CopyFrom\F2;"+
+"F:\Work\Temp\PrepareReportTest\CopyFrom\F3"
+//"C:\Users\Alex\Dropbox\Projects\AppVpro-AnarGorkhmaz\VproDev\AC-VPro;"+
+//"C:\Users\Alex\Dropbox\Projects\AppVpro-AnarGorkhmaz\VproDev\SM-VPro";
+fmTask.FromFilePatterns = "RegExp:\w\w\.VPro\.Timebooking report {EndOfThisWeekDate}.xlsx;"+
+"NG.SoftwareAces.YYYY-MM-DD-VproDev_InvoiceTemplate.xlsx";
+fmTask.ToFolders = "F:\Work\Temp\PrepareReportTest\CopyTo1;"+
+"F:\Work\Temp\PrepareReportTest\CopyTo2";
+
+out("Running the FileMoving-Task...");
+out(fmTask.toStr());
+fm.run(fmTask);
+
+let RenameFilesInFolder = "F:\Work\Temp\PrepareReportTest\CopyTo2;";
+var RenameFilesPattern = "RegEx:DermoVision(Inv).(xlsx) -> NGSA-($1)-{EndOfThisWeekDate}.($2);";
+let retRes = renameFiles(RenameFilesInFolder, RenameFilesPattern);
+out("Renamed file:\n"+retRes.message);
+
+
+

@@ -1,0 +1,14 @@
+there is an array of integers
+var arr=[1, 5, 2, -3, -2, -5, 7, 9]
+
+find the maximum element having negative brother.
+el A has a negative brother B, if 
+A>0 and -A==B
+
+just prepare the function haveing the 
+following signature
+
+// function returns the element value.
+function getMaxElmHavingNegBrother(arrOfInt){
+
+}

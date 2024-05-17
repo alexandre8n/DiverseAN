@@ -166,6 +166,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="ReportTemplateFile.xls" />
+    <None Include=".editorconfig" />
     <None Include="app.config" />
     <EmbeddedResource Include="CompanyInvoiceTemplate.xlsx" />
     <EmbeddedResource Include="ManagerInvoiceTemplate.xlsx" />

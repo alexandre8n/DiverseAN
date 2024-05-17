@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .c1 {
+            width: calc(200px + 100px);
+            background-color: red;
+            height: 100px;
+        }
+
+        .c2 {
+            --w: 100px;
+            width: calc(var(--w)*2);
+            background-color: blue;
+            height: 100px;
+        }
+
+        .c3 {
+            width: calc(100% - 200px);
+            /* calc(var(--w)*2); */
+            margin: 0 auto;
+            background-color: green;
+            height: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="c1"></div>
+    <div class="c2"></div>
+    <div class="c3"></div>
+</body>
+
+</html>

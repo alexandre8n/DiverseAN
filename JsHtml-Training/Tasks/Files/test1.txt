@@ -1,0 +1,6 @@
+id, name, lastName, age
+1, "John", "Smith", 25
+2, "Mary", "Smith", 20
+3, "Sindy", "Crowford", 50
+4, "Greg", "Lord", 37
+5, "Sandra", "Ballok", 37

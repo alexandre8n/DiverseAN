@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="JsLib1.js"></script>
+    <title>Test LibJs</title>
+</head>
+
+<body>
+    <p id="p1">You output will be here:</p>
+    <script>
+        var out1 = (str) => {
+            p1.innerHTML += "<br/>" + str;
+        }
+        out1("27 is primary? = " + isPrimeNumber(27));
+    </script>
+</body>
+
+</html>

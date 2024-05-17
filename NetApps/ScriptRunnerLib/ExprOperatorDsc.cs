@@ -37,7 +37,8 @@ namespace ScriptRunnerLib
         E_STRING,
         E_DOUBLE,
         E_DATE,
-        E_ARRAY
+        E_ARRAY,
+        E_OBJECT
     }
 
     public class ExprOperatorDsc
@@ -282,16 +283,30 @@ namespace ScriptRunnerLib
                 var vRes = ((ExprVarArray)exprVar1).GetProperty(exprVar2);
                 return vRes;
             }
+            else if(exprVar1.m_Type == EType.E_OBJECT)
+            {
+
+            }
             return exprVar1.GetProperty(exprVar2);
         }
 
         private ExprVar OprBrackets(ExprVar exprVar1, ExprVar exprVar2)
-        {
-            if (exprVar1.m_Type != EType.E_ARRAY)
-                throw new Exception($"Error: attempt to get element using [] from {exprVar1.GetStringType()}-type variable");
+        {   
             string className = Utl.GetClassName(exprVar1);
-            ExprVarArray vRes = (className == "ExprVarArray") ? (ExprVarArray)exprVar1 : exprVar1.ToExprVarArray();
-            return vRes.GetAt(exprVar2.ToInt());
+            switch (exprVar1.m_Type)
+            {
+                case EType.E_ARRAY:
+                    ExprVarArray vRes = (className == "ExprVarArray") ? (ExprVarArray)exprVar1 : exprVar1.ToExprVarArray();
+                    return vRes.GetAt(exprVar2.ToInt());
+                case EType.E_STRING:
+                    string s1 = exprVar1.ToStr();
+                    int idx = exprVar2.ToInt();
+                    return ExprVar.CrtVar(UtlParserHelper.Subs(s1, idx, 1));
+                case EType.E_OBJECT:
+                    var vObj = exprVar1.GetObj().GetAt(exprVar2);
+                    return vObj;
+            }
+            throw new Exception($"Error: attempt to get element using [] from {exprVar1.GetStringType()}-type variable");
         }
 
         private int OprOR(ExprVar compVar1, ExprVar compVar2)
@@ -363,14 +378,14 @@ namespace ScriptRunnerLib
         }
         private int OprNot(ExprVar var)
         {
-            int iRes = (var.m_intVal != 0) ? 0 : 1;
+            int iRes = (var.ToInt() != 0) ? 0 : 1;
             return iRes;
         }
         private ExprVar OprMinusUnar(ExprVar var)
         {
             var var1 = new ExprVar("",var.m_Type, "", null);
-            if (var.m_Type == EType.E_INT) var1.m_intVal = -var.m_intVal;
-            else if (var.m_Type == EType.E_DOUBLE) var1.m_doubleVal = -var.m_doubleVal;
+            if (var.m_Type == EType.E_INT) var1.SetVal(-var1.ToInt());
+            else if (var.m_Type == EType.E_DOUBLE) var1.SetVal(-var.ToDouble());
             else throw new Exception("Error: unexpected type of unary minus operation");
             return var1;
         }

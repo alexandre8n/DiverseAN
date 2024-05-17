@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ExprParser1
+namespace ScriptRunnerLib
 {
     public class Utl
     {

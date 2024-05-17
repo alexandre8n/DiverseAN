@@ -2,13 +2,30 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Net.Configuration;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Ionic.Zip;
 
 namespace ScriptRunnerLib
 {
+    public class FilePatternKeywords
+    {
+        // supported file patterns keywords
+        public const string strEndOfThisWeekDate = "{EndOfThisWeekDate}"; // YYYY-MM-DD
+        public const string strEndOfThisWeekDateYYMMDD = "{EndOfThisWeekDateYYMMDD}";
+        public const string strTodayDate = "{TodayDate}";
+        public const string strDate = "{Date}";
+        public const string strThisMonthDate = "{ThisMonthDate}";
+        public const string strEndOfThisMonthDate = "{EndOfThisMonthDate}";
+        public const string strYearWeekNumber = "{YearWeekNumber}";
+        public const string strExe = "{exe}";
+    }
+
     public class utls
     {
+        public const string sRegExp = "RegEx:";
+
         public static DateTime DateFromStrEnUs(string dateStr)
         {
             DateTime dateToTest;
@@ -199,6 +216,148 @@ namespace ScriptRunnerLib
             }
             return true;
         }
-        
+
+        static public (int,string) RenameFiles(string folder, string pattern)
+        {
+            // returns: n files were renamed, message...
+            // folder where the files are located.
+            // pattern: "[RegEx:]<what to rename> -> <newfileNamePattern>
+            // patterns may contain {Counter}, {Counter:0..0}
+            // example: "RegEx:IMG_\d+.jpg -> Zabolotn6-47_{Counter:000}.jpg"
+            // $1,$2... where $N is a caught part in pattern
+            // abc(\w\w\d+)(.docx) -> $1-file$2 (i.e. abcXY11.docx -> XY11-file.docx)
+            var splitDelim = new string[] { " -> " };
+            string[] ptrns = pattern.Split(splitDelim, StringSplitOptions.RemoveEmptyEntries);
+            string ptrnSrc = PrcPatternKeyWords(ptrns[0]);
+            string ptrRen = PrcPatternKeyWords(ptrns[1], true);
+
+            List<string> files = GetListFiles(folder, ptrnSrc);
+
+            if (ptrnSrc.StartsWith(sRegExp))
+            {
+                ptrnSrc = ptrnSrc.Substring(sRegExp.Length);
+            }
+
+            string msg = "";
+            int count = 0;
+            int count1 = 0; // used to support {Counter:000} 
+            foreach (string filePath in files)
+            {
+                count1++;
+                var res = RenameFileByPattern(filePath, ptrnSrc, ptrRen, count1);
+                msg += res.msg;
+                if(res.cnt < 0)
+                {
+                    continue;
+                }
+                count1 = res.cnt;   // last counter used, if any
+                count++;
+            }
+            return (count, msg);
+        }
+
+        public static List<string> GetListFiles(string folder, string ptrnSrc)
+        {
+            Predicate<string> MatchOk = (file) => { return CheckFileNameByPtrn(file, ptrnSrc); };
+            List<string> files = MatchingFiles(folder, MatchOk);
+            return files;
+        }
+
+        private static (int cnt,string msg) RenameFileByPattern(string filePath, string ptrnSrc, string ptrRen, int count)
+        {
+            string file = Path.GetFileName(filePath);
+            string fileFolder = Path.GetDirectoryName(filePath);
+            string newName = Regex.Replace(file, ptrnSrc, ptrRen);
+            // if count is contained update the name
+            string ptrnCount = "{Counter(:0+)?}";
+            Match mtch = Regex.Match(newName, ptrnCount, RegexOptions.IgnoreCase);
+            if (mtch.Success)
+            {
+                // while exists file count++
+                int idx = mtch.Index;
+                int len = mtch.Length;
+                string countFmt = string.Empty;
+                if (mtch.Groups.Count == 2 && mtch.Groups[1].Value.Length>0)
+                {
+                    countFmt = mtch.Groups[1].Value.Substring(1);
+                }
+                var nmCount = GetUniquFileName(fileFolder, newName, idx, len, countFmt, count);
+                if (nmCount.name.Length == 0)
+                    return (-1, $"Failed to rename file: {filePath}, rename patters {ptrnSrc} -> {ptrRen}\n");
+                newName = nmCount.name;
+                count = nmCount.count;
+            }
+            // rename file:
+            File.Move(filePath, Path.Combine(fileFolder, newName));
+            return (count, $"{filePath} -> {newName}\n");
+        }
+
+        private static (string name, int count) GetUniquFileName(string fileFolder, string newName, int idx, int len, string countFmt, int count)
+        {
+            // namePart1{Count:000}namePart2
+            int cnt = count;
+            for(int i=0; i<1000; i++)
+            {
+                cnt = count + i;
+                string countStr = cnt.ToString(countFmt);
+                string rest = newName.Substring(idx+len);
+                string pureName = newName.Substring(0, idx) + countStr + rest;
+                string pth = Path.Combine(fileFolder, pureName);
+                if (!File.Exists(pth)) return (pureName, cnt);
+            }
+            return ("", cnt);
+        }
+
+        private static bool CheckFileNameByPtrn(string fileName, string ptrnSrc)
+        {
+            if (ptrnSrc.StartsWith(sRegExp))
+            {
+                ptrnSrc = ptrnSrc.Substring(sRegExp.Length);
+            }
+            return Regex.IsMatch(fileName, ptrnSrc);
+        }
+
+        static public string PrcPatternKeyWords(string ptrnToProcess, bool forReplaceUsage=false)
+        {
+            if (ptrnToProcess.Contains(FilePatternKeywords.strEndOfThisWeekDate))
+            {
+                DateTime nextSunday = NearestSunday(DateTime.Today);
+                string strDate = nextSunday.ToString("yyyy-MM-dd");
+                ptrnToProcess = ptrnToProcess.Replace(FilePatternKeywords.strEndOfThisWeekDate, strDate);
+            }
+            if (ptrnToProcess.Contains(FilePatternKeywords.strDate))
+            {
+                string ptrnDate = forReplaceUsage ? DateTime.Today.ToString("yyyy-MM-dd") :
+                    @"\d\d\d\d-\d\d-\d\d";
+                ptrnToProcess = ptrnToProcess.Replace(FilePatternKeywords.strDate, ptrnDate);
+            }
+            if (ptrnToProcess.Contains(FilePatternKeywords.strTodayDate))
+            {
+                string strDate = DateTime.Today.ToString("yyyy-MM-dd");
+                ptrnToProcess = ptrnToProcess.Replace(FilePatternKeywords.strTodayDate, strDate);
+            }
+            if (ptrnToProcess.Contains(FilePatternKeywords.strEndOfThisMonthDate))
+            {
+                DateTime endOfMonth = EndOfMonthDate(DateTime.Today);
+                string strDate = endOfMonth.ToString("yyyy-MM-dd");
+                ptrnToProcess = ptrnToProcess.Replace(FilePatternKeywords.strEndOfThisMonthDate, strDate);
+            }
+            if (ptrnToProcess.Contains(FilePatternKeywords.strThisMonthDate))
+            {
+                DateTime endOfMonth = EndOfMonthDate(DateTime.Today);
+                string strDate = endOfMonth.ToString("yyyy-MM-dd");
+                if (!forReplaceUsage) strDate = strDate.Substring(0, 8) + @"\d\d";
+                ptrnToProcess = ptrnToProcess.Replace(FilePatternKeywords.strThisMonthDate, strDate);
+            }
+            if (ptrnToProcess.Contains(FilePatternKeywords.strYearWeekNumber))
+            {
+                int iYearWeekNumber = GetYearWeekNumber(DateTime.Today);
+                string strDate = DateTime.Today.ToString("yyyy-MM-dd");
+                string yearWeek = strDate.Substring(0, 5) + iYearWeekNumber.ToString("D3");
+                ptrnToProcess = ptrnToProcess.Replace(FilePatternKeywords.strYearWeekNumber, yearWeek);
+            }
+            return ptrnToProcess;
+        }
+
     }
 }

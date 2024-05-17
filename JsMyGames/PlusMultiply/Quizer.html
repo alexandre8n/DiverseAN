@@ -51,8 +51,13 @@
             margin-top: 10px;
             margin-left: auto;
             margin-right: auto;
-            border: 1px solid white;
+            border: 2px solid white;
             border-collapse: collapse;
+        }
+
+        th {
+            padding: 10px 5px;
+            border: 2px solid white;
         }
 
         .tblRowSelected {
@@ -94,7 +99,11 @@
         Success note: <span id="successNoteId"></span>
         <div>
             your answers details: <a href="#" name="here" onclick="onAnswersDetails(this)">here...</a>
-            <div id="answersDetailsId"></div>
+            <div id="answersDetailsId">
+                <table id="tblAnswersDetails">
+                    <!-- here dynamically will be inserted the table -->
+                </table>
+            </div>
         </div>
     </div>
 
@@ -106,6 +115,7 @@
     </div>
 
     <script src="../../JsUtils/utils1.js"></script>
+    <script src="AN-grid.js"></script>
     <script src="history.js"></script>
     <script src="SrvBase.js"></script>
     <script src="SrvQuizer.js"></script>
@@ -169,7 +179,7 @@
 
         function onAnswersDetails(obj) {
             if (obj.name == "back") {
-                removeAllChilds(answersDetailsId);
+                removeAllChilds(tblAnswersDetails);
                 toggleHereToBack();
                 return;
             }
@@ -185,7 +195,8 @@
             }
             // rows [row1, ... row_m]
             // where row-i [cell1, ..., cell_N]
-            showTable("answersDetailsId", header, rows);
+            showGrid(tblAnswersDetails, header, rows, options);
+            //showTable("answersDetailsId", header, rows);
             toggleHereToBack();
 
         }
@@ -219,7 +230,7 @@
             // creating all cells 
             for (let i = -1; i < maxRow; i++) {
                 // creates a table row
-                const row = document.createElement("tr");
+                let row = document.createElement("tr");
                 if (i == - 1) {
                     row.className = "bold";
                 }
@@ -228,14 +239,16 @@
                     // Create a <td> element and a text node, make the text
                     // node the contents of the <td>, and put the <td> at
                     // the end of the table row
-                    const cell = document.createElement("td");
+                    let cell = null;
                     var val = "";
                     if (i == -1) {
                         val = header[j];
+                        cell = document.createElement("th");
                         cell.className = "bold";
                     }
                     else {
                         val = genCellInfo(i, opr, j, levels[i]);
+                        cell = document.createElement("td");
                         cell.className = "basicTxt";
                     }
                     const cellText = document.createTextNode(`${val}`);
@@ -280,11 +293,14 @@
             successNoteId.innerHTML = "No statistics available";
         }
 
-
         function highlightRow(e) {
             if (selectedRow != null)
                 selectedRow.className = '';
             var trg = e.target;
+            if (trg.innerHTML == "score") {
+                // do nothing - should be deleted
+                return;
+            }
             var trgParent = e.target.parentNode;
             selectedRow = trgParent;
             var elm1 = trgParent.cells[0];
@@ -299,7 +315,6 @@
             if (cell_Idx == 2) return opr;
             if (cell_Idx == 3) return `${lvlInfo.range2[0]} ... ${lvlInfo.range2[1]}`;
             return "";
-
         }
 
         function onOprSelect() {
@@ -355,8 +370,16 @@
         function toggleHereToBack() {
             toggle12("here", "back", "-> here ...", "<- Back...");
         }
-
+        var options = {
+            gridHeaderClassName: "bold",
+            gridRowClassName: "basicTxt",
+            sortingAllowed: true,
+            ascSignElm: null,
+            descSignEml: null,
+        };
         function showTable(parentId, header, rows) {
+            showGrid(tblAnswersDetails, header, rows, options);
+            return;
             const maxRow = rows.length;
             // creates a <table> element and a <tbody> element
             const tblDiv = document.getElementById(parentId);

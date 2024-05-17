@@ -1,0 +1,35 @@
+1. generating random data
+2. parsing text
+3. sorting
+4. groupping
+
+performance Understanding:
+O(n)
+O(n*n)
+O(n*log(n))
+
+Tasks: 
+4.1
+Enter number ranges: from 1 to 1000, generate: 500 random numbers
+
+4.2
+Measuring time:
+Enter numbers, comma separated: 2, 8, 9, 1, 10, 22, 45
+button: sorting
+
+result: 1,2,8,9,10,22,45
+time: 0.01 for 1000 times
+
+4.3 Trying diverse types of sorting, Understanding performance.
+
+
+4.4 groupping:
+generate from 1 to 20 count of numbers: 1000
+button: group and count
+1: 20
+2: 7
+3: 23
+4: 10
+....
+
+

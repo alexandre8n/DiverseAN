@@ -1,0 +1,45 @@
+The helper for the task 10
+
+Level1: newGuys:Mary,Greg,Sara;  from: Mike->Mary, Mike->Greg, Mike->Sara
+Level2: newGuys:Bill,Tim  from: Mary->Bill, Sara->Tim
+Level3: newGuys:Harry from: Bill->Harry
+done: whe have Harry, used relations: Bill->Harry, Mary->Bill, Mike->Mary
+result: Mike->Mary->Bill->Harry
+there is a file of people relations of the following format
+name1 knows name2
+....
+
+
+1) prepare the list of "knows" relations. The objects should be of the following structure
+{name: "John", knows: "Mike"}
+
+2) make a report, that has the following structure:
+nameOfMember1: name2, name3, name4, ..., nameN
+nameOfMember2: name2, name3, name4, ..., nameN
+
+whare the nameOfMember(i) is the name of the member of the group, 
+and name2 to nameN are the names of members he knows;
+
+3) make a report listing the names of members that are unknown for the member:
+nameOfMember1: Unknown1, Unknown2, ...
+nameOfMember2: Unknown1, Unknown2, ...
+
+4) A group member (name 1) has access to a group member (name 2) if there is a chain of acquaintances (COA):
+(name 1) knows (known 1), (known 1) knows (known 2), ..., (known N) knows (name 2)
+Given the name1 and the name2, please report the shortest chain of acquaintances from name1 to name2
+Example
+Mike knows Mary
+Mike knows Greg
+Mike knows Sara
+Mary knows Bill
+Mary knows Greg
+Sara knows Tim
+Bill knows Harry
+Bill knows Tim
+
+the COA from Mike to Harry looks:
+Mike->Mary->Bill->Harry
+
+-----------------------------------
+
+

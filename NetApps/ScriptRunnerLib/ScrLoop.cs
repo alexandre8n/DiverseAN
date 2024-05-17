@@ -19,7 +19,8 @@ namespace ScriptRunnerLib
         // for(a in arr) info
         ScrCmd varExpr4In = null;
         ScrCmd arrExpr4In = null;
-        ExprVarArray arr4in = null;
+        //ExprVarArray arr4in = null;
+        ExprVar arr4in = null;
         ExprVar currentElement = null;
         int arrLen = 0;
         int loopCount = 0;
@@ -121,10 +122,10 @@ namespace ScriptRunnerLib
             string exp2 = "";
             string exp3 = "";
             var lst = UtlParserHelper.SplitSafe(header, ";", false, true);
-            if (lst.Count != 3)
+            if (lst.Count < 3 || lst.Count>4 || lst[3].Length>0)
             {
                 throw new Exception($"Error: incorrect header of for-operator:\n{header}...\n" +
-                    "Expected: for(exp1;exp2;exp3), exp1,exp1,exp1 - may be empty");
+                    "Expected: for(exp1;exp2;exp3), exp1,exp2,exp3 - may be empty");
             }
             exp1 = lst[0];
             exp2 = lst[1];
@@ -155,7 +156,7 @@ namespace ScriptRunnerLib
             {
                 if (!RunConditionCmd()) break;
                 var isToBreakContinue = base.Run(globalMemMngr);
-                if (isToBreakContinue.ToInt() == afxBreak) break;
+                if (IsBreak(isToBreakContinue)) break;
                 RunEndOfIterationCmd();
             }
             return null;
@@ -198,8 +199,8 @@ namespace ScriptRunnerLib
             {
                 varExpr4In.Run(globalMemMngr);
                 string varName = varExpr4In.GetExprNode().GetVarName();
-                arr4in = (ExprVarArray)arrExpr4In.Run(globalMemMngr);
-                arrLen = arr4in.Length().ToInt();
+                arr4in = (ExprVar)arrExpr4In.Run(globalMemMngr);
+                arrLen = arr4in.Length();
                 currentElement = GetVarFromMemory(varName);
             }
             else if (loopIniCmd != null)

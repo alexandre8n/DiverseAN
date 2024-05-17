@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EPPlus">
+      <HintPath>..\PrepareReportApp\bin\Debug\EPPlus.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -42,7 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExprOperatorDsc.cs" />
-    <Compile Include="ExprParser.cs" />
+    <Compile Include="ExprNode.cs" />
     <Compile Include="ExprVar.cs" />
     <Compile Include="ExprVarArray.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -53,9 +56,17 @@
     <Compile Include="ScriptRunner.cs" />
     <Compile Include="ScrLoop.cs" />
     <Compile Include="ScrMemory.cs" />
+    <Compile Include="ScrObj.cs" />
     <Compile Include="ScrSysFuncList.cs" />
     <Compile Include="Utl.cs" />
     <Compile Include="UtlParserHelper.cs" />
+    <Compile Include="UtlXls.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FileMoverLib\FileMoverLib.csproj">
+      <Project>{3397c7cb-70d4-4b1e-a549-3ae5b23bea34}</Project>
+      <Name>FileMoverLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

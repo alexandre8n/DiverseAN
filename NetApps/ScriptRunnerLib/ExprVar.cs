@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.Remoting.Messaging;
 
 namespace ScriptRunnerLib
 {
@@ -9,10 +10,10 @@ namespace ScriptRunnerLib
 	{
 		public string m_Name = "";
 		public EType m_Type = EType.E_UNDEF;
-		public string m_Value = "";
-		public int m_intVal = 0;
-		public double m_doubleVal = 0;
-		public Object m_objVal = null;
+		string m_Value = "";
+		int m_intVal = 0;
+		double m_doubleVal = 0;
+		protected ScrObj m_obj = null;
 
         public ScrMemory m_MemoryScope = null;
         public ExprVar() { }
@@ -69,7 +70,7 @@ namespace ScriptRunnerLib
 			if(m_Type == EType.E_STRING) m_Value = var.m_Value;
             else if (m_Type == EType.E_INT) m_intVal = var.m_intVal;
 			else if(m_Type==EType.E_DOUBLE) m_doubleVal = var.m_doubleVal;
-            else m_objVal = var.m_objVal;
+            else m_obj = var.m_obj;
         }
 
 
@@ -84,9 +85,34 @@ namespace ScriptRunnerLib
         public double ToDouble()
         {
             if(m_Type == EType.E_DOUBLE) return m_doubleVal;
-			if (m_Type != EType.E_INT) return m_intVal;
-			if (m_Type != EType.E_STRING) return double.Parse(m_Value);
+			if (m_Type == EType.E_INT) return m_intVal;
+			if (m_Type == EType.E_STRING) return double.Parse(m_Value);
 			throw new Exception("Error: Failed to convert to double the variable of unexpected type");
+        }
+        public object ToObj()
+        {
+            if (m_Type == EType.E_DOUBLE) return m_doubleVal;
+            if (m_Type == EType.E_INT) return m_intVal;
+            if (m_Type == EType.E_STRING) return m_Value;
+            if (m_Type == EType.E_OBJECT || m_Type==EType.E_ARRAY) 
+                return m_obj.GetVal();
+            throw new Exception("Error: Failed to convert to object the variable of unexpected type");
+        }
+
+        static public ExprVar CrtVar(object obj)
+        {
+            var v = new ExprVar();
+            if (obj == null) return v;
+            string sName = obj.GetType().Name;
+            if (sName == "Double") v.SetVal((double)obj);
+            else if (sName == "Int32") v.SetVal((int)obj);
+            else if (sName == "String") v.SetVal((string)obj);
+            else
+            {
+                ScrObj scrObj = new ScrObj(sName, obj);
+                v.SetVal(scrObj);
+            }
+            return v;
         }
 
         public void SetVal(string v)
@@ -95,7 +121,7 @@ namespace ScriptRunnerLib
 			m_Value = v;
 			m_intVal = 0;
 			m_doubleVal = 0;
-			m_objVal = null;
+			m_obj = null;
 		}
         public void SetVal(int v)
         {
@@ -103,7 +129,7 @@ namespace ScriptRunnerLib
             m_Value = "";
             m_intVal = v;
             m_doubleVal = 0;
-            m_objVal = null;
+            m_obj = null;
         }
         public void SetVal(double v)
         {
@@ -111,14 +137,22 @@ namespace ScriptRunnerLib
             m_Value = "";
             m_intVal = 0;
             m_doubleVal = v;
-            m_objVal = null;
+            m_obj = null;
+        }
+        public void SetVal(ScrObj obj)
+        {
+            m_Type = EType.E_OBJECT;
+            m_Value = "";
+            m_intVal = 0;
+            m_doubleVal = 0;
+            m_obj = obj;
         }
 
-    public ExprVar Plus(ExprVar v1)
+        public ExprVar Plus(ExprVar v1)
     {
         ExprVar v2 = new ExprVar();
         if (m_Type == EType.E_STRING || v1.m_Type == EType.E_STRING)
-            v2.SetVal(ToString() + v1.ToString());
+            v2.SetVal(ToStr() + v1.ToStr());
         else if (m_Type == EType.E_DOUBLE || v1.m_Type == EType.E_DOUBLE)
             v2.SetVal(ToDouble() + v1.ToDouble());
         else v2.SetVal(ToInt() + v1.ToInt());
@@ -155,7 +189,7 @@ namespace ScriptRunnerLib
             else v2.SetVal(ToInt() / v1.ToInt());
             return v2;
         }
-        public string AsString()
+        public string ToStr()
         {
             string val = m_Value;
             switch (m_Type)
@@ -175,7 +209,7 @@ namespace ScriptRunnerLib
         public override string ToString()
         {
             string nm = (string.IsNullOrEmpty(m_Name)) ? "NoN" : m_Name;
-            string val = AsString();
+            string val = ToStr();
             return $"Name: {nm}, type: {GetStringType()}, val: {val}";
         }
 
@@ -215,15 +249,72 @@ namespace ScriptRunnerLib
         public virtual ExprVar GetProperty(ExprVar exprVar2)
         {
             ExprVar v = new ExprVar();
-            string propName = exprVar2.AsString();
+            string propName = exprVar2.ToStr();
             if (m_Type == EType.E_STRING && propName == "length") 
             {
                 int iLen = m_Value.Length;
                 v.SetVal(iLen);
             }
+            else if(m_Type == EType.E_OBJECT)
+            {
+                //todo:getProperty
+            }
             else throw new Exception($"Error: undefined property {propName}, variable: {this.ToString()}");
             return v;
         }
 
+        internal string GetTypeOfObj()
+        {
+            if(m_Type == EType.E_OBJECT && m_obj!=null)
+            {
+                return m_obj.TypeName;
+            }
+            return GetStringType();
+        }
+
+        internal ScrObj GetObj()
+        {
+            return m_obj;
+        }
+
+        internal ExprVar GetAt(int idx)
+        {
+            if (m_Type == EType.E_STRING)
+                return ExprVar.CrtVar(UtlParserHelper.Subs(m_Value, idx, 1));
+            if(m_Type == EType.E_OBJECT && m_obj.TypeName == "List")
+            {
+                var lstObj = (List<ExprVar>)GetObj().GetVal();
+                if (idx >= lstObj.Count) 
+                    throw new Exception($"Out of range for the list. idx={idx}, length={lstObj.Count}");
+                return lstObj[idx];
+            }
+            if (m_Type == EType.E_OBJECT && m_obj.TypeName == "Dictionary")
+            {
+                var dict = (Dictionary<string, ExprVar>)GetObj().GetVal();
+                List<string> keyList = new List<string>(dict.Keys);
+                if (idx >= keyList.Count)
+                    throw new Exception($"Out of range for the dictionary. idx={idx}, length={keyList.Count}");
+                return ExprVar.CrtVar(keyList[idx]);
+            }
+            throw new Exception($"ExprVar:GetAt(idx): Unsupported Object Type: {GetTypeOfObj()}");
+        }
+
+        internal int Length()
+        {
+            if (m_Type == EType.E_STRING)
+                return m_Value.Length;
+            if (m_Type == EType.E_OBJECT && m_obj.TypeName == "List")
+            {
+                var lstObj = (List<ExprVar>)GetObj().GetVal();
+                return lstObj.Count;
+            }
+            if (m_Type == EType.E_OBJECT && m_obj.TypeName == "Dictionary")
+            {
+                var dict = (Dictionary<string, ExprVar>)GetObj().GetVal();
+                List<string> keyList = new List<string>(dict.Keys);
+                return keyList.Count;
+            }
+            return -1;
+        }
     }
 }

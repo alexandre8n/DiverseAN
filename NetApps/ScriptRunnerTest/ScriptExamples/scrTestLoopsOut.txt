@@ -1,0 +1,24 @@
+﻿// to check
+let a = [2,3,4];
+a[0]=1;
+var dict = createObject("Dictionary");
+dict.one = 17;
+dict["two"] = 2;
+dict.add("one",1);
+for(var key in dict){
+	var i = dict[key];
+	out("key:"+key+", val:"+i.toStr());
+}
+
+let s = 0; 
+for(let i=0; i<3; i=i+1;){
+	if(i==2) break;
+}
+out("after break: i="+i.toStr());
+
+a = [1, 3.14, "Hi, 3!!"];
+i=0;
+for(var el in a){
+	out("a["+i.toStr()+ "]: "+el.toStr());
+	i=i+1;
+}

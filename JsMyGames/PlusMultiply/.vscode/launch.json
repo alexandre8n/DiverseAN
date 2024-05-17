@@ -8,7 +8,7 @@
       "type": "chrome",
       "request": "launch",
       "name": "Launch Chrome against localhost",
-      "console": "internalConsole",
+      //"console": "internalConsole",
       // "file": "${workspaceFolder}/multiTable.html"
       "file": "${workspaceFolder}/quizer.html"
       //"file": "${workspaceFolder}/index.html"

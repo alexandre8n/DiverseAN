@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+
+<style>
+    :root {
+        --div-background-color: red;
+        --text-color: black;
+        --div-padding: 10px;
+        --div-margin: 10px;
+    }
+
+    body {
+        background-color: var(--background-color, pink);
+    }
+
+    .child {
+        background-color: var(--div-background-color);
+        color: var(--text-color)
+    }
+
+    .one {
+        --div-background-color: blue;
+        --text-color: white;
+    }
+
+    .one-one {
+        margin: var(--div-margin);
+        padding: var(--div-padding);
+    }
+
+    .one-two {
+        margin: var(--div-margin);
+        padding: var(--div-padding);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    /* Background Styles Only */
+
+    .side-links {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+
+    .side-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        margin-bottom: 10px;
+        color: white;
+        width: 180px;
+        padding: 10px 0;
+        border-radius: 10px;
+    }
+
+    .side-link-youtube {
+        background-color: red;
+    }
+
+    .side-link-twitter {
+        background-color: #1DA1F2;
+    }
+
+    .side-link-github {
+        background-color: #6e5494;
+    }
+
+    .side-link-text {
+        margin-left: 10px;
+        font-size: 18px;
+    }
+
+    .side-link-icon {
+        color: white;
+        font-size: 30px;
+    }
+</style>
+
+<html>
+
+<body>
+    <div class="one">
+        <div class="one-one child">1.1</div>
+        <div class="one-two child">1.2</div>
+        <div class="one-three child">1.3</div>
+    </div>
+    <div class="two">
+        <div class="two-one child">2.1</div>
+        <div class="two-two child">2.2</div>
+    </div>
+    <br>
+    <button id="dark-theme-button">Dark Theme</button>
+    <button id="light-theme-button">Light Theme</button>
+
+    <!-- Side Links Only -->
+    <div class="side-links">
+        <a href="https://youtu.be/oZPR_78wCnY" target="_blank" class="side-link side-link-youtube">
+            <i class="fab fa-youtube-square side-link-icon"></i>
+            <span class="side-link-text">View Tutorial</span>
+        </a>
+        <a href="https://github.com/WebDevSimplified" target="_blank" class="side-link side-link-github side-link-icon">
+            <i class="fab fa-github-square"></i>
+            <span class="side-link-text">View GitHub</span>
+        </a>
+        <a href="https://twitter.com/DevSimplified" target="_blank" class="side-link side-link-twitter">
+            <i class="fab fa-twitter-square side-link-icon"></i>
+            <span class="side-link-text">View Twitter</span>
+        </a>
+    </div>
+    <script>
+        document.getElementById('dark-theme-button').
+            addEventListener('click', () => {
+                document.documentElement.style.setProperty('--background-color', '#333')
+            })
+
+        document.getElementById('light-theme-button').addEventListener('click', () => {
+            document.documentElement.style.setProperty('--background-color', 'white')
+        })
+    </script>
+</body>
+
+</html>

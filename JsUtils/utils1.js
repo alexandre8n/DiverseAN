@@ -9,7 +9,6 @@ function isPrime(number) {
   for (var i = 5; i * i <= number; i = i + 6) {
     if (number % i == 0 || number % (i + 2) == 0) return false;
   }
-
   return true;
 }
 

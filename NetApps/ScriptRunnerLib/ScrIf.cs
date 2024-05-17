@@ -69,7 +69,7 @@ namespace ScriptRunnerLib
             // calculate logical expression
             conditionExpr.SetBlockOwner(scrBlock);
             var res = conditionExpr.Run(globalMemMngr);
-            return res.m_intVal != 0;
+            return res.ToInt() != 0;
         }
 
         internal ExprVar Run(ScrMemory globalMemMngr, ScrBlock scrBlock)

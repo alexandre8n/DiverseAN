@@ -132,7 +132,24 @@ namespace ScriptRunnerLib
         }
         public static string SubsRng(string s, int iFrom, int iTo)
         {
+            if(iFrom < 0) iFrom = 0;
+            if(iTo < 0) iTo = s.Length+iTo;
+            if (iFrom > iTo)
+            {
+                int iTmp = iFrom;
+                iFrom = iTo;
+                iTo = iTmp;
+            }
             return Subs(s, iFrom, iTo - iFrom);
+        }
+        public static string Left(string s, int len)
+        {
+            return Subs(s, 0, len);
+        }
+        public static string Right(string s, int len)
+        {
+            int iLen = s.Length;
+            return SubsRng(s, iLen - len , iLen);
         }
 
         public static ParseRes SkipSafeClosingParenthesis(string script, int iStart, string parOpn, string parCls)
@@ -215,7 +232,7 @@ namespace ScriptRunnerLib
             }
             return resArr;
         }
-        private static bool IsQuatMark(string qMark)
+        public static bool IsQuatMark(string qMark)
         {
             return QuatMarks.IndexOf(qMark) != -1;
         }
@@ -233,5 +250,9 @@ namespace ScriptRunnerLib
             return sourceStr;
         }
 
+        public static string NormaliseNewLine(string text)
+        {
+            return text.Replace("\r\n", "\n").Replace("\r", "\n");
+        }
     }
 }

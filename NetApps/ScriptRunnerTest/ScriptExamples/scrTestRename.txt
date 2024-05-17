@@ -1,0 +1,4 @@
+﻿let RenameFilesInFolder = "F:\Work\Temp\PrepareReportTest\CopyTo2;";
+var RenameFilesPattern = "RegEx:.+[.](jpg) -> IMG_{Counter:000}.$1";
+let retRes = renameFiles(RenameFilesInFolder, RenameFilesPattern);
+out("RenameFiles results:\n"+retRes.message);

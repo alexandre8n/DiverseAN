@@ -1,0 +1,23 @@
+Vasya knows Masha
+Vasya knows Alex
+Misha knows Masha
+Nich knows Alex
+Gena knows Vasya
+Gena knows Alex
+Gena knows Masha
+Sasha knows Masha
+Masha knows Alex
+Nich knows Vasya
+Masha knows Mary
+Misha knows Alex
+Mary knows Misha
+--- ////
+Report1: 
+Who: list of known people
+example: 
+Vasya: Masha, Alex
+Misha: Masha
+
+Report2:
+Masha does not know: name 1. name 2
+Selebrity: the one who is known to max of people, but he know min of people

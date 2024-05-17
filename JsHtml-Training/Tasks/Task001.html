@@ -4,30 +4,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>My test</title>
 </head>
 
 <body>
-    <div>
-        Number 1:
-        <span id="n1Id" , contenteditable="true"></span>
+    <div id='divId'>Hello world!!
+        <p id="pId">This is a paragraph</p>
     </div>
-    <div>
-        Number 2:
-        <span id="n2Id" , contenteditable="true"></span>
-    </div>
-    <div>
-        Sum:
-        <span id="resId" , contenteditable="true"></span>
-    </div>
-    <button onclick="onCalc()">Calculate</button>
+    <label for="fn1">Number 1:</label>
+    <input type="text" id="n1Id" name="fn1"><br><br>
+    <label for="fn2">Number 2:</label>
+    <input type="text" id="n2Id" name="fn2"><br><br>
+    <button onclick="onCalcSum()">Calculate Sum</button>
+
+    <script>
+        function onCalcSum() {
+            const n1elm = document.getElementById("n1Id");
+            let n1 = n1elm.value;
+            let n1v = Number(n1);
+            if (isNaN(n1v)) {
+                const p = document.getElementById("pId");
+                p.innerHTML = "Incorrent input in Number1: " + n1;
+                return;
+            }
+            let n2 = n2elm.value;
+            let n2v = Number(n2);
+            if (isNaN(n2v)) {
+                const p = document.getElementById("pId");
+                p.innerHTML = "Incorrent input in Number2: " + n1;
+                return;
+            }
+            //p1.innerHTML = "Changed p1";
+        }
+    </script>
 </body>
-<script>
-    function onCalc() {
-        let n1 = n1Id.innerHTML;
-        let n2 = n2Id.innerHTML;
-        console.log("out: " + n1 + n2);
-    }
-</script>
 
 </html>

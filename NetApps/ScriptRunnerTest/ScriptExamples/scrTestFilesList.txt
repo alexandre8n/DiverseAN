@@ -1,0 +1,5 @@
+﻿let FilesInFolder = "F:\Work\Temp\PrepareReportTest\CopyTo2";
+var FilesPattern = "RegEx:.+[.](jpg)";
+let files = listFiles(FilesInFolder, FilesPattern);
+let f1 = files[0];
+out("Files List:\n"+files.toStr());

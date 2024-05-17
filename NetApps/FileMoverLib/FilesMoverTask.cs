@@ -6,20 +6,6 @@ using System.Text.RegularExpressions;
 
 namespace ScriptRunnerLib
 {
-    public class AppInfo
-    {
-       // support d file patterns keywords
-        public const string strEndOfThisWeekDate = "{EndOfThisWeekDate}";
-        public const string strEndOfThisWeekDateYYMMDD = "{EndOfThisWeekDateYYMMDD}";
-        public const string strTodayDate = "{TodayDate}";
-        public const string strDate = "{Date}";
-        public const string strThisMonthDate = "{ThisMonthDate}";
-        public const string strEndOfThisMonthDate = "{EndOfThisMonthDate}";
-        public const string strYearWeekNumber = "{YearWeekNumber}";
-        public const string strExe = "{exe}";
-        
-    }
-
     public class FilesMoverTask
     {
         public string TaskPath { get; private set; }
@@ -29,16 +15,18 @@ namespace ScriptRunnerLib
         public bool IsToReplaceIfExisits = false;
         public bool IsToIgnoreIfExisits = false;
         public bool IsToNewVersionIfExisits = true;
-        //public string FromFolder;
         public List<string> FromFolders = new List<string>();
         public List<string> ToFolders = new List<string>();
         public List<string> FilePatterns = new List<string>();
         public string ArchiveFolder;
         public string ResultingMessage;
 
-        public string FilePatternPrepared;
+        private string FilePatternPrepared;
 
         public List<string> MatchingFiles = new List<string>();
+        
+        // Resulting list of files that were moved/copied
+        public List<string> ListOfMovedFiles = new List<string>(); 
 
         // supported endings: (<number>), <date-time> (-yyyy-MM-dd hh mm ss)
         public string AddEndingForNewCopy = "(<number>)";
@@ -49,6 +37,21 @@ namespace ScriptRunnerLib
         }
         public FilesMoverTask()
         {
+        }
+        public void LoadTaskFromDict(Dictionary<string, string> dict)
+        {
+            IsActive = true;
+            string fromFldrs = dict["FromFolders"];
+            var fldrs = fromFldrs.Split(new char[]{ ';' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            FromFolders = fldrs.Select(x => ProcessFolderName(x)).ToList();
+            string fromFilesPtrns = dict["FromFilePatterns"];
+            FilePatterns = ProcessFilePatterns(fromFilesPtrns.Split(new char[] { ';' }, 
+                StringSplitOptions.RemoveEmptyEntries).ToList());
+            string toFldrs = dict["ToFolders"];
+            fldrs = toFldrs.Split(new char[] { ';' }, 
+                StringSplitOptions.RemoveEmptyEntries).ToList();
+            ToFolders = fldrs.Select(x => ProcessFolderName(x)).ToList();
+            string renFldr = dict["RenameFilesInFolder"];
         }
 
         public bool AssignTaskText(string taskBodyStr)
@@ -63,7 +66,7 @@ namespace ScriptRunnerLib
         {
             foreach (var filePattern in FilePatterns)
             {
-                FilePatternPrepared = PrcPatternKeyWords(filePattern);
+                FilePatternPrepared = utls.PrcPatternKeyWords(filePattern);
                 List<FileInfo> filesAll = utls.BuildListOfAllFiles(fromFldr, false);
                 List<FileInfo> filesToMove = filesAll.Where(x => MatchPattern(x.Name)).ToList<FileInfo>();
 
@@ -83,38 +86,6 @@ namespace ScriptRunnerLib
             if (m.Success)
                 return true;
             return false;
-        }
-        static public string PrcPatternKeyWords(string ptrnToProcess)
-        {
-            if (ptrnToProcess.Contains(AppInfo.strEndOfThisWeekDate))
-            {
-                DateTime nextSunday = utls.NearestSunday(DateTime.Today);
-                string strDate = nextSunday.ToString("yyyy-MM-dd");
-                ptrnToProcess = ptrnToProcess.Replace(AppInfo.strEndOfThisWeekDate, strDate);
-            }
-            if (ptrnToProcess.Contains(AppInfo.strDate))
-            {
-                string ptrnDate = @"\d\d\d\d-\d\d-\d\d";
-                ptrnToProcess = ptrnToProcess.Replace(AppInfo.strDate, ptrnDate);
-            }
-            if (ptrnToProcess.Contains(AppInfo.strTodayDate))
-            {
-                string strDate = DateTime.Today.ToString("yyyy-MM-dd");
-                ptrnToProcess = ptrnToProcess.Replace(AppInfo.strTodayDate, strDate);
-            }
-            if (ptrnToProcess.Contains(AppInfo.strEndOfThisMonthDate))
-            {
-                DateTime endOfMonth = utls.EndOfMonthDate(DateTime.Today);
-                string strDate = endOfMonth.ToString("yyyy-MM-dd");
-                ptrnToProcess = ptrnToProcess.Replace(AppInfo.strEndOfThisMonthDate, strDate);
-            }
-            if (ptrnToProcess.Contains(AppInfo.strThisMonthDate))
-            {
-                DateTime endOfMonth = utls.EndOfMonthDate(DateTime.Today);
-                string strDate = endOfMonth.ToString("yyyy-MM-dd");
-                ptrnToProcess = ptrnToProcess.Replace(AppInfo.strThisMonthDate, strDate.Substring(0,8)+@"\d\d");
-            }
-            return ptrnToProcess;
         }
 
         public bool ReadTaskInfo(List<string> taskLines)
@@ -168,7 +139,7 @@ namespace ScriptRunnerLib
         {
             string exePathLoc = System.Reflection.Assembly.GetExecutingAssembly().Location;
             string exePath = Path.GetDirectoryName(exePathLoc);
-            string res = folderName.Replace(AppInfo.strExe, exePath);
+            string res = folderName.Replace(FilePatternKeywords.strExe, exePath);
             return res;
         }
 
@@ -177,7 +148,7 @@ namespace ScriptRunnerLib
             List<string> processedPatterns = new List<string>();
             foreach (string ptrnToProcess in filePatterns.Select(x => x.Trim()))
             {
-                string ptrnRes = PrcPatternKeyWords(ptrnToProcess);
+                string ptrnRes = utls.PrcPatternKeyWords(ptrnToProcess);
                 processedPatterns.Add(ptrnRes);
             }
             return processedPatterns;

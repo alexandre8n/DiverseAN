@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        /* table {
+            margin-top: 10px;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid white;
+            border-collapse: collapse;
+        } */
+
+
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #390d0d;
+        }
+
+        .arrow {
+            border: solid black;
+            border-width: 0 3px 3px 0;
+            display: inline-block;
+            padding: 2px;
+            margin-left: 15px;
+        }
+
+        .right {
+            transform: rotate(-45deg);
+            -webkit-transform: rotate(-45deg);
+        }
+
+        .left {
+            transform: rotate(135deg);
+            -webkit-transform: rotate(135deg);
+        }
+
+        .up {
+            transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+            margin-bottom: 2px;
+        }
+
+        .down {
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+            margin-bottom: 5px;
+        }
+
+        .gridHeaderCls {
+            color: yellow;
+            background-color: blue;
+        }
+
+        .gridRowCls {
+            color: yellow;
+            background-color: black;
+        }
+    </style>
+    <title>TestMyGrid</title>
+</head>
+
+<body>
+    <div id='divId'>Hello world!!
+        <p id="pId">This is a paragraph</p>
+        <table id="tbl">
+            <!-- here dynamically will be inserted the table -->
+        </table>
+    </div>
+    <p>Right arrow: <i class="arrow right"></i></p>
+    <p>Left arrow: <i class="arrow left"></i></p>
+    <p>Up arrow: <i class="arrow up"></i></p>
+    <p>Down arrow: <i class="arrow down"></i></p>
+
+    <script src="../AN-grid.js"></script>
+    <script>
+        var obj1 = { p1: "abc", p2: "p2val", p3: "p3val" };
+        var obj2 = { p2: "p2val2", p3: "p3val2", p4: "p4val2" };
+        Object.assign(obj2, obj1);
+
+        var y = document.getElementsByClassName("arrow left");
+        var y1 = y[0]
+        y1.style.display = 'none';
+
+        var tblHeader = ["ContactId", "Name", "City", "Age"];
+        var tblRows = [
+            [1, "John", "New York", 18],
+            [2, "Mary", "Los Angeles", 21],
+            [3, "Liza", "Lviv", "23"],
+            [4, "Illya", "Zofingen", "10"],
+        ];
+        var options = {
+            gridHeaderClassName: "gridHeaderCls",
+            gridRowClassName: "gridRowCls",
+            sortingAllowed: true,
+            ascSignElm: null,
+            descSignEml: null,
+        };
+
+        showGrid(tbl, tblHeader, tblRows, options);
+
+        function onCalcSum() {
+            const n1elm = document.getElementById("n1Id");
+            let n1 = n1elm.value;
+            //p1.innerHTML = "Changed p1";
+        }
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,24 @@
+User inputs 2 numbers and clicks button
+You should output: 
+- greatest common divisor
+- least common multiple
+
+
+1 number: --------    
+2nd number: ---------
+calculate GCD and LCM
+Result: GCD: _____, LCM: ________
+
+24, 48
+
+GCD: 12
+
+24
+23
+22
+12 -> 
+
+After that add to this page functionality: get factors of the number:
+Number to factorize: ___70____________   button: factorize
+Result: 2*5*7
+

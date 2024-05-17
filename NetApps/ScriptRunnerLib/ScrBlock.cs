@@ -83,10 +83,21 @@ namespace ScriptRunnerLib
             foreach (var cmd in operators)
             {
                 vCmdRes = cmd.Run(globalMemMngr);
-                if (vCmdRes == null) continue;
-                if (vCmdRes.ToInt() == afxBreak || vCmdRes.ToInt()==afxContinue) break;
+                if (IsBreak(vCmdRes) || IsContinue(vCmdRes)) break;
             }
             return vCmdRes;
+        }
+
+        public static bool IsContinue(ExprVar vCmdRes)
+        {
+            return vCmdRes != null && vCmdRes.m_Type == EType.E_INT 
+                && vCmdRes.ToInt() == afxContinue;
+        }
+
+        public static bool IsBreak(ExprVar vCmdRes)
+        {
+            return vCmdRes!=null && vCmdRes.m_Type == EType.E_INT 
+                && vCmdRes.ToInt() == afxBreak;
         }
 
         public void SetName(string name)

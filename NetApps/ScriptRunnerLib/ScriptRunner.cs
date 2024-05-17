@@ -56,17 +56,17 @@ namespace ScriptRunnerLib
 
         public static string CleanScript(string strScript)
         {
+            strScript = UtlParserHelper.NormaliseNewLine(strScript);     // leave only \n, remove \r if any;
             List<string> arr = UtlParserHelper.SplitSafe(strScript, "\n", true, true);
             arr = arr.Where(s => UtlParserHelper.Subs(s, 0, 2) != "//").ToList();
             var splitDelim = new string[] { "//" };
-            string outStr = "";
+            var lines = new List<string>();
             foreach (string str in arr)
             {
                 var pr = UtlParserHelper.FindSafeOneOf(str, 0, splitDelim);
-                outStr += (pr == null) ? str : pr.val;
-                outStr += "\n";
+                lines.Add((pr == null) ? str : pr.val);
             }
-            return outStr;
+            return string.Join("\n",lines);
         }
 
         private void ParseCommands()

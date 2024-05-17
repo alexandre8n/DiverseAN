@@ -1,0 +1,82 @@
+Plan of learning:
+
+1) watch the following videos:
+https://www.youtube.com/watch?v=fcMcf_4PjfI
+https://www.youtube.com/watch?v=CxgOKJh4zWE
+
+2) Install Visual studio code appliction
+
+3) Programming skills tasks
+	variables
+	data types
+	operators
+	functions
+	if-s, switch
+	arrays
+	loops (while, for, for in, foreach, ...)
+	examples of algorithms based on loops (10)
+		search (find, findIndex)
+		filter
+		sorting
+		groupping
+		service collections (HashSet, Map,Dictionary, BinaryTree)
+		parcing texts, regExp
+
+4) Js learing:	objects, classes
+
+5) Working with files: create, write, read, update
+
+	SQL: Select, Update, Insert, Delete, 
+		Select: where, in, and, or, Joins, Order by, 
+		Group By, Having, Aggreagtive functions(Count, Min, Max, Sum, Avg)
+		Sub-Queries
+	Working with data-bases
+	HTML, CSS, JS
+	Introduction to DOM
+	getElementById, getElementsByClassName, and querySelector.
+	Manipulating Elements: Learn to change text content, attributes, styles, and handle events like clicks.
+	Navigation using Js
+
+Js Advanced:
+	ES6 Features: Explore modern JavaScript features like arrow functions, template literals, let/const, destructuring, etc.
+Asynchronous JavaScript: Understand asynchronous programming, callbacks, promises, async/await for handling async tasks.
+https://learn.javascript.ru/promise-basics
+
+Error Handling: Learn about try/catch blocks for handling errors gracefully.
+
+Web APIs and AJAX:
+Fetch API: Learn to make HTTP requests using the Fetch API to interact with servers.
+Local Storage: Understand how to use localStorage for storing data on the client-side.
+Working with JSON: Learn to parse JSON data and stringify JavaScript objects.
+
+Libraries and Frameworks:
+Introduction to Libraries: Explore popular JavaScript libraries like jQuery for DOM manipulation simplification.
+Frameworks: Get introduced to frontend frameworks like React, Vue.js, or Angular for building dynamic web applications.
+
+Example projects
+	Numbers site:
+	-------------
+	Prime numbers
+	factoring a number, 
+	least common multiple, 
+	greatest common divisor
+
+	Text processing site
+	---------------------
+	calculate words, characters, delimiters, blanks
+	make a dictionary of words
+	extract variables from the math expression (like: v = a+b*(pow(x,3) + 1))
+	calculate expression, when given variable values
+		(example: given a=1, b=2, x=5, calculate v from expression above)
+
+	Triangle Building Site
+	----------------------
+	Calculate area of triangle, draw triangle. 
+	Build triangle by a) 3 sides,  b) angle +2 sides, c) side and 2 angles
+	Draw triangle elements: height, median, bisector of a triangle, height, median, bisector of a triangle
+
+	Show sales in grid with Sorting and navigation
+	----------------------------------------------
+
+		
+	
