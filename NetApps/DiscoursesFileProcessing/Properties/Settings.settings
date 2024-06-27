@@ -1,0 +1,27 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="DiscoursesFileProcessing.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="OutputFileTemplate" Type="System.String" Scope="User">
+      <Value Profile="(Default)">__DiscoursesUATempleate.docx</Value>
+    </Setting>
+    <Setting Name="OutputFileName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Discourses-UA.docx</Value>
+    </Setting>
+    <Setting Name="InputFolder1_Testing" Type="System.String" Scope="User">
+      <Value Profile="(Default)">F:\Work\Docs\Discourses</Value>
+    </Setting>
+    <Setting Name="DocPattern1_Testing" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Discourses EN-RU_*.docx</Value>
+    </Setting>
+    <Setting Name="AllSrc2OneOut" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Yes</Value>
+    </Setting>
+    <Setting Name="InputFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">F:\Work\Docs\DiscoursesUA</Value>
+    </Setting>
+    <Setting Name="DocPattern" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Discourses EN-UA_*.docx</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
