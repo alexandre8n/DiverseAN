@@ -24,9 +24,10 @@ namespace ScriptRunnerLib
         OPR_LE,
         OPR_GT,
         OPR_LT,
-        OPR_NOT,
+        OPR_NOT_UNAR,
         OPR_AND,
         OPR_OR,
+        OPR_RETURN,
         OPR_UNDEF
     }
 
@@ -50,6 +51,7 @@ namespace ScriptRunnerLib
             afxOperators.Add(new ExprOperatorDsc(OperationCode.OPR_DEV, 1, "/", "", "", false, false));
             afxOperators.Add(new ExprOperatorDsc(OperationCode.OPR_PLUS_UNAR, 2, "+", "(", "", true, false));
             afxOperators.Add(new ExprOperatorDsc(OperationCode.OPR_MINUS_UNAR, 2, "-", "(", "", true, false));
+            afxOperators.Add(new ExprOperatorDsc(OperationCode.OPR_NOT_UNAR, 5, "!", "( ", "( ", true, false));    //"NOT"
             afxOperators.Add(new ExprOperatorDsc(OperationCode.OPR_PLUS, 3, "+", "", "", false, false));
             afxOperators.Add(new ExprOperatorDsc(OperationCode.OPR_MIN, 3, "-", "", "", false, false));
             //afxOperators.Add(new ExprOperatorDsc(OperationCode.OPR_CONCATAN, 3, "||", "", "", false, false));
@@ -62,9 +64,9 @@ namespace ScriptRunnerLib
             afxOperators.Add(new ExprOperatorDsc(OperationCode.OPR_LE, 4, "<=", "", "", false, false));
             afxOperators.Add(new ExprOperatorDsc(OperationCode.OPR_GT, 4, ">", "", "", false, false));
             afxOperators.Add(new ExprOperatorDsc(OperationCode.OPR_LT, 4, "<", "", "", false, false));
-            afxOperators.Add(new ExprOperatorDsc(OperationCode.OPR_NOT, 5, "!", "( ", "( ", false, true));    //"NOT"
             afxOperators.Add(new ExprOperatorDsc(OperationCode.OPR_AND, 6, "&&", ") ", "( ", false, true)); //"AND"
             afxOperators.Add(new ExprOperatorDsc(OperationCode.OPR_OR, 7, "||", ") ", "( ", false, true));  // OR
+            afxOperators.Add(new ExprOperatorDsc(OperationCode.OPR_RETURN, 8, "return", "", " (", true, true));  // return
 			afxOperators.Add(new ExprOperatorDsc(OperationCode.OPR_BRACKETS, 0, "[]", "", "", false, false, true));
 			afxOperators.Add(new ExprOperatorDsc(OperationCode.OPR_POINT, 0, ".", "", "", false, false));
         }
@@ -77,7 +79,7 @@ namespace ScriptRunnerLib
 		public bool m_IsUnary;
 		public bool m_LooksLikeIdentifier;
 		public bool m_IsBrackets;
-        public int m_posOfClosingBracket;
+        public int m_posAfterOperator;
 		
 		// methods
 		public ExprOperatorDsc()
@@ -111,7 +113,7 @@ namespace ScriptRunnerLib
             {
                 if (sBuf[iScanPos]== m_OperationText[0])
                 {
-                    bool bRes = ExprNode.FindClosingParenthesis(sBuf, iScanPos, ref m_posOfClosingBracket);
+                    bool bRes = ExprNode.FindClosingParenthesis(sBuf, iScanPos, ref m_posAfterOperator);
                     return bRes;
                 }
             }
@@ -123,21 +125,22 @@ namespace ScriptRunnerLib
 			{
 				return false;
 			}
-			if (! m_LooksLikeIdentifier && ! m_IsUnary)
+            m_posAfterOperator = iScanPos + iLen;
+
+            if (! m_LooksLikeIdentifier && ! m_IsUnary)
 			{
 				return true;
 			}
-			else if (! m_LooksLikeIdentifier)
+			if (! m_LooksLikeIdentifier) // but it is IsUnary
 			{
 				// check if is unary operation
 				iPosOfNonEmptyBefore = ExprNode.FindNotEmptyBefore(sBuf, iScanPos);
-				if (iPosOfNonEmptyBefore != - 1)
+				if (iPosOfNonEmptyBefore == -1)
+					return true; // unary operator and nothing before it.
+				ch = sBuf[iPosOfNonEmptyBefore];
+				if (m_LeftDelimitersAllowed.IndexOf(ch) != - 1)
 				{
-					ch = sBuf[iPosOfNonEmptyBefore];
-					if (m_LeftDelimitersAllowed.IndexOf(ch) != - 1)
-					{
-						return true;
-					}
+					return true;
 				}
 			}
 			//operator looks like identifier
@@ -170,224 +173,9 @@ namespace ScriptRunnerLib
 			}
 			return false;
 		}
-		
 		public int GetLength()
 		{
 			return m_OperationText.Length;
 		}
-
-        internal ExprVar Calculate(List<ExprVar> args)
-        {
-			if(args.Count<1)
-			{
-				throw new Exception("Internal Error: Calculate, too few operands");
-			}
-
-            ExprVar var = new ExprVar();
-			if(m_Code == OperationCode.OPR_PLUS_UNAR)
-			{
-				var.Assign(args[0]);
-			} else if(m_Code == OperationCode.OPR_MINUS_UNAR)
-			{
-				var.Assign(OprMinusUnar(args[0]));
-            } else if(m_Code == OperationCode.OPR_NOT)
-			{
-				var.SetVal(OprNot(args[0]));
-			}
-			if(m_IsUnary) return var;
-
-            if (args.Count < 2)
-            {
-                throw new Exception("Internal Error: Calculate, too few operands");
-            }
-
-            if (m_Code == OperationCode.OPR_PLUS)
-            {
-				var.Assign(OprPlus(args[0], args[1]));
-            }
-            else if (m_Code == OperationCode.OPR_MIN)
-            {
-                var.Assign(OprMinus(args[0], args[1]));
-            }
-            else if (m_Code == OperationCode.OPR_MULT)
-            {
-                var.Assign(OprMult(args[0], args[1]));
-            }
-            else if (m_Code == OperationCode.OPR_DEV)
-            {
-                var.Assign(OprDiv(args[0], args[1]));
-            }
-            else if (m_Code == OperationCode.OPR_ASSIGN)
-            {
-				var v1 = args[0];
-                var v2 = args[1];
-                if (v2.m_Type == EType.E_ARRAY && Utl.GetClassName(v1) != "ExprVarArray" &&
-                    v1.m_MemoryScope!=null && v1.m_Name!="") 
-                {
-                    v1 = v1.ToExprVarArray();
-                }
-                v1.Assign(v2);
-                var.Assign(v1);
-            }
-            else if (m_Code == OperationCode.OPR_EQ)
-            {
-                var.SetVal(OprIsEq(args[0], args[1]));
-            }
-            else if (m_Code == OperationCode.OPR_NE)
-            {
-                var.SetVal(OprIsNOTeq(args[0], args[1]));
-            }
-            else if (m_Code == OperationCode.OPR_GE)
-            {
-                var.SetVal(OprGE(args[0], args[1]));
-            }
-            else if (m_Code == OperationCode.OPR_LE)
-            {
-                var.SetVal(OprLE(args[0], args[1]));
-            }
-            else if (m_Code == OperationCode.OPR_GT)
-            {
-                var.SetVal(OprGT(args[0], args[1]));
-            }
-            else if (m_Code == OperationCode.OPR_LT)
-            {
-                var.SetVal(OprLT(args[0], args[1]));
-            }
-            else if (m_Code == OperationCode.OPR_AND)
-            {
-                var.SetVal(OprAND(args[0], args[1]));
-            }
-            else if (m_Code == OperationCode.OPR_OR)
-            {
-                var.SetVal(OprOR(args[0], args[1]));
-            }
-            else if (m_Code == OperationCode.OPR_BRACKETS)
-            {
-                return OprBrackets(args[0], args[1]);
-            }
-            else if (m_Code == OperationCode.OPR_POINT)
-            {
-                return OprPoint(args[0], args[1]);
-            }
-            else
-            {
-                throw new Exception($"Internal Error: Failed to Calculate, unknown operation {m_Code}");
-            }
-            return var;
-        }
-
-        private ExprVar OprPoint(ExprVar exprVar1, ExprVar exprVar2)
-        {
-            if (exprVar1.m_Type == EType.E_ARRAY)
-            {
-                var vRes = ((ExprVarArray)exprVar1).GetProperty(exprVar2);
-                return vRes;
-            }
-            else if(exprVar1.m_Type == EType.E_OBJECT)
-            {
-
-            }
-            return exprVar1.GetProperty(exprVar2);
-        }
-
-        private ExprVar OprBrackets(ExprVar exprVar1, ExprVar exprVar2)
-        {   
-            string className = Utl.GetClassName(exprVar1);
-            switch (exprVar1.m_Type)
-            {
-                case EType.E_ARRAY:
-                    ExprVarArray vRes = (className == "ExprVarArray") ? (ExprVarArray)exprVar1 : exprVar1.ToExprVarArray();
-                    return vRes.GetAt(exprVar2.ToInt());
-                case EType.E_STRING:
-                    string s1 = exprVar1.ToStr();
-                    int idx = exprVar2.ToInt();
-                    return ExprVar.CrtVar(UtlParserHelper.Subs(s1, idx, 1));
-                case EType.E_OBJECT:
-                    var vObj = exprVar1.GetObj().GetAt(exprVar2);
-                    return vObj;
-            }
-            throw new Exception($"Error: attempt to get element using [] from {exprVar1.GetStringType()}-type variable");
-        }
-
-        private int OprOR(ExprVar compVar1, ExprVar compVar2)
-        {
-            return (compVar1.ToInt() != 0 || compVar2.ToInt() != 0) ? 1 : 0;
-        }
-
-        private int OprAND(ExprVar compVar1, ExprVar compVar2)
-        {
-            return (compVar1.ToInt() != 0 && compVar2.ToInt() != 0)? 1: 0;
-        }
-
-        private int OprLT(ExprVar compVar1, ExprVar compVar2)
-        {
-            int iRes = compVar1.Compare(compVar2);
-            return iRes < 0 ? 1 : 0;
-        }
-
-        private int OprGT(ExprVar compVar1, ExprVar compVar2)
-        {
-            int iRes = compVar1.Compare(compVar2);
-            return iRes > 0 ? 1 : 0;
-        }
-
-        private int OprLE(ExprVar compVar1, ExprVar compVar2)
-        {
-            int iRes = compVar1.Compare(compVar2);
-            return iRes<=0 ? 1 : 0;
-        }
-
-        private int OprGE(ExprVar compVar1, ExprVar compVar2)
-        {
-            int iRes = compVar1.Compare(compVar2);
-            return iRes >= 0 ? 1 : 0;
-        }
-
-        private int OprIsNOTeq(ExprVar compVar1, ExprVar compVar2)
-        {
-            int iRes = compVar1.Compare(compVar2);
-            return iRes != 0 ? 1 : 0;
-        }
-
-        private int OprIsEq(ExprVar compVar1, ExprVar compVar2)
-        {
-            int iRes = compVar1.Compare(compVar2);
-            return iRes == 0 ? 1 : 0;
-        }
-
-        private ExprVar OprDiv(ExprVar compVar1, ExprVar compVar2)
-        {
-            var var1 = compVar1.Divide(compVar2);
-            return var1;
-        }
-
-        private ExprVar OprMult(ExprVar compVar1, ExprVar compVar2)
-        {
-            var var1 = compVar1.Multiply(compVar2);
-            return var1;
-        }
-
-        private ExprVar OprPlus(ExprVar compVar1, ExprVar compVar2)
-        {
-            var var1 = compVar1.Plus(compVar2);
-            return var1;
-        }
-        private ExprVar OprMinus(ExprVar compVar1, ExprVar compVar2)
-        {
-            return compVar1.Minus(compVar2);
-        }
-        private int OprNot(ExprVar var)
-        {
-            int iRes = (var.ToInt() != 0) ? 0 : 1;
-            return iRes;
-        }
-        private ExprVar OprMinusUnar(ExprVar var)
-        {
-            var var1 = new ExprVar("",var.m_Type, "", null);
-            if (var.m_Type == EType.E_INT) var1.SetVal(-var1.ToInt());
-            else if (var.m_Type == EType.E_DOUBLE) var1.SetVal(-var.ToDouble());
-            else throw new Exception("Error: unexpected type of unary minus operation");
-            return var1;
-        }
     }
 }

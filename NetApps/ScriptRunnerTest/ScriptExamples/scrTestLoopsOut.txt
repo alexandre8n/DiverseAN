@@ -1,13 +1,25 @@
 ﻿// to check
 let a = [2,3,4];
+let a2 = ["a","b",999];
+a.addRange(a2);
+let aLen = a.length;
 a[0]=1;
+out($"a.len={a.length}, a[0]={a[0]}, a[{a.length-1}]={a[a.length-1]}");
+
 var dict = createObject("Dictionary");
 dict.one = 17;
+out($"dict.one={dict.one}");
 dict["two"] = 2;
 dict.add("one",1);
+out("dict.len="+dict.length().toStr());
+var keys = dict.getKeys();
+var values = dict.getValues();
+out($"dict.keys={keys.toStr()}");
+out("Iterations and out dict.Values="+values.toStr());
+
 for(var key in dict){
 	var i = dict[key];
-	out("key:"+key+", val:"+i.toStr());
+	out($"key: {key}, val:{i.toStr()}");
 }
 
 let s = 0; 

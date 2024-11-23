@@ -8,20 +8,30 @@
 </head>
 
 <body>
-    <div id='divId'>Hello world!!
-        <p id="pId">This is a paragraph</p>
+    <div id='divId'>Calc remained payment in UAH
+        <p id="pId">What is remained UAH: ?</p>
     </div>
-    <label for="fn1">Number 1:</label>
-    <input type="text" id="n1Id" name="fn1"><br>
-    <label for="fn2">Number 2:</label>
-    <input type="text" id="n2Id" name="fn2"><br>
-    <button onclick="onChangeParagraph()">Change</button>
+    <label for="fn1">Total Amount in EUR:</label>
+    <input type="text" id="TotE" name="fn1" value="10000"><br>
+    <label for="fn2">Rate EUR USD:</label>
+    <input type="text" id="RateEurUsd" name="fn2" value="1.078"><br>
+    <label for="fn3">Rate UAH EUR:</label>
+    <input type="text" id="RateEurUah" name="fn3" value="43.95"><br>
+    <label for="fn4">Amount in USD:</label>
+    <input type="text" id="amntUSD" name="fn4" value="1000"><br>
+    <button onclick="onChangeParagraph()">Calculate</button>
 
     <script>
         function onChangeParagraph() {
+            let eurTot = parseFloat(TotE.value);
+            let xUsd = parseFloat(amntUSD.value);
+            let rateEU = parseFloat(RateEurUsd.value);
+            let xEur = xUsd / rateEU;
+            let remEur = eurTot - xEur;
+            let rateUahEur = parseFloat(RateEurUah.value);
+            let xUah = remEur * rateUahEur;
             const p1 = document.getElementById("pId");
-            
-            p1.innerHTML = "Changed p1";
+            p1.innerHTML = xUah.toString();
         }
 
     </script>

@@ -1,4 +1,6 @@
 ﻿let RenameFilesInFolder = "F:\Work\Temp\PrepareReportTest\CopyTo2;";
-var RenameFilesPattern = "RegEx:.+[.](jpg) -> IMG_{Counter:000}.$1";
+//var RenameFilesPattern = "RegEx:.+[.](jpg) -> IMG_{Counter:000}.$1";
+var RenameFilesPattern = "RegEx:TAG ([a-zA-Z]+) (ABEND|MORGEN).docx -> DE-$1-$2.docx;"+
+	"Dict:{EINS->01,ZWEI->02,DREI->03,VIER->04,SECHS->06,SIEBEN->07,ACHT->08,ZEHN->10,ABEND->2,MORGEN->1}";
 let retRes = renameFiles(RenameFilesInFolder, RenameFilesPattern);
 out("RenameFiles results:\n"+retRes.message);

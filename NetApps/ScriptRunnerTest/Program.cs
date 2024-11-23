@@ -1,9 +1,13 @@
 ﻿using OfficeOpenXml;
 
 // See https://aka.ms/new-console-template for more information
-// introduce NodeRunner
-//- Dictionary with [] operator. .length, for(a in b)
-//+- list instead of array [] operator. .length, 
+//+ why effortFiles is empty for line: out($"FileMover, effort files:\n{effortFiles}"); // one should add effortFiles.toStr()
+//- return in main module doesn't work
+
+//- function definition and call, with return
+//+ Dictionary with [] operator. .length, for(a in b)
+//+ list instead of array [] operator. .length, 
+//+ introduce ScrNodeRunner
 //+ multi-rename
 //+ sysClasses: 
 // for array: add, deleteAt, indexOf, sort(asc/desc: for strings, int, double)
@@ -35,6 +39,7 @@ using ExprParser1;
 using ScriptRunnerLib;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.FileSystemGlobbing.Internal;
+using Utl = ScriptRunnerLib.Utl;
 
 if (args.Length > 0)
 {
@@ -49,20 +54,44 @@ if (args.Length > 0)
 else Console.WriteLine("ScriptRunnerTest. Started...");
 
 //TestExcel();
-//testParser();
+test1();
+
+void test1()
+{
+    string ptr1 = @"RegEx:\w\w[_]MonthlyEfforts_{EffYear}[-_]{EffMonth}[.]xlsx";
+
+    string resPtrn = utls.PrcPatternKeyWords(ptr1, false);
+
+    string s2= "";
+    var isTxt = ExprNode.IsTextConst("\"abc\"", ref s2);
+    if (isTxt == false) throw new Exception("error1");
+    isTxt = ExprNode.IsTextConst("\"ab\"+\"c\"", ref s2);
+    if (isTxt) throw new Exception("error2");
+    isTxt = ExprNode.IsTextConst("\"ab\"\"c\"", ref s2);
+    if (isTxt == false) throw new Exception("error3");
+    isTxt = ExprNode.IsTextConst("\"ab\"\"\"c\"", ref s2);
+    if (isTxt) throw new Exception("error4");
+}
+
+testParser();
 testScriptRunner();
 Console.WriteLine("ScriptRunnerTest. Ended...");
 
 void testParser()
 {
-    string folder = @"F:\Work\Temp\PrepareReportTest\CopyTo2";
-    string patern = "RegEx:IMG_\\d+.jpg -> Zabolotn6-47_{Counter}.jpg";
-    string patern1 = "RegEx:.+.jpg -> IMG_{EndOfThisWeekDate}_{Counter}.jpg";
-    string patern2 = "IMG_{YearWeekNumber}_{Counter}.jpg";
-    string res1 = utls.PrcPatternKeyWords(patern2, false);
-    var res = utls.RenameFiles(folder, patern1);
+    var fm = new FileMover();
+    //fm.RenameFiles("F:\\Work\\Temp\\PrepareReportTest\\CopyTo1",
+    //    "RegEx:YYYY-MM-NG-SN-internal.xlsx -> {ThisYear}-00{ThisMonth}-NG-SN-internal.xlsx");
+    //List<string> lst1 = utls.GetListFiles(@"F:\Work\Temp\", @"RegEx:^(\w|-|_|[.])+[.]x\w+$", true);
+    //string folder = @"F:\Work\Temp\PrepareReportTest\CopyTo2";
+    //string patern = "RegEx:IMG_\\d+.jpg -> Zabolotn6-47_{Counter}.jpg";
+    //string patern1 = "RegEx:.+.jpg -> IMG_{EndOfThisWeekDate}_{Counter}.jpg";
+    //string patern2 = "IMG_{YearWeekNumber}_{Counter}.jpg";
+    //string res1 = utls.PrcPatternKeyWords(patern2, false);
+    //var res = utls.RenameFiles(folder, patern1);
     //var ep = new ExprNode("a+func(a,[x,y],b)");//let a=[1,2]
-    var ep = new ExprNode("a.b.c=x");//"a=[x,y]",let b = a[1];s = a.length
+    //var ep = new ExprNode("$'{a},{b}'", null);//"a =[x,y]",let b = a[1];s = a.length
+    var ep = new ExprNode("!x", null);//"a =[x,y]",let b = a[1];s = a.length
     ep.BuildExprTree();
     string s = ep.DumpToString(false);
     Console.WriteLine(s);
@@ -74,7 +103,7 @@ void testScriptRunner()
     var sr = new ScriptRunner();
 
     //string script0 = "let b='Hello'; let a = b.left(2);";
-    string fName = "scrTestLoopsOut.txt";
+    string fName = "scrPrepareInvoiceFromBooking.txt";
     string fPath = @"F:\Work\GitHub\DiverseAN\NetApps\ScriptRunnerTest\ScriptExamples\";
     string script = File.ReadAllText(fPath + fName);
     if (!sr.Parse(script))
@@ -84,13 +113,15 @@ void testScriptRunner()
     }
     string sDump = sr.Dump(1);
     Console.WriteLine(sDump);
-    if (!sr.Run())
+    var res = sr.Run();
+    if (res == -1)
     {
         Console.WriteLine(sr.message);
         return;
     }
     Console.WriteLine($"ScripRunner finished...");
 }
+
 //var a = sr.GetVar("a");
 //var s = sr.GetVar("s");
 //var b = sr.GetVar("b");
@@ -212,7 +243,8 @@ int FindRowNumber(ExcelWorksheet worksheet, int startingRow, int col, string val
     }
     return -1;
 }
-
+// o
+// eof --------------------------------------------
 // diverse tests...............
 //var v = ExprVar.CrtVar(new Dictionary<string, ScrObj>());
 //v = ExprVar.CrtVar(new Dictionary<string, ExprVar>());
@@ -233,3 +265,17 @@ int FindRowNumber(ExcelWorksheet worksheet, int startingRow, int col, string val
 //string replacement = "NGSA-$1-2024-12-31.$2";
 //Regex rgx = new Regex(pattern, RegexOptions.IgnoreCase);
 //string result = rgx.Replace(input, replacement);
+//string str1 = "TAG ONE MORGEN.docx";
+//var replacementDict = Utl.StrToDict("Dict:{ONE->01,TWO->02,TREE->03,MORGEN->1,ABEND->2}");
+//string strReplaced = utls.ReplaceWithDict(str1, @"\w+ (ONE|TWO|TREE) (MORGEN|ABEND)", "DE-$1-$2",
+//    replacementDict);
+//MatchEvaluator evaluator = (m) => { return CheckMatchInDict(m, replacementDict); };
+//string newName1 = Regex.Replace(str1,
+//    "(TAG)|(\\w+)|(\\w+)", evaluator, RegexOptions.None);
+//string CheckMatchInDict(Match m, Dictionary<string, string> replacementDict)
+//{
+//    var s = m.ToString();
+//    var sRes = s;
+//    if (replacementDict.ContainsKey(s)) sRes = replacementDict[s];
+//    return sRes;
+//}

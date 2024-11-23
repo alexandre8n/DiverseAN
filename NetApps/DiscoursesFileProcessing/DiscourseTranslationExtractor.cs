@@ -152,7 +152,7 @@ namespace DiscoursesFileProcessing
             foreach (Paragraph paragr in cell.Paragraphs)
             {
                 string s1 = paragr.GetText();
-                if (s1 == "\r")
+                if (s1.Trim() == "\r")
                 {
                     continue;
                 }
@@ -191,6 +191,13 @@ namespace DiscoursesFileProcessing
 
         private bool JointParagraphs(Paragraph paragr, List<Paragraph> paragraphsToProcessTogether)
         {
+            // the goal of this method - collect all paragraphs belonging into one 2 columns table
+            // aaaaaaaa \t bbbbbbbb
+            // cccccccc \t dddddddd
+            // when the next paragraph comes to check and it will be not 2 col to the same table
+            // eeeeeeeeeeeeeeeeeeeeeee
+            // in this case the table will be inserted and this next paragraph will be processed normally
+
             string sPrgr = paragr.GetText();
             if (Is2ColTable(paragr))
             {
@@ -212,7 +219,8 @@ namespace DiscoursesFileProcessing
                 string sMerged = p0.GetText();
                 InsertTable(p0);
                 paragraphsToProcessTogether.Clear();
-                return true;
+                // it means that current paragraph should be processed normally
+                return false; 
                 //Run nd;//nd.Clone(true);//paragr.Runs.Add()
             }
             return false; // it means continue for paragr ...

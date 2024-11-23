@@ -229,22 +229,22 @@ namespace ScriptRunnerLib
             throw new Exception("Error: Failed to compare, the variable of unexpected types");
         }
 
-        internal ExprVarArray ToExprVarArray()
-        {
-            ExprVarArray v = new ExprVarArray();
-            v.Assign(this);
-            v.m_Name = m_Name;
-            v.m_MemoryScope = m_MemoryScope;
-            if (m_MemoryScope != null)
-            {
-                if(!m_MemoryScope.UpdateVar(v))
-                {
-                    // strange var name is empty?
-                    throw new Exception($"ToExprVarArray: Internal Error to check: var name:[{m_Name}] is not found in mem-scope");
-                }
-            }
-            return v;
-        }
+        //internal ExprVarArray ToExprVarArray()
+        //{
+        //    ExprVarArray v = new ExprVarArray();
+        //    v.Assign(this);
+        //    v.m_Name = m_Name;
+        //    v.m_MemoryScope = m_MemoryScope;
+        //    if (m_MemoryScope != null)
+        //    {
+        //        if(!m_MemoryScope.UpdateVar(v))
+        //        {
+        //            // strange var name is empty?
+        //            throw new Exception($"ToExprVarArray: Internal Error to check: var name:[{m_Name}] is not found in mem-scope");
+        //        }
+        //    }
+        //    return v;
+        //}
 
         public virtual ExprVar GetProperty(ExprVar exprVar2)
         {
@@ -257,7 +257,7 @@ namespace ScriptRunnerLib
             }
             else if(m_Type == EType.E_OBJECT)
             {
-                //todo:getProperty
+                throw new Exception("Error: GetProperty, not expected case of EType.E_OBJECT");
             }
             else throw new Exception($"Error: undefined property {propName}, variable: {this.ToString()}");
             return v;
@@ -275,6 +275,10 @@ namespace ScriptRunnerLib
         internal ScrObj GetObj()
         {
             return m_obj;
+        }
+        internal object GetObjBody()
+        {
+            return (m_obj==null)? null : m_obj.GetVal();
         }
 
         internal ExprVar GetAt(int idx)

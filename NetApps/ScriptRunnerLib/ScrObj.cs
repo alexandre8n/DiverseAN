@@ -66,5 +66,18 @@ namespace ScriptRunnerLib
             vObj.SetVal(this);
             return func(new List<ExprVar>() { vObj, varKey });
         }
+
+        public ExprVar MethodCall(string funcName, List<ExprVar> args) 
+        {
+            var func = ScrSysFuncList.GetFunc($"{TypeName}.{funcName}");
+            if (func == null)
+                throw new Exception($"Failed to find {funcName} function. Object {typeName}");
+            var vObj = new ExprVar();
+            vObj.SetVal(this);
+            var lstParams = new List<ExprVar>();
+            lstParams.Add(vObj);
+            lstParams.AddRange(args);
+            return func(lstParams);
+        }
     }
 }

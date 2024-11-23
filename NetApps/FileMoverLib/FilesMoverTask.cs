@@ -6,15 +6,22 @@ using System.Text.RegularExpressions;
 
 namespace ScriptRunnerLib
 {
+    
     public class FilesMoverTask
     {
+        // copy/move options:
+        public const string OptError = "Error";
+        public const string OptReplace = "Replace";
+        public const string OptNewCopy = "NewCopy";
+        public const string OptOldCopy = "OldCopy";
+        private string[] copyOptions = new string[] { OptError, OptNewCopy, OptOldCopy, OptReplace };
+
         public string TaskPath { get; private set; }
         public string Name => Path.GetFileName(TaskPath);
         public bool IsActive = false;
         public bool IsToMove = false;
         public bool IsToReplaceIfExisits = false;
         public bool IsToIgnoreIfExisits = false;
-        public bool IsToNewVersionIfExisits = true;
         public List<string> FromFolders = new List<string>();
         public List<string> ToFolders = new List<string>();
         public List<string> FilePatterns = new List<string>();
@@ -30,6 +37,7 @@ namespace ScriptRunnerLib
 
         // supported endings: (<number>), <date-time> (-yyyy-MM-dd hh mm ss)
         public string AddEndingForNewCopy = "(<number>)";
+        public string CopyOption;
 
         public FilesMoverTask(string taksPath)
         {
@@ -64,20 +72,8 @@ namespace ScriptRunnerLib
 
         public bool PrepareListOfMatchingFilesFromFolder(string fromFldr)
         {
-            foreach (var filePattern in FilePatterns)
-            {
-                FilePatternPrepared = utls.PrcPatternKeyWords(filePattern);
-                List<FileInfo> filesAll = utls.BuildListOfAllFiles(fromFldr, false);
-                List<FileInfo> filesToMove = filesAll.Where(x => MatchPattern(x.Name)).ToList<FileInfo>();
-
-                if (filesToMove.Count == 0)
-                {
-                    ResultingMessage += $"Folder: {fromFldr}\nPattern: {filePattern} - No files to move were found!\n";
-                    continue;
-                }
-                var filesToAdd = filesToMove.Select(x => x.FullName).ToList();
-                MatchingFiles.AddRange(filesToAdd);
-            }
+            var lstFromFldr = utls.GetFilteredFilesList(fromFldr, FilePatterns, false);
+            MatchingFiles.AddRange(lstFromFldr);
             return true;
         }
         public bool MatchPattern(string fileName)
@@ -160,13 +156,16 @@ namespace ScriptRunnerLib
             {
                 return false;
             }
+            // check copy option value
+            CopyOption = CopyOptChecked();
+
             var fldrList = FromFolders.Concat(ToFolders);
             if(!CheckFoldersExistance(fldrList))
             { 
                 return false; 
             }
 
-            MatchingFiles.Clear();
+            MatchingFiles.Clear(); // here all matching files will be collected...
             foreach (string fromFldr in FromFolders) 
             {
                 if (!PrepareListOfMatchingFilesFromFolder(fromFldr))
@@ -183,14 +182,32 @@ namespace ScriptRunnerLib
                 foreach (var targetFolder in ToFolders)
                 {
                     string moveTarget = Path.Combine(targetFolder, fileName);
-                    if (File.Exists(moveTarget) && IsToNewVersionIfExisits)
+                    if (File.Exists(moveTarget))
                     {
-                        moveTarget = utls.ModifyFileNameToMakeItUniq(moveTarget, "_copy_");
+                        if(EQ2S(CopyOption,OptError))
+                        {
+                            ResultingMessage += $"Failed to copy, matched file to existing target file:\n{matchingFile} => {moveTarget}\nCopyOption: {CopyOption}\n";
+                            return false; 
+                        } 
+                        else if(EQ2S(CopyOption, OptNewCopy))
+                        {
+                            moveTarget = utls.ModifyFileNameToMakeItUniq(moveTarget, "_NewCopy_");
+                        }
                     }
                     try
                     {
+                        if (EQ2S(CopyOption, OptReplace))
+                        {
+                            File.Delete(moveTarget);
+                        }
+                        else if(EQ2S(CopyOption, OptOldCopy))
+                        {
+                            string moveTargetBackup = utls.ModifyFileNameToMakeItUniq(moveTarget, "_OldCopy_");
+                            File.Move(moveTarget, moveTargetBackup);
+                        }
                         File.Copy(matchingFile, moveTarget);
                         ResultingMessage += $"Copying file: {matchingFile} => {moveTarget}\n";
+                        ListOfMovedFiles.Add(matchingFile);
                     }
                     catch (Exception ex)
                     {
@@ -212,6 +229,25 @@ namespace ScriptRunnerLib
             }
             return true;
         }
+
+        private string CopyOptChecked()
+        {
+            if(CopyOption.Trim().Length == 0)
+            {
+                return OptError;
+            }
+            foreach(var opt in copyOptions)
+            {
+                if (EQ2S(CopyOption, opt)) return opt;
+            }
+            throw new Exception($"Error: FileMover - incorrect velue of the CopyOption: {CopyOption}");
+        }
+
+        private bool EQ2S(string copyOpt, string str)
+        {
+            return String.Equals(copyOpt, str, StringComparison.OrdinalIgnoreCase);
+        }
+
         private bool CheckFoldersExistance(IEnumerable<string> fldrList)
         {
             bool allFoldersExist = true;

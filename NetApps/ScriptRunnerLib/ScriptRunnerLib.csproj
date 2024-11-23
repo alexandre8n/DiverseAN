@@ -47,7 +47,7 @@
     <Compile Include="ExprOperatorDsc.cs" />
     <Compile Include="ExprNode.cs" />
     <Compile Include="ExprVar.cs" />
-    <Compile Include="ExprVarArray.cs" />
+    <Compile Include="FileMover.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScrBlock.cs" />
     <Compile Include="ScrCmd.cs" />
@@ -56,6 +56,7 @@
     <Compile Include="ScriptRunner.cs" />
     <Compile Include="ScrLoop.cs" />
     <Compile Include="ScrMemory.cs" />
+    <Compile Include="ScrNodeRunner.cs" />
     <Compile Include="ScrObj.cs" />
     <Compile Include="ScrSysFuncList.cs" />
     <Compile Include="Utl.cs" />

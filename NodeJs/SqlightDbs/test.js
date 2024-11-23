@@ -1,5 +1,5 @@
 const sqlite3 = require("sqlite3").verbose();
-
+//var a = Array(6).fill(0);
 let dbPath = "./test2.db";
 let db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE, (err) => {
   if (err) return console.error(err.message);

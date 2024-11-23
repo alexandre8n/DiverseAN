@@ -1,0 +1,19 @@
+﻿
+let filePath = "F:\Work\Temp\PrepareReportTest\CopyTo1\NGSA-Inv-2024-05-19.xlsx";
+let xlsPak = openExcelFile(filePath);
+var wrkSheetN=0;
+var startRow=2;
+var columNumber=1;
+var strToFind = "RegEx:^VPro - \w\w";
+var totalHours = 10.5;
+
+var iRowFound = xlsPak.findRowNumber(wrkSheetN, startRow, columNumber, strToFind);
+out("Found row:"+iRowFound.toStr());
+
+var oldVal = xlsPak.getCellValue(0, iRowFound, 7);
+out("Old var:"+oldVal.toStr());
+out("New val will be:"+(oldVal+totalHours).toStr());
+
+xlsPak.setCellValue(0, iRowFound, 7, oldVal+totalHours);
+xlsPak.save();
+xlsPak.close();

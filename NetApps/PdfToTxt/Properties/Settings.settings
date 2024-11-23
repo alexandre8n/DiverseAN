@@ -1,0 +1,48 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="DiscoursesFileProcessing.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="InputFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">F:\Work\Docs\Jatakas</Value>
+    </Setting>
+    <Setting Name="FilePattern" Type="System.String" Scope="User">
+      <Value Profile="(Default)">j3_.pdf</Value>
+    </Setting>
+    <Setting Name="Pages" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1-End</Value>
+    </Setting>
+    <Setting Name="LinesToIgnore" Type="System.String" Scope="User">
+      <Value Profile="(Default)">^\s+\d+$&lt;&gt;^\s*\(\d+\)[ ]{3,}&lt;&gt;Játaka Tales of the Buddha&lt;&gt;\(\d+\)\s+(?&lt;name&gt;(\w|[ '.,?!:+-/*()])+)&lt;&gt;^$</Value>
+    </Setting>
+    <Setting Name="EmptyLinesTo1" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Yes</Value>
+    </Setting>
+    <Setting Name="OutputFileName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">{number}.txt</Value>
+    </Setting>
+    <Setting Name="ReportLinesByPattern" Type="System.String" Scope="User">
+      <Value Profile="(Default)">//^\s+\d+[\r\n]+\s+.+[\r\n]+\s+.+Játaka[ \r\n]+</Value>
+    </Setting>
+    <Setting Name="NLOnlyForParagraph" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="StartOfNewStoryFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">^\s+(?&lt;number&gt;\d+)[\r\n]+\s+(?&lt;name&gt;(\w|[’'.,?!-: ])+)[\r\n]+\s+.+Játaka[ \r\n]*</Value>
+    </Setting>
+    <Setting Name="LibPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">F:\Work\GitHub\DiverseAN\NetApps\Libs</Value>
+    </Setting>
+    <Setting Name="ParagraphSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="FootnoteRefPattern" Type="System.String" Scope="User">
+      <Value Profile="(Default)">(?&lt;=([;:.,!?]|[a-zA-Z’']+))\d+</Value>
+    </Setting>
+    <Setting Name="FootnotePattern" Type="System.String" Scope="User">
+      <Value Profile="(Default)">(?&lt;=([ ]*))\d+(?=[.])</Value>
+    </Setting>
+    <Setting Name="StartOfAppendix" Type="System.String" Scope="User">
+      <Value Profile="(Default)">^\s+(?&lt;name&gt;(APPENDIX))[\r\n]+\s+(Glossary of Terms)</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

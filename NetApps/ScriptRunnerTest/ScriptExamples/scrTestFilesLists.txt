@@ -1,0 +1,35 @@
+﻿let FilesInFolderInvTmpl = "C:\Users\Alex\Dropbox\AN_YR\Sportsnexa";
+let invTmplPattern = "YYYY-MMMM-NG-SN(-internal)?[.]xlsx";
+let filesInvTmpls = listFiles(FilesInFolderInvTmpl, invTmplPattern);
+
+let FilesInFolders = [
+"C:\Users\Alex\Dropbox\AN_YR\Insurance_Platform\Reporting\Alexander_Olenich", 
+"E:\Мой диск\Work\Developers\VO"
+];
+var FilesPattern = "RegEx:^\w\w_MonthlyEfforts_{ThisMonthDate}[.]xls(x)?";
+var fm = createObject("FileMover");
+var fmTask = createObject("Dictionary");
+let filesEfforts = listFiles(FilesInFolders, FilesPattern);
+let files = [];
+files.addRange(filesEfforts);
+files.addRange(filesInvTmpls);
+fmTask.FilesList = files;
+fmTask.ToFolders = "F:\Work\Temp\PrepareReportTest\CopyTo1;"+
+"F:\Work\Temp\PrepareReportTest\CopyTo2";
+fm.run(fmTask);
+
+var effortDict = createObject("Dictionary");
+
+// rename invoices
+let RenameFilesInFolder = "F:\Work\Temp\PrepareReportTest\CopyTo2;";
+var RenameFilesPattern = "RegEx:YYYY-MMMM-NG-SN(-internal)?[.]xlsx -> {ThisYear}-{ThisMonth:0000}-NG-SN$1.xlsx";
+let retRes = renameFiles(RenameFilesInFolder, RenameFilesPattern);
+
+updateEffortsInInvoice(files,)
+
+for(var file in filesEfforts){
+	var Let2 = file.getFileName().Left(2);
+
+	//var 
+}
+out($"Files List:\n{files.toStr()}");

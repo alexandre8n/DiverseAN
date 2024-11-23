@@ -201,7 +201,7 @@ namespace ScriptRunnerLib
 
             for (int i = iStart+1;i < script.Length; i++)
             {
-                if (script[i] == qMark && script[i-1] != '\\')
+                if (script[i] == qMark)
                 {
                     var res = new ParseRes(i+1);
                     return res;

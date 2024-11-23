@@ -21,7 +21,7 @@ namespace ScriptRunnerLib
         public const string defFor = "for";
         public const string defWhile = "while";
         public string message = "";
-        public List<ScrCmd> definitions = new List<ScrCmd>();
+        public Dictionary<string, ScrFuncDef> definitions = new Dictionary<string, ScrFuncDef> ();
         public List<ScrCmd> commands = new List<ScrCmd>();
         
         private string script;
@@ -160,6 +160,8 @@ namespace ScriptRunnerLib
             }
             // match param list
             string funcName = matches[0].ToString();
+            if (definitions.ContainsKey(funcName))
+                throw new Exception($"Error: function {funcName} is already defined");
             res.end += matches[0].Index + funcName.Length;
             res = GetConditionBlock(res);
             if(res == null)
@@ -179,7 +181,7 @@ namespace ScriptRunnerLib
             }
             string funcBody = res.val;
             var funcDef = new ScrFuncDef(funcName, funcParams, funcBody, GetRunOwner());
-            definitions.Add(funcDef);
+            definitions[funcName] = funcDef;
             funcDef.Compile();
             return res;
         }
@@ -392,27 +394,34 @@ namespace ScriptRunnerLib
             return res;
         }
 
-        public bool Run()
+        public int Run()
         {
             memManager = new ScrMemory();
+            int res = 0;
             try
             {
-                RunCommands();
+                res = RunCommands();
             }
             catch (Exception ex)
             {
                 message += ex.Message;
-                return false;
+                return -1;
             }
-            return true;
+            return res;
         }
 
-        private void RunCommands()
+        private int RunCommands()
         {
             foreach (var cmd in commands)
             {
-                cmd.Run(memManager);
+                var res = cmd.Run(memManager);
+                if (ScrBlock.IsReturn(res))
+                {
+                    var lst = (List<ExprVar>)res.GetObjBody();
+                    return lst[1].ToInt();
+                }
             }
+            return 1;
         }
 
         public ExprVar GetVar(string name)
@@ -440,6 +449,13 @@ namespace ScriptRunnerLib
             strOut = UtlParserHelper.ReplaceManyToOne(strOut, "\n");
             strOut += "*** End of Dump ***\n";
             return strOut;
+        }
+
+        internal ScrFuncDef GetFuncDef(string funcName)
+        {
+            if (!definitions.ContainsKey(funcName))
+                return null;
+            return definitions[funcName];
         }
     }
 }

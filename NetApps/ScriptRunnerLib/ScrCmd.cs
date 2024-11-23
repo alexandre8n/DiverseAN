@@ -40,6 +40,7 @@ namespace ScriptRunnerLib
             this.body = cmd.Trim();
         }
 
+        public ScrMemory GetGlobalMemMngr() { return  globalMemMngr; }
         public void SetBlockOwner(ScrBlock owner)
         {
             this.blockOwner = owner;
@@ -47,6 +48,10 @@ namespace ScriptRunnerLib
         public ScrBlock GetOwner()
         {
             return this.blockOwner;
+        }
+        public string GetBody()
+        {
+            return this.body;
         }
         public ExprNode GetExprNode()
         {
@@ -75,11 +80,10 @@ namespace ScriptRunnerLib
             }
             return str;
         }
-
         public virtual void Compile()
         {
             // check if this: let a = expr;
-            expressionNode = new ExprNode(body);
+            expressionNode = new ExprNode(body, null);
             try
             {
                 //parseVarDef();
@@ -100,140 +104,14 @@ namespace ScriptRunnerLib
             CollectDefinedVariable();
             try
             {
-                ExprVar res = ExecuteCmd(expressionNode);
-                return res;
+                var runner = new ScrNodeRunner(expressionNode, this);
+                return runner.Run();
             }
             catch (Exception ex)
             {
                 throw new Exception($"Exception in cmdId: {id}, {ex.Message}");
             }
         }
-
-        protected ExprVar ExecuteCmd(ExprNode node)
-        {
-            if (node == null) return null;
-            ExprVar result = null;
-            if (node.IsOperationNode())
-            {
-                result = ExecuteOperation(node.GetOperationDescriptor(), node.GetOperands());
-            }
-            else if(node.IsFunctionNode())
-            {
-                result = ExecuteFunction(node.GetFuncName(), node.GetOperands());
-            }
-            else if (node.IsBreakOrContinue())
-            {
-                result = new ExprVar();
-                int bORc = (node.nodeType==NodeType.BREAK) ? 
-                        ScrBlock.afxBreak : ScrBlock.afxContinue;
-                result.SetVal(bORc);
-            }
-            else if(node.IsVarNode())
-            {
-                string varName = node.GetVarName();
-                return GetVarFromMemory(varName);
-            }
-            return result;
-        }
-
-        private ExprVar ExecuteFunction(string funcName, ArrayList operands)
-        {
-            var vars = PrepareOperands(operands, "Function: "+funcName);
-            var func = ScrSysFuncList.GetFunc(funcName);
-            var vRes = func(vars);
-            return vRes;
-        }
-
-        private ExprVar ExecuteOperation(ExprOperatorDsc opr, ArrayList operands)
-        {
-            // todo: assign brakets case a[b] = something, should be processed like a.b=something
-            if (opr.m_Code == OperationCode.OPR_POINT && operands.Count == 2) 
-            {
-                ExprVar exprVar = ExecuteDotCall(operands, opr.m_OperationText);
-                return exprVar;
-            }
-            var vars = PrepareOperands(operands, opr.m_OperationText);
-            ExprVar result = opr.Calculate(vars);
-            return result;
-        }
-
-        private ExprVar ExecuteDotCall(ArrayList operands, string oprText)
-        {
-
-            ExprVar var1 = PrepareSubNode((ExprNode)operands[0], oprText);
-            ExprNode op2 = (ExprNode)operands[1];
-            string funcName = op2.GetFuncName();
-            List<ExprVar> vars = PrepareOperands(op2.GetOperands(), ".");
-            vars.Insert(0, var1);
-            string typeOfObj = var1.GetTypeOfObj();
-            if(funcName.Length == 0)
-            {
-                funcName = (op2.IsPropertyToBeAssigned()) ? "setProperty" : "getProperty";
-                string propName = op2.GetVarName();
-                vars.Add(ExprVar.CrtVar(propName));
-            }
-            var func = ScrSysFuncList.GetFunc($"{typeOfObj}.{funcName}");
-            if (func == null) 
-                throw new Exception($"Error: failed to find a function {funcName} for {typeOfObj}-object");
-            var vRes = func(vars);
-            return vRes;
-        }
-
-        private List<ExprVar> PrepareOperands(ArrayList operands, string oprText)
-        {
-            List<ExprVar> vars = new List<ExprVar>();
-            foreach (ExprNode subNode in operands)
-            {
-                ExprVar var = PrepareSubNode(subNode, oprText);
-                vars.Add(var);
-            }
-            return vars;
-        }
-
-        private ExprVar PrepareSubNode(ExprNode subNode, string oprText)
-        {
-            ExprVar var;
-            if (subNode.IsOperationNode())
-            {
-                var = ExecuteOperation(subNode.GetOperationDescriptor(), subNode.GetOperands());
-            }
-            else if (subNode.IsFunctionNode())
-            {
-                var = ExecuteFunction(subNode.GetFuncName(), subNode.GetOperands());
-            }
-            else if (subNode.IsArray())
-            {
-                var = CreateArray(subNode);
-            }
-            else if (subNode.IsConstNode())
-            {
-                var = subNode.GetVar();
-            }
-            else if (subNode.IsProperty())
-            {
-                string varName = subNode.GetVarName();
-                var = new ExprVar(varName, EType.E_STRING, varName, null);
-            }
-            else if (subNode.IsVarNode())
-            {
-                string varName = subNode.GetVarName();
-                var = GetVarFromMemory(varName);
-                if (var == null) throw new Exception($"Error: variable {varName} is not defined");
-            }
-            else
-            {
-                string info = UtlParserHelper.Subs(body, 0, 100);
-                throw new Exception($"Error: Unexpected type of operand for {oprText} operation:\n{info}...");
-            }
-            return var;
-        }
-
-        private ExprVar CreateArray(ExprNode subNode)
-        {
-            var vars = PrepareOperands(subNode.GetOperands(), "Create Array");
-            return ExprVar.CrtVar(vars);
-        }
-
         public ExprVar GetVarFromMemory(string varName)
         {
             ExprVar definedVar = null;
@@ -268,6 +146,11 @@ namespace ScriptRunnerLib
                 string info = UtlParserHelper.Subs(body, 0, 100);
                 throw new Exception($"Error: variable {varName} is already defined:\n{info}...");
             }
+        }
+
+        internal ScrFuncDef GetFuncDef(string funcName)
+        {
+            return runOwner.GetFuncDef(funcName);
         }
     }
 }

@@ -5,7 +5,7 @@ https://alexandre8n.github.io/JsJqTraining/GameFindBuriedTreasure.htm
 
 
 --begin the work in some folder you want to commit to github later on
-git init -- just init
+git init -- just init new repository
 git add *.html
 git add *.js
 git commit -m "initial files of the proj committed"
@@ -13,6 +13,37 @@ git commit -m "initial files of the proj committed"
 -- get status
 git status                    -- just to be sure it was Ok
 git status -s  -- short status
+
+-- what is my current branch?
+git branch
+-- create new branch
+git branch test
+-- delete not-needed branch
+git branch -D
+-- make branch current
+git checkout test 
+-- create new branch and make it current
+git checkout -b test1
+-- merge master with test1, having master as current
+git checkout master
+git merge test1
+
+== Hot to save to gitHub?
+	-- first be sure you have config or make a config as follows for example:
+	git config --global user.name 			=> this asks the user
+	-- to swith user to some another user name:
+	git config --global user.name "Alex2"
+	git config --global user.email "Alex2@a.com"
+	git remote add origin <here specify url of your git-repository>
+	-- example: git remote add origin https://github/alex2/MyCurRepository.git
+git push -u origin master		=> push your origin to master branch
+
+-- if you later do some more changes in some file a.txt, how to save it to github?
+git add a.txt
+git commit -m "my changes in a.txt"
+push
+
+
 
 
 -- discard changes

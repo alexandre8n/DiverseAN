@@ -12,7 +12,7 @@ mainApp();
 
 async function mainApp() {
   let propNames = ["id", "amount", "date"];
-  //let salesArr = csvToArray(allLinesTxt, propNames);
+  let salesArr = csvToArray(allLinesTxt, propNames);
   let result = await sqlite.open(dbFile);
   // let sqlCr =
   //   "CREATE TABLE IF NOT EXISTS sales (id INTEGER PRIMARY KEY,amount REAL,dat1 TEXT (20)";
@@ -22,6 +22,10 @@ async function mainApp() {
   let r = await sqlite.run(sql1, ["2020-10-10"]);
   sql1 = 'insert into sales (amount, dat1) values(5.9, "2000-11-05")';
   r = await sqlite.run(sql1);
+  for (let obj of salesArr) {
+    sql1 = "insert into sales (amount, dat1) values(?, ?)";
+    r = await sqlite.run(sql1, [obj.amount, obj.date]);
+  }
   //fillDb(salesArr, sqlite, dbFile);
   await sqlite.close();
 }
@@ -43,14 +47,14 @@ function lineToObj(str, propNames) {
   return obj;
 }
 async function fillDb(salesArr, sqlite, dbFile) {
-  let i = await sqlite.run(
-    "CREATE TABLE sales1(ID integer NOT NULL PRIMARY KEY, amount REAL, date text (20))"
-  );
+  // let i = await sqlite.run(
+  //   "CREATE TABLE sales1(ID integer NOT NULL PRIMARY KEY, amount REAL, date text (20))"
+  // );
 
   for (let j of salesArr) {
-    var entry = `${j.id},${j.amount},'${j.date}'`;
-
-    var sql = "INSERT INTO sales1(ID, amount, date) VALUES (" + entry + ")";
+    var entry = `${j.amount},"${j.date}"`;
+    //var entry = `${j.id},${j.amount},"${j.date}"`;
+    var sql = "INSERT INTO sales1(amount, date) VALUES (" + entry + ")";
     const r = await sqlite.run(sql);
     await sqlite.close();
     await sqlite.open(dbFile);

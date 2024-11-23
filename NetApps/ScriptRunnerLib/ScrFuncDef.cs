@@ -10,6 +10,7 @@ namespace ScriptRunnerLib
     {
         string funcName;
         string funcParams;
+        List<string> args = new List<string>();
 
         private ScrFuncDef(ScriptRunner runOwner) : base(runOwner)
         {
@@ -27,6 +28,7 @@ namespace ScriptRunnerLib
         {
             funcName = name;
             funcParams = TrimHeader(sParams);
+            args = funcParams.Split(',').Select(s=>s.Trim()).ToList();
             this.body = body.Trim();
         }
         public override void Compile()
@@ -49,6 +51,30 @@ namespace ScriptRunnerLib
         public override string ToString()
         {
             return $"{IdStr()}function {funcName} params: {funcParams}\nBody:\n{body}\n--- end of func: {funcName}";
+        }
+
+        internal ExprVar Execute(List<ExprVar> vars, ScrCmd scrCmd)
+        {
+            this.globalMemMngr = scrCmd.GetGlobalMemMngr();
+            scrMemory = new ScrMemory();
+            if (args.Count < vars.Count)
+                throw new Exception($"Error: call of function: {funcName}, expected {args.Count} parameters\n" +
+                    $"usage: {funcName}({funcParams})");
+            int i= 0;
+            foreach(var argName in args)
+            {
+                scrMemory.AddVar(argName, EType.E_UNDEF, "");
+                var parI = scrMemory.GetVar(argName);
+                parI.Assign(vars[i]);
+                i++;
+            }
+            ExprVar vRes = Run(globalMemMngr);
+            if(IsReturn(vRes))
+            {
+                var lst = (List<ExprVar>)vRes.GetObjBody();
+                return lst[1];
+            }
+            return vRes;
         }
     }
 }

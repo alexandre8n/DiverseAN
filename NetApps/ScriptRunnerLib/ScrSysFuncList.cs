@@ -1,52 +1,60 @@
-﻿using System;
+﻿using OfficeOpenXml;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 
 namespace ScriptRunnerLib
 {
     static public class ScrSysFuncList
     {
+        // specific names: createObject, setProperty, getProperty, getAt, 
         static Dictionary<string, Func<List<ExprVar>, ExprVar>> funcDict =
             new Dictionary<string, Func<List<ExprVar>, ExprVar>>()
             {
+                {"$",  StrFormatting},
                 {"out",  ToConsole},
                 {"min",  Min},
                 {"max",  Max},
                 {"renameFiles", RenameFiles },
                 {"listFiles", getListOfFiles },
+                {"deleteFile", DeleteFileByPath},
                 {"createObject", CreateObj},
-                {"Array.create", null}, 
-                {"Array.get_length", null}, // this way get_<propName> one can get/set properties
-                {"Array.add", null},
-                {"Array.deleteAt",  null},
-                {"Array.indexOf",  null},
                 {"List.create", ListCreate}, 
                 {"List.toStr",  ListToStr},
                 {"List.getProperty", ListGetProperty}, // this way get_<propName> one can get/set properties
                 {"List.getAt", ListGetAt},
                 {"List.add", ListAdd},
+                {"List.addRange", ListAddRange},
                 {"List.deleteAt",  ListDeleteAt},
                 {"List.indexOf",  ListIndexOf},
                 {"Dictionary.create",  DictionaryCreate},
-                {"Dictionary.get_length",  DictionaryLength},
+                {"Dictionary.length",  DictionaryLength},
                 {"Dictionary.has",  DictionaryHas},      // contains key,bool
                 {"Dictionary.add",  DictionaryAdd},
                 {"Dictionary.setProperty",  DictionarySetAt},
                 {"Dictionary.getProperty",  DictionaryGetAt},
                 {"Dictionary.getAt",  DictionaryGetAt},
                 {"Dictionary.deleteAt",  DictionaryDeleteAt},
-                {"Dictionary.getKeysAsArr",  DictionaryGetKeysAsArr},
-                {"Dictionary.getValuesAsArr",  DictionaryGetValuesAsArr},
+                {"Dictionary.getKeys",  DictionaryGetKeysAsArr},
+                {"Dictionary.getValues",  DictionaryGetValuesAsArr},
                 {"Dictionary.toStr",  DictionaryToStr},
                 {"FileMover.create",  FileMoverCreate},
-                {"FileMover.run",  FileMoverRun},
+                {"FileMover.copy",  FileMoverCopy},
+                {"FileMover.clear",  FileMoverClear},
+                {"FileMover.setProperty",  FileMoverSetAt},
+                {"FileMover.getProperty",  FileMoverGetAt},
+                {"FileMover.renameFiles",  FileMoverRenameFiles},
+                {"FileMover.initialFilesList",  FileMoverInitialFilesList},
+                {"FileMover.renamedFilesList",  FileMoverRenamedFilesList},
                 {"Integer.toStr",  ToStr},
                 {"Double.toStr",  ToStr},
                 {"String.toStr",  ToStr},
                 {"String.left",  StringLeft},
                 {"String.indexOf",  StringIndexOf},
                 {"String.substr",  StringSubstr},
+                {"String.fileName",  StringFileName},
                 {"openExcelFile", OpenExcelFile},
                 {"ExcelPackage.close", CloseExcelFile},
                 {"ExcelPackage.save", SaveExcelFile},
@@ -54,6 +62,76 @@ namespace ScriptRunnerLib
                 {"ExcelPackage.setCellValue", SetCellInExcelFile},
                 {"ExcelPackage.getCellValue", GetCellInExcelFile},
             };
+
+        private static ExprVar DeleteFileByPath(List<ExprVar> list)
+        {
+            if (list.Count < 1)
+                throw new Exception("Error: incorrect call of DeleteFile, shoud be 1 parameter,\n"
+                    + "usage: deleteFile(filePath)");
+            string sPath = list[0].ToStr();
+            if (File.Exists(sPath))
+            {
+                try
+                {
+                    File.Delete(sPath);
+                    return ExprVar.CrtVar(1);
+                }
+                catch
+                {
+                    return ExprVar.CrtVar(0);
+                }
+            }
+            return ExprVar.CrtVar(0);
+        }
+
+        private static ExprVar FileMoverRenamedFilesList(List<ExprVar> list)
+        {
+            if (list.Count < 1)
+                throw new Exception("Error: incorrect call of RenamedFilesList, shoud be 1 parameter,\n"
+                    + "usage: fileMover.renamedFilesList()");
+            var fmObj = (FileMover)list[0].GetObj().GetVal();
+            var lst = fmObj.GetListOfRenamedFiles();
+            return lst;
+        }
+
+        private static ExprVar FileMoverInitialFilesList(List<ExprVar> list)
+        {
+            if (list.Count < 1)
+                throw new Exception("Error: incorrect call of initialFilesList, shoud be 1 parameter,\n"
+                    + "usage: fileMover.initialFilesList()");
+            var fmObj = (FileMover)list[0].GetObj().GetVal();
+            var lst = fmObj.GetListOfInitialFilesToRename();
+            return lst;
+        }
+
+        private static ExprVar FileMoverRenameFiles(List<ExprVar> list)
+        {
+            if (list.Count < 3)
+                throw new Exception("Error: incorrect call of RenameFiles, shoud be 2 string paramenters,\n"
+                    + "usage: fileMover.renameFiles(strFolder, strRenamePattern)");
+            // rename pattern: srcPtrn -> targetPtrn
+            var fmObj = (FileMover)list[0].GetObj().GetVal();
+            string sFolder = list[1].ToStr();
+            string sPtrn = list[2].ToStr();
+            sPtrn = sPtrn.EndsWith(";") ? UtlParserHelper.SubsRng(sPtrn, 0, -1) : sPtrn;
+
+            // renameFiles returns: true - Ok, false - failed
+            var res1 = fmObj.RenameFiles(sFolder, sPtrn);
+
+            return ExprVar.CrtVar(res1?1:0);
+        }
+
+        private static ExprVar StrFormatting(List<ExprVar> list)
+        {
+            // $(" ... {1} ...{2} ...", v1, v2, ... )
+            var str = list[0].ToStr();
+            for(int i=1; i< list.Count; i++)
+            {
+                var v1 = list[i].ToStr();
+                str = str.Replace($"{{{i}}}", v1);
+            }
+            return ExprVar.CrtVar(str);
+        }
 
         private static ExprVar ToStr(List<ExprVar> list)
         {
@@ -105,10 +183,27 @@ namespace ScriptRunnerLib
             lstObj.Add(vToAdd);
             return listVar;
         }
+        private static ExprVar ListAddRange(List<ExprVar> list)
+        {
+            if (list.Count < 2 || list[0].GetTypeOfObj() != "List")
+                throw new Exception("ListAdd: incorrect parameter(s), usage: list.addRange(list)");
+            var listVar = list[0];
+            var lstObj = (List<ExprVar>)listVar.GetObjBody();
+            var lstToAdd = list[1];
+            var lstToAddObj = (List<ExprVar>)lstToAdd.GetObjBody();
+            lstObj.AddRange(lstToAddObj);
+            return listVar;
+        }
 
         private static ExprVar ListGetProperty(List<ExprVar> list)
         {
-            throw new NotImplementedException();
+            if (list.Count < 2)
+                throw new Exception("Error: incorrect call of getProperty, 2 paramenters are expected,\n"
+                    + "usage: list.<propertyName>");
+            var listVar = (List<ExprVar>)(list[0].GetObjBody());
+            var propName = list[1].ToStr();
+            if(propName=="length") return ExprVar.CrtVar(listVar.Count);
+            throw new Exception($"Error: List.GetProperty(propName), undefined property: {propName}");
         }
 
         private static ExprVar ListCreate(List<ExprVar> list)
@@ -127,10 +222,25 @@ namespace ScriptRunnerLib
             // returns: files (array)
             if (list.Count < 2)
                 throw new Exception("Error: incorrect call of getListOfFiles, shoud be 2 string paramenters,\n"
-                    + "usage: listFiles(strFolder, strPattern)");
-            string sFolder = list[0].ToStr();
+                    + "usage: listFiles(strFolder, strPattern); or listFiles(ListOfFolders, strPattern)");
+            var par1 = list[0];
             string sPtrn = list[1].ToStr();
-            List<string> files = utls.GetListFiles(sFolder, sPtrn);
+            string strType = par1.GetTypeOfObj();
+            var folders = new List<string>();
+            if (strType == "String")
+            {
+                folders.Add(par1.ToStr());
+            }
+            else if(strType == "List")
+            {
+                folders = ((List<ExprVar>)par1.GetObjBody()).Select(x => x.ToStr()).ToList();
+            }
+            List<string> files= new List<string>();
+            foreach (var sFolder in folders)
+            {
+                var filesToAdd = utls.GetListFiles(sFolder, sPtrn, false);
+                files.AddRange(filesToAdd);
+            }
             List<ExprVar> vars = files.Select(x=>ExprVar.CrtVar(x)).ToList();
             return ExprVar.CrtVar(vars);
         }
@@ -144,9 +254,17 @@ namespace ScriptRunnerLib
             sFolder = UtlParserHelper.Right(sFolder, 1) == ";" ? UtlParserHelper.SubsRng(sFolder,0, -1): sFolder;
             string sPtrn = list[1].ToStr();
             sPtrn = sPtrn.EndsWith(";")? UtlParserHelper.SubsRng(sPtrn, 0, -1):sPtrn;
-            
+
             // renameFiles returns: int n = number of files renamed, string msg= message
-            var res1 = utls.RenameFiles(sFolder, sPtrn);
+            var renDict = new Dictionary<string, string>();
+            if (sPtrn.Contains(";")) // it means that we have also renaming dictionary
+            {
+                var arr2 = sPtrn.Split(';');
+                sPtrn = arr2[0];
+                renDict = Utl.StrToDict(arr2[1]);
+
+            }
+            var res1 = utls.RenameFiles(sFolder, sPtrn, renDict);
 
             var dictRes = new Dictionary<string, ExprVar>();
             dictRes["filesCount"] = ExprVar.CrtVar(res1.Item1);
@@ -159,23 +277,112 @@ namespace ScriptRunnerLib
             // gets a var, sets to this var the FilesMoverTask Obj;
             ExprVar par1 = list[0];
             ScrObj obj = par1.GetObj();
-            obj.SetVal(new FilesMoverTask());
+            obj.SetVal(new FileMover());
             return par1;
         }
-
-        private static ExprVar FileMoverRun(List<ExprVar> list)
+        private static ExprVar FileMoverGetAt(List<ExprVar> list)
         {
-            if (list.Count < 2) 
-                throw new Exception("FileMoverRun: incorrect parameters, expected: paramsDictionary");
+            if (list.Count < 2)
+                throw new Exception("Error: incorrect call of FileMover.GetProperty, shoud be at least 2 parameters");
             var fmVar = list[0];
-            var dictVar = list[1];
-            var fm = (FilesMoverTask)fmVar.GetObj().GetVal();
-            var dictTmp = (Dictionary<string, ExprVar>)dictVar.GetObj().GetVal();
-            var dict = dictTmp.ToDictionary(k => k.Key, k => k.Value.ToStr());
-            fm.LoadTaskFromDict(dict);
-            fm.MoveCopyFiles();
-            string resMsg = fm.ResultingMessage;
-            return fmVar;
+            var propName = list[1].ToStr();
+            var fmObj = (FileMover)fmVar.GetObj().GetVal();
+            if (propName == "FromFolders")
+            {
+                return fmObj.FromFolders;
+            }
+            else if (propName == "FromFilePatterns")
+            {
+                return fmObj.FromFilePatterns;
+            }
+            else if (propName == "ToFolders")
+            {
+                return fmObj.ToFolders;
+            }
+            else if (propName == "ResultingMessage")
+            {
+                return fmObj.ResultingMessage;
+            }
+            else if (propName == "ListOfCopiedFiles")
+            {
+                return fmObj.ListOfCopiedFiles;
+            }
+            else if (propName == "CopyOption")
+            {
+                return fmObj.CopyOption;
+            }
+            else if (propName == "RenameOption")
+            {
+                return fmObj.RenameOption;
+            }
+
+            throw new Exception($"Error in FileMover.GetProperty: incorrect property name: {propName}");
+        }
+
+        private static ExprVar FileMoverSetAt(List<ExprVar> list)
+        {
+            if (list.Count < 2)
+                throw new Exception("Error: incorrect call of FileMover.SetProperty, shoud be at least 2 parameters");
+            var fmVar = list[0];
+            var propName = list[1].ToStr();
+            var fmObj = (FileMover)fmVar.GetObj().GetVal();
+            if (propName == "FromFolders")
+            {
+                var varToAssign = (list.Count < 3) ? ExprVar.CrtVar("") : list[2];
+                fmObj.FromFolders = varToAssign;
+                return varToAssign;
+            }
+            else if (propName == "FromFilePatterns")
+            {
+                var varToAssign = (list.Count < 3) ? ExprVar.CrtVar("") : list[2];
+                fmObj.FromFilePatterns = varToAssign;
+                return varToAssign;
+            }
+            else if (propName == "ToFolders")
+            {
+                var varToAssign = (list.Count < 3) ? ExprVar.CrtVar("") : list[2];
+                fmObj.ToFolders = varToAssign;
+                return varToAssign;
+            }
+            else if (propName == "RenameDictionary")
+            {
+                var varToAssign = (list.Count < 3) ? ExprVar.CrtVar("") : list[2];
+                fmObj.RenameDict = varToAssign;
+                return varToAssign;
+            }
+            else if(propName == "CopyOption")
+            {
+                var varToAssign = (list.Count < 3) ? ExprVar.CrtVar("") : list[2];
+                fmObj.CopyOption = varToAssign;
+                return varToAssign;
+            }
+            else if (propName == "RenameOption")
+            {
+                var varToAssign = (list.Count < 3) ? ExprVar.CrtVar("") : list[2];
+                fmObj.RenameOption = varToAssign;
+                return varToAssign;
+            }
+
+            throw new Exception($"Error in FileMover.SetProperty: incorrect property name: {propName}");
+        }
+
+        private static ExprVar FileMoverClear(List<ExprVar> list)
+        {
+            var fmVar = list[0];
+            var fm = (FileMover)fmVar.GetObj().GetVal();
+            fm.Clear();
+            return ExprVar.CrtVar(1);
+
+        }
+
+        private static ExprVar FileMoverCopy(List<ExprVar> list)
+        {
+            if (list.Count < 1) 
+                throw new Exception("FileMoverCopy: incorrect parameters, expected: fileMover");
+            var fmVar = list[0];
+            var fm = (FileMover)fmVar.GetObj().GetVal();
+            var bRes = fm.MoveCopyFiles();
+            return ExprVar.CrtVar(bRes?1:0);
         }
 
         public static ExprVar ToConsole(List<ExprVar> list)
@@ -188,29 +395,11 @@ namespace ScriptRunnerLib
             return ExprVar.CrtVar(str);
         }
 
-        private static ExprVar GetCellInExcelFile(List<ExprVar> list)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static ExprVar SetCellInExcelFile(List<ExprVar> list)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static ExprVar FindRowNumberInExcelFile(List<ExprVar> list)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static ExprVar SaveExcelFile(List<ExprVar> list)
-        {
-            throw new NotImplementedException();
-        }
-
         public static ExprVar CloseExcelFile(List<ExprVar> list)
         {
-            throw new NotImplementedException();
+            var xlsPkg = (ExcelPackage)list[0].GetObjBody();
+            UtlXls.ClsXlsFile(xlsPkg);
+            return ExprVar.CrtVar(1);
         }
 
         public static ExprVar OpenExcelFile(List<ExprVar> list)
@@ -220,6 +409,59 @@ namespace ScriptRunnerLib
             var xlsFile = UtlXls.OpnXlsFile(filePath);
             var vXls = ExprVar.CrtVar(xlsFile);
             return vXls;
+        }
+        private static ExprVar GetCellInExcelFile(List<ExprVar> list)
+        {
+            //GetCellVal(ExcelPackage package, int workSheetId, int row, int col)
+            if (list.Count < 4)
+                throw new Exception("Error: incorrect call of getCellValue,\n"
+                    + "usage: xlsPkgObj.getCellValue(wrkSheetNumber, row, col)");
+            var xlsPkg = (ExcelPackage)list[0].GetObjBody();
+            var wksheetNo = list[1].ToInt();
+            var row = list[2].ToInt();
+            var col = list[3].ToInt();
+            var vRes = UtlXls.GetCellVal(xlsPkg, wksheetNo, row, col);
+            return vRes;
+        }
+
+        public static ExprVar SetCellInExcelFile(List<ExprVar> list)
+        {
+            if (list.Count < 5)
+                throw new Exception("Error: incorrect call of setCellValue,\n"
+                    + "usage: xlsPkgObj.setCellValue(wrkSheetN, row, col, valueToSet)");
+            var xlsPkg = (ExcelPackage)list[0].GetObjBody();
+            var wksheetNo = list[1].ToInt();
+            var row = list[2].ToInt();
+            var col = list[3].ToInt();
+            var valToSet = list[4];
+            UtlXls.SetCellVal(xlsPkg, wksheetNo, row, col, valToSet);
+            return list[0];
+        }
+
+        public static ExprVar FindRowNumberInExcelFile(List<ExprVar> list)
+        {
+            if (list.Count < 5)
+                throw new Exception("Error: incorrect call of FindRowNumberInExcelFile, \n"
+                    + "usage: xlsPkgObj.findRowNumber(wrkSheetN, startRow, columNumber, strToFind)");
+            // return rowNumber(0 based) or -1 if not found.
+
+            var xlsPkg = (ExcelPackage)list[0].GetObjBody();
+            var wksheetNo = list[1].ToInt();
+            var startRow = list[2].ToInt();
+            var iCol = list[3].ToInt();
+            var strValToFind = list[4].ToStr();
+            var wksheet = UtlXls.GetWorksheet(xlsPkg, wksheetNo);
+            if (startRow<1 || iCol<1)
+                throw new Exception("Error: FindRowNumber, Excel sheet number should be >=0, row,col > 0 (1,2...)");
+            var iRowFound = UtlXls.FindRowNumber(wksheet, startRow, iCol, strValToFind);
+            return ExprVar.CrtVar(iRowFound);
+        }
+
+        public static ExprVar SaveExcelFile(List<ExprVar> list)
+        {
+            var xlsPkg = (ExcelPackage)list[0].GetObjBody();
+            xlsPkg.Save();
+            return list[0];
         }
 
         private static ExprVar StringSubstr(List<ExprVar> list)
@@ -248,6 +490,16 @@ namespace ScriptRunnerLib
             var vRes = new ExprVar("", EType.E_STRING, val, null);
             return vRes;
         }
+        private static ExprVar StringFileName(List<ExprVar> list)
+        {
+            // extract file name from the string with full file path
+            // usage: fileStr.fileName(); returns name.Ext
+            string str = list[0].ToStr();
+            if(str.Length==0) return ExprVar.CrtVar("");
+            var val = Path.GetFileName(str);
+            return ExprVar.CrtVar(val);
+        }
+
 
         private static ExprVar DictionaryToStr(List<ExprVar> list)
         {
@@ -268,9 +520,7 @@ namespace ScriptRunnerLib
             {
                 arr.Add(v);
             }
-            ExprVarArray arrArr = new ExprVarArray();
-            arrArr.CreateArray(arr);
-            return arrArr;
+            return ExprVar.CrtVar(arr);
         }
 
         private static ExprVar DictionaryGetKeysAsArr(List<ExprVar> list)
@@ -282,9 +532,7 @@ namespace ScriptRunnerLib
             {
                 arr.Add(ExprVar.CrtVar(key));
             }
-            ExprVarArray arrArr = new ExprVarArray();
-            arrArr.CreateArray(arr);
-            return arrArr;
+            return ExprVar.CrtVar(arr);
         }
 
         private static ExprVar DictionaryDeleteAt(List<ExprVar> list)
@@ -320,12 +568,22 @@ namespace ScriptRunnerLib
 
         private static ExprVar DictionaryHas(List<ExprVar> list)
         {
-            throw new NotImplementedException();
+            if (list.Count < 2)
+                throw new Exception("Error: incorrect call of Dictionary.has, usage: dict.has(key)");
+            var dictVar = list[0];
+            var propName = list[1].ToStr();
+            var dict = (Dictionary<string, ExprVar>)dictVar.GetObj().GetVal();
+            var has = dict.ContainsKey(propName);
+            return ExprVar.CrtVar(has? 1 : 0);
         }
 
         private static ExprVar DictionaryLength(List<ExprVar> list)
         {
-            throw new NotImplementedException();
+            if (list.Count < 1)
+                throw new Exception("Error: incorrect call of Dictionary.Length, usage: dict.length()");
+            var dictVar = list[0];
+            var dict = (Dictionary<string, ExprVar>)dictVar.GetObj().GetVal();
+            return ExprVar.CrtVar(dict.Count);
         }
 
         private static ExprVar DictionaryAdd(List<ExprVar> list)

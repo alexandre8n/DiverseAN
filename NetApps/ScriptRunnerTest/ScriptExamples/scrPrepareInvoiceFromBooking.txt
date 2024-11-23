@@ -1,0 +1,117 @@
+﻿var rootPathFrom = "C:\Users\Alex\Dropbox\AN_YR\Insurance_Platform\Reporting\";
+//rootPathFrom = "F:\Work\Temp\Rpt4MG\";
+var rootPathFrom2 = "E:\Мой диск\Work\Developers\";
+
+var fromF1 = rootPathFrom+"Alexander_Olenich";
+var fromF2 = rootPathFrom+"Denis Zaytsev";
+var fromF3 = rootPathFrom+"Volodymyr_Tkachenko";
+var fromF4 = rootPathFrom2+"VO";
+var fromF5 = rootPathFrom+"Oleksii_Zamekula";
+var fromInvFolder = "C:\Users\Alex\Dropbox\AN_YR\Sportsnexa";
+
+var toF1 = "F:\Work\Temp\PrepareReportTest\CopyTo1";
+var fromFolders = [fromF1, fromF2, fromF3, fromF4, fromF5];
+var toFolders = [toF1]; 
+var bookingPattern = "RegEx:\w\w[_]MonthlyEfforts_{EffYear}[-_]{EffMonth}[.]xlsx";
+var invPattern = "YYYY-MMMM-NG-SN-internal.xlsx";
+
+// copy bookings to folder toF1
+var fm = createObject("FileMover");
+fm.FromFolders = fromFolders;
+fm.FromFilePatterns = bookingPattern;
+fm.ToFolders = toF1;
+fm.CopyOption = "Replace"; // what to do if target exists: error, newAsCopy, oldAsCopy, replace
+var copyRes = fm.copy();
+if(!copyRes){
+	out($"Error: failed to copy\n{fm.ResultingMessage}");
+	return -1;
+}
+var effortFiles = fm.ListOfCopiedFiles;
+out($"FileMover, Message:\n{fm.ResultingMessage}");
+out($"FileMover, effort files:\n{effortFiles.toStr()}");
+
+// collect booking effort hours
+var efforts = createObject("Dictionary");
+for(var fileWithBooking in effortFiles){
+	var nm2 = fileWithBooking.fileName().left(2);
+	var efrt = getEffortFromFile(fileWithBooking);
+	efforts[nm2] = efrt;
+	out($" {nm2}: {efrt} h");
+}
+
+// copy invoice template
+out($"Preparing invoice... taking template from {fromInvFolder}");
+fm.clear();
+fm.FromFolders = [fromInvFolder];
+fm.FromFilePatterns = [invPattern];
+fm.ToFolders = toF1;
+fm.CopyOption = "NewCopy";
+var invTmpRes = fm.copy();
+if(!invTmpRes){
+	out($"Failed to copy {invPattern} from folder {fromInvFolder}\n{fm.ResultingMessage}");
+	return 0;
+}
+var invFile = fm.ListOfCopiedFiles[0];
+
+out($"copied invoice file: {invFile}");
+
+// rename invoice template to invoice name
+let RenameFilesInFolder = toF1;
+var RenameFilesPattern = "RegEx:"+invPattern+" -> {EffYear}-00{EffMonth}-NG-SN-internal.xlsx";
+//deleteFile(RenameFilesInFolder+"\2024-0008-NG-SN-internal.xlsx");
+var renResult = fm.renameFiles(RenameFilesInFolder, RenameFilesPattern);
+if(!renResult){
+	out($"Failed to rename: {fm.ResultingMessage}");
+	return 0;
+}
+out($"Renaming invoice template:\n{fm.ResultingMessage}");
+
+var lstIni = fm.initialFilesList();
+out($"Initial files before renameFiles:\n{lstIni.toStr('\n')}");
+fm.RenameOption="Replace";			// option what to do if target exists: Replace/Error
+var lst = fm.renamedFilesList();
+out($"Renamed files:\n{lst.toStr('\n')}");
+
+// update invoice with efforts data
+updateInvoice(lst[0], efforts);
+return 1;
+
+// todo, copy1
+// zip reports
+// archive reports and invoices
+fm.copy1(lst[0], toF2);
+
+return 1;
+
+// helper functions
+function updateInvoice(file, efforts){
+	var f1 = openExcelFile(file);
+
+	for(var key in efforts){
+		var eff = efforts[key];
+		out($"Fining the row for {key} = {eff.toStr()}");
+		var iRow = f1.findRowNumber(0, 1, 1, "RegEx:^"+key+" - ");
+		if(iRow == -1){
+			out($"ERROR: Failed to find the efforts line for {key}");
+			continue;
+		}
+		f1.setCellValue(0, iRow, 3, eff);
+		out($"set the effort for {key} = {eff.toStr()} in row: {iRow.toStr()}");
+	}
+	f1.save();
+	f1.close();
+}
+function getEffortFromFile(file){
+	var f1 = openExcelFile(file);
+	var rowFound = f1.findRowNumber(0, 1, 1, "Total efforts");
+	var eff = f1.getCellValue(0, rowFound, 2);
+	f1.close();
+	return eff;
+}
+
+
+// more actions to do
+// 1) copied effort file must be renamed N.ext -> N_Arc.ext
+// 2) both inv and inv - internal should be Ok
+// 3) template for the next month should be created?
+// 4) invoice and invoice - internal (or profit file should be created)

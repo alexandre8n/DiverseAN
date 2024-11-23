@@ -1,0 +1,8 @@
+﻿var v1 = 5;
+var v2 = "this is: ";
+var resOfOut = out2(v2, v1);
+out($"call of out2, res:{resOfOut}");
+function out2(s1, s2){
+	out($"{s1}{s2}");
+	return -999;
+}

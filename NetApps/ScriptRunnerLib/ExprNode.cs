@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace ScriptRunnerLib
@@ -24,7 +25,7 @@ namespace ScriptRunnerLib
 	{
 		public const string msgUnbQuatMark = "Unbalanced quatation marks";
 		public const string msgUnbParenth = "Unbalanced paranthesis";
-		public const string msgNoOpInExpr = "No operation found in expression [{0}]";
+		public const string msgNoOpInExpr = "No operation found in expression [{0}]\nPossible reason missing operator delimiter(;)";
 		public const string msgInvParLstInFunc = "Invalid parameter list for function [{0}]";
 	}
 
@@ -36,6 +37,7 @@ namespace ScriptRunnerLib
         public static string afxAssignOperator = "=";
 
         private string m_ExprBuff;
+		private ExprNode parent = null;
         public NodeType nodeType { get; private set; }
 
 
@@ -59,14 +61,15 @@ namespace ScriptRunnerLib
         // is a DotFollower or property - if this node follows . (DOT) operator
         bool isDotFollower = false;				
 		
-		private ArrayList m_Nodes = new ArrayList();
+		private List<ExprNode> m_Nodes = new List<ExprNode>();
 		
-		private ExprNode()
+		private ExprNode(ExprNode parent)
 		{
 			nodeType = NodeType.UNDEF;
+			this.parent = parent;
         }
 		
-		public ExprNode(string sExpr) : this()
+		public ExprNode(string sExpr, ExprNode parent) : this(parent)
 		{
 			SetExpression(sExpr);
 		}
@@ -80,6 +83,7 @@ namespace ScriptRunnerLib
             ParseVarDefinitions();
         }
 
+		public ExprNode GetParent() { return  parent; }
         private void ParseVarDefinitions()
         {
 			m_MemDefinitionTerm = "";
@@ -136,6 +140,13 @@ namespace ScriptRunnerLib
 				nodeType = (isDotFollower) ? NodeType.PROPERTY : NodeType.VARIABLE;
                 return;
 			}
+			if (IsFormattedStringLiteral(m_ExprBuff))
+			{
+				// checked the following: $"smth{expr1}..."
+				// transform to $("smth{1}...", expr1,...)
+				m_ExprBuff = TransformFormattedStrLiteral(m_ExprBuff);
+				// the next step is to process like a function.
+            }
 			if (CheckConstant(ref m_ExprBuff))
 			{
                 nodeType = NodeType.CONSTANT;
@@ -166,14 +177,14 @@ namespace ScriptRunnerLib
 			
 			if (Operand1 != "")
 			{
-				pNode = new ExprNode(Operand1);
+				pNode = new ExprNode(Operand1, this);
 				m_Nodes.Add(pNode);
 				pNode.BuildExprTree();
 			}
 			
 			if (Operand2 != "")
 			{
-				pNode = new ExprNode(Operand2);
+				pNode = new ExprNode(Operand2, this);
 				if(m_pOperDsc.m_Code == OperationCode.OPR_POINT)
 				{
 					pNode.isDotFollower = true;
@@ -187,6 +198,37 @@ namespace ScriptRunnerLib
                 ((ExprNode)m_Nodes[0]).CheckPropertyAssign();
             }
 		}
+
+        private string TransformFormattedStrLiteral(string input)
+        {
+			input = input.Substring(1);
+            // str1 looks like: "....{exp1}....{exp2}..."
+            string ptrn = "{[^{}]+}";
+            var mts = Regex.Matches(input, ptrn);
+			if(mts.Count==0)
+				return input;
+            int i = 1;
+			var lstOfMatches = new List<string>();
+            foreach (var m2 in mts)
+            {
+                var mtch = m2 as Match;
+                string s1 = (mtch == null) ? "" : mtch.Value;
+				lstOfMatches.Add(s1.Substring(1,s1.Length-2));
+                input = input.Replace(s1, $"{{{i++}}}");
+            }
+			string str2 = string.Join(",",lstOfMatches);
+			string sRes = $"$({input},{str2})";
+			return sRes;
+        }
+
+        private bool IsFormattedStringLiteral(string m_ExprBuff)
+        {
+			if (m_ExprBuff.Length < 3) return false;
+			string pureVal="";
+			if (m_ExprBuff[0] == '$' && IsTextConst(m_ExprBuff.Substring(1), ref pureVal))
+				return true;
+			return false;
+        }
 
         private void CheckPropertyAssign()
         {
@@ -306,7 +348,7 @@ namespace ScriptRunnerLib
 			return nodeType == NodeType.BREAK || nodeType == NodeType.CONTINUE;
         }
 
-        public static bool FindSafeNextOperation(ref string sBuf, int iBeginScan, ref int iPosFound, ref ExprOperatorDsc pOper)
+        public static bool FindSafeNextOperation(string sBuf, int iBeginScan, FindOprRes findOprRes)
 		{
 			int ip = iBeginScan;
 			int iLen = sBuf.Length;
@@ -333,7 +375,7 @@ namespace ScriptRunnerLib
 					}
 					ip = iEnd;
 				}
-                if (IsOperation(ref sBuf, ip, ref pOper))
+                if (IsOperation(sBuf, ip, findOprRes))
 				{
 					goto endOfDoLoop;
 				}
@@ -345,11 +387,10 @@ namespace ScriptRunnerLib
 			{
 				return false;
 			}
-			iPosFound = ip;
 			return true;
 		}
 		
-		public static bool IsOperation(ref string sBuf, int iBeginScan, ref ExprOperatorDsc pOper)
+		public static bool IsOperation(string sBuf, int iBeginScan, FindOprRes findOprRes)
 		{
 			
 			if (sBuf[iBeginScan] == ' ')
@@ -357,12 +398,14 @@ namespace ScriptRunnerLib
 				return false;
 			}
 			
-			foreach (ExprOperatorDsc temp_pOper in ExprNode.afxOperators)
+			foreach (ExprOperatorDsc curOper in ExprNode.afxOperators)
 			{
-				pOper = temp_pOper;
-				if (pOper.IsFound(sBuf, iBeginScan))
+                findOprRes.opr = curOper;
+				if (curOper.IsFound(sBuf, iBeginScan))
 				{
-					return true;
+                    findOprRes.oprBeginPos = iBeginScan;
+                    findOprRes.oprEndPos = curOper.m_posAfterOperator;
+                    return true;
 				}
 			}
 			return false;
@@ -466,7 +509,7 @@ namespace ScriptRunnerLib
 			{
 				return true;
 			}
-			if (sVal == '_'|| sVal == '@'|| sVal == '#')
+			if (sVal == '_'|| sVal == '@'|| sVal == '#' || sVal=='$')
 			{
 				return true;
 			}
@@ -649,7 +692,7 @@ namespace ScriptRunnerLib
 		{
 			try
 			{
-				if(!Regex.IsMatch(sVal, "^\\d+$"))
+				if(!Regex.IsMatch(sVal, "^[-+]?\\d+$"))
 				{
 					return false;
 				}
@@ -709,18 +752,25 @@ namespace ScriptRunnerLib
             {
                 return false;
             }
+
             string sChar = sVal[0].ToString();
+			
             string sLastChar = sVal[sVal.Length - 1].ToString();
-            string sToTest = Regex.Replace(sVal, @"\\.", "");
-            int iClosing = sToTest.IndexOf(sChar, 1);
-            if (!UtlParserHelper.IsQuatMark(sChar) || sChar != sLastChar || iClosing != sToTest.Length - 1)
-            {
-                return false;
-            }
-            // Remove open and closing quatation marks
-            sPureVal = sVal.Substring(1, sVal.Length - 2);
-            // now replace "" by " (if any)
-            sPureVal.Replace(sChar + sChar, sChar);
+			if (sChar != sLastChar) 
+				return false;
+			sPureVal = sVal.Substring(1,sVal.Length - 2);
+			// case: "somethingWoQM"
+			int idxQM = sPureVal.IndexOf(sChar);
+
+            if (idxQM == -1) 
+				return true;
+
+            //case: "abc""...""abc"
+            // now replace "" by empty
+            string sPur1Test = sPureVal.Replace(sChar + sChar, "");
+			if (sPur1Test.IndexOf(sChar) != -1)
+				return false;
+            sPureVal = sPureVal.Replace(sChar + sChar, sChar);
             return true;
         }
 
@@ -777,7 +827,7 @@ namespace ScriptRunnerLib
                     }
                     goto endOfDoLoop;
                 }
-                pNode = new ExprNode(parExpr);
+                pNode = new ExprNode(parExpr, this);
                 m_Nodes.Add(pNode);
                 ip = iComma;
                 if (m_ExprBuff[ip] == ',')
@@ -796,32 +846,32 @@ namespace ScriptRunnerLib
         private bool SplitOn2Operands(ref string sOperand1, ref string sOperand2)
 		{
             ExprOperatorDsc pMaxLevOper = null;
-			int iMaxOpLeng = 0;
+			//int iMaxOpLeng = 0;
+			int iMaxOpEndPos = 0;		// postion, where the matching operator ends
 			int iMaxLevPosFound = -1;
 			int iMaxOpLevel = - 1;
 			int iBeginScan = 0;
-			int iPosFound = - 1;
+			//int iPosFound = - 1;
 			
-			//				int ip = 0;
 			int iLen = m_ExprBuff.Length;
 			while (true)
 			{
-                ExprOperatorDsc pOper = null;
-				if (! FindSafeNextOperation(ref m_ExprBuff, iBeginScan, ref iPosFound, ref pOper))
+				FindOprRes findOprRes = new FindOprRes();
+                if (! FindSafeNextOperation(m_ExprBuff, iBeginScan, findOprRes))
 				{
 					goto endOfDoLoop;
 				}
 				
 				// it is importent to find the most right operator !!
 				
-				if (pOper.m_LevelOfPrecedence >= iMaxOpLevel)
+				if (findOprRes.opr.m_LevelOfPrecedence >= iMaxOpLevel)
 				{
-					iMaxOpLevel = pOper.m_LevelOfPrecedence;
-					pMaxLevOper = pOper;
-					iMaxOpLeng = pOper.GetLength();
-					iMaxLevPosFound = iPosFound;
+					iMaxOpLevel = findOprRes.opr.m_LevelOfPrecedence;
+					pMaxLevOper = findOprRes.opr;
+                    iMaxOpEndPos = findOprRes.oprEndPos;
+                    iMaxLevPosFound = findOprRes.oprBeginPos;
 				}
-				iBeginScan = iPosFound + pOper.GetLength();
+				iBeginScan = findOprRes.oprEndPos;
 			}
             endOfDoLoop:
 
@@ -830,12 +880,12 @@ namespace ScriptRunnerLib
                 sOperand1 = m_ExprBuff.Substring(0, iMaxLevPosFound);
 				if (pMaxLevOper.m_IsBrackets)
 				{
-					int iOp2Len = pMaxLevOper.m_posOfClosingBracket - iMaxLevPosFound - 1;
+					int iOp2Len = pMaxLevOper.m_posAfterOperator - iMaxLevPosFound - 1;
                     sOperand2 = m_ExprBuff.Substring(iMaxLevPosFound+1, iOp2Len);
                 }
 				else
 				{
-					sOperand2 = m_ExprBuff.Substring(iMaxLevPosFound + iMaxOpLeng);
+					sOperand2 = m_ExprBuff.Substring(iMaxOpEndPos);
 				}
                 m_pOperDsc = pMaxLevOper;
                 return true;
@@ -901,7 +951,7 @@ namespace ScriptRunnerLib
 			return m_pOperDsc;
         }
 
-        internal ArrayList GetOperands()
+        internal List<ExprNode> GetOperands()
         {
 			return m_Nodes;
         }
@@ -922,5 +972,16 @@ namespace ScriptRunnerLib
 		{
 			return m_AssignPropValue;
 		}
+
+        public bool IsAssignOperatorNode()
+        {
+            return IsOperationNode() && m_pOperDsc.m_Code==OperationCode.OPR_ASSIGN;
+        }
     }
+	public class FindOprRes
+	{
+		public int oprBeginPos = -1;
+		public int oprEndPos = -1;
+		public ExprOperatorDsc opr = null;
+	}
 }

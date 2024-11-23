@@ -8,8 +8,9 @@ namespace ScriptRunnerLib
     {
         public static int afxContinue = int.MinValue + 100;
         public static int afxBreak = int.MinValue + 101;
+        public static int afxReturn = int.MinValue + 102;
         protected List<ScrCmd> operators = null;
-        ScrMemory scrMemory = null;
+        protected ScrMemory scrMemory = null;
         public ScrBlock(ScriptRunner runOwner):base(runOwner)
         { 
         }
@@ -83,9 +84,21 @@ namespace ScriptRunnerLib
             foreach (var cmd in operators)
             {
                 vCmdRes = cmd.Run(globalMemMngr);
-                if (IsBreak(vCmdRes) || IsContinue(vCmdRes)) break;
+                if (IsReturn(vCmdRes) || IsBreak(vCmdRes) || IsContinue(vCmdRes)) break;
             }
+            // clean block memory
+            if(scrMemory!=null) scrMemory.Clear();
             return vCmdRes;
+        }
+
+        public static bool IsReturn(ExprVar vCmdRes)
+        {
+            if (vCmdRes == null || vCmdRes.GetTypeOfObj() != "List") return false;
+            var lst = (List<ExprVar>)vCmdRes.GetObjBody();
+            if(lst.Count<2) return false;
+            var var1 = lst[0];
+            if (var1.m_Type != EType.E_INT) return false;
+            return (var1.ToInt() == afxReturn);
         }
 
         public static bool IsContinue(ExprVar vCmdRes)

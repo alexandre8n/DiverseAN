@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}\\expressionParser.js",
+      "program": "${workspaceFolder}\\Sorted2Sorted2.js",
       //"program": "${workspaceFolder}\\GroupByMaster.js",
       "outFiles": ["${workspaceFolder}/**/*.js"]
     }

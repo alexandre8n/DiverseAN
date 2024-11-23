@@ -48,6 +48,29 @@ namespace ScriptRunnerLib
             }
             return value;
         }
+        static public Dictionary<string, string> StrToDict(string inpStr)
+        {
+            // delimiters: Dict:{key->val,key->val,....}
+            if (inpStr.StartsWith("Dict:")){
+                inpStr = inpStr.Substring(5);
+            }
+            if (inpStr.StartsWith("{"))
+            {
+                inpStr = inpStr.Substring(1);
+                if (inpStr.EndsWith("}")) inpStr = inpStr.Substring(0,inpStr.Length - 1);
+            }
+            var dict = new Dictionary<string, string>();
+            if (inpStr.Length == 0) return dict;
+            var arrPairs = inpStr.Split(',');
+            foreach ( var pair in arrPairs )
+            {
+                var arrKeyVal = pair.Split(new string[] {"->" }, StringSplitOptions.None);
+                if (arrKeyVal.Length < 2) 
+                    throw new Exception($"Error: incorrect dictionary specified: {inpStr}");
+                dict[arrKeyVal[0]]= arrKeyVal[1];
+            }
+            return dict;
+        }
         static public string GetClassName(Object obj)
         {
             string className = obj.GetType().ToString();

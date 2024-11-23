@@ -152,11 +152,16 @@ namespace ScriptRunnerLib
             this.globalMemMngr = globalMemMngr;
 
             RunLoopIni();
-            while(true)
+            var isToBreakContinue = ExprVar.CrtVar(0);
+            while (true)
             {
                 if (!RunConditionCmd()) break;
-                var isToBreakContinue = base.Run(globalMemMngr);
+                isToBreakContinue = base.Run(globalMemMngr);
                 if (IsBreak(isToBreakContinue)) break;
+                if (IsReturn(isToBreakContinue)) 
+                {
+                    return isToBreakContinue;
+                };
                 RunEndOfIterationCmd();
             }
             return null;

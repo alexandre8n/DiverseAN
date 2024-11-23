@@ -5,7 +5,7 @@ namespace ScriptRunnerLib
 {
     public class ScrMemory
     {
-        Dictionary<string, ExprVar>   vars = new Dictionary<string, ExprVar>();
+        Dictionary<string, ExprVar> vars = new Dictionary<string, ExprVar>();
         public ScrMemory()
         {
 
@@ -30,11 +30,16 @@ namespace ScriptRunnerLib
             return null;
         }
 
-        public bool UpdateVar(ExprVarArray varToUpdate)
+        //public bool UpdateVar(ExprVarArray varToUpdate)
+        //{
+        //    if (!vars.ContainsKey(varToUpdate.m_Name)) return false;
+        //    vars[varToUpdate.m_Name] = varToUpdate;
+        //    return true;
+        //}
+
+        public void Clear()
         {
-            if (!vars.ContainsKey(varToUpdate.m_Name)) return false;
-            vars[varToUpdate.m_Name] = varToUpdate;
-            return true;
+            vars.Clear();
         }
     }
 }
