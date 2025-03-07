@@ -77,6 +77,7 @@ git push origin master
 
 -- get initial info from remote repository: git will add your remote repository with name origin
 git clone <repository-url>
+git clone https://github.com/AlexGrisyk/DiverseAG.git
 --example: where to get <repository-url>, 
 --see the doc: gitLearning.docx, section "Create your repository in github and take url of it"
 

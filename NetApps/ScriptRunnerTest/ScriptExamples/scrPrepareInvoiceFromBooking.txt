@@ -30,6 +30,7 @@ var effortFiles = fm.ListOfCopiedFiles;
 out($"FileMover, Message:\n{fm.ResultingMessage}");
 out($"FileMover, effort files:\n{effortFiles.toStr()}");
 
+
 // collect booking effort hours
 var efforts = createObject("Dictionary");
 for(var fileWithBooking in effortFiles){
@@ -55,6 +56,7 @@ var invFile = fm.ListOfCopiedFiles[0];
 
 out($"copied invoice file: {invFile}");
 
+
 // rename invoice template to invoice name
 let RenameFilesInFolder = toF1;
 var RenameFilesPattern = "RegEx:"+invPattern+" -> {EffYear}-00{EffMonth}-NG-SN-internal.xlsx";
@@ -65,6 +67,7 @@ if(!renResult){
 	return 0;
 }
 out($"Renaming invoice template:\n{fm.ResultingMessage}");
+
 
 var lstIni = fm.initialFilesList();
 out($"Initial files before renameFiles:\n{lstIni.toStr('\n')}");
@@ -100,7 +103,13 @@ function updateInvoice(file, efforts){
 	}
 	f1.save();
 	f1.close();
+	// remaining actions:
+	// effort files to .\arc\[name]_arc.[ext]
+	// create empty files for the next month
 }
+
+
+
 function getEffortFromFile(file){
 	var f1 = openExcelFile(file);
 	var rowFound = f1.findRowNumber(0, 1, 1, "Total efforts");

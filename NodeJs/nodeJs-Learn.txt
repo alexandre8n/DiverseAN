@@ -1,2 +1,45 @@
 https://www.youtube.com/watch?v=3aGSqasVPsI
 
+
+npm -v
+node -v 
+versions check
+
+initial install: (if you have already package.json)
+npm i
+
+new project:
+npm init
+after that specify all details for the project
+
+install some modules:
+
+including some file:
+const text=require('./data') // for data.js
+
+exports, require, module, __dirname, __filename
+
+// встроенные...
+
+let obj = path.parse(__filename);
+console.log(obj.ext, obj.base, ...)
+
+const http = require('http')
+http.createServer(....
+
+https://github.com/vladilenm/node-youtube-cc
+
+after installing express
+...
+
+install nodemon
+npm i -g nodemon
+
+after this start app as:
+nodemon index.js or
+nodemon tbServer.js
+
+
+set port in the env:
+> export PORT=3000
+

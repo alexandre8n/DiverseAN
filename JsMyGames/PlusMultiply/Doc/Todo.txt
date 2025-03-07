@@ -212,7 +212,10 @@ getNextNumbers()
 <!-- todo: add Stop/Start/Settings, History -->
 <!-- todo: for deviding first large, then small number -->
 <!-- todo: add multiplication tricks: ab*11 = a(a+b if more that one dig. add 1 to a)b 
-      72*11 = 792 , 76*11 = {7+1}{7+6-10=3}6=836 -->
+      72*11 = 792 , 76*11 = (7)(13)(6)->836, similar: 86*11=(8)(14)(6)->946
+<!-- todo: add multiplication tricks: if a1b * a2b, where a1+a2=10, use the trick
+  a1b * a2b = (a1*a2+b)(b*b), 34*74= (3*7+4)(16)=2516
+-->
 <!--+ : correct score in history -->
 <!--+ : add command: history -->
 <!--+ : Show wrong answer reaction: show the additional line "No, x<op>y = xxx (not:eee)(more...)" -->
