@@ -10,6 +10,13 @@ using Aspose.Words.Layout;
 using Aspose.Words.Tables;
 using System.IO;
 
+//todo: wrong interpretation: 60,000 years  to     60,[FN-379-000] 
+// todo: header of the page like: Glossary of Personal Names should be ignored as header.
+// todo: Glossary of Personal Names
+
+
+
+
 namespace DiscoursesFileProcessing
 {
     class ProgramDiscoursesFP

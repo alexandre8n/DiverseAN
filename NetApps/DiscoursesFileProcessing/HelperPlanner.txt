@@ -1,0 +1,24 @@
+// Get all paragraphs.
+NodeCollection paragraphs = doc.GetChildNodes(NodeType.Paragraph, true);
+// Loop through the paragraphs
+foreach (Paragraph p in paragraphs)
+{
+    string text = p.ToString(SaveFormat.Text).Trim();
+    Console.WriteLine(text);
+
+    // Lets edit paragraph is text is is "Edit this"
+    if (text == "Edit this")
+    {
+        p.RemoveAllChildren();
+        p.AppendChild(new Run(doc, "This is new text of paragraph."));
+    }
+
+    // If text is "Add paragraph after this" add new paragraph after it.
+    if (text == "Add paragraph after this")
+    {
+        // Clone the current paragraph to keep formatting.
+        Paragraph newPara = (Paragraph)p.Clone(false);
+        newPara.AppendChild(new Run(doc, "This is a newly added paragraph."));
+        p.ParentNode.InsertAfter(newPara, p);
+    }
+}

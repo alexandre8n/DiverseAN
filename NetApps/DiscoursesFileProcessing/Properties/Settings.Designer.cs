@@ -12,7 +12,7 @@ namespace DiscoursesFileProcessing.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.9.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.12.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -25,7 +25,7 @@ namespace DiscoursesFileProcessing.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("__DiscoursesUATempleate.docx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("__JatakasUATempleate.docx")]
         public string OutputFileTemplate {
             get {
                 return ((string)(this["OutputFileTemplate"]));
@@ -37,7 +37,7 @@ namespace DiscoursesFileProcessing.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Discourses-UA.docx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Ja-UA.docx")]
         public string OutputFileName {
             get {
                 return ((string)(this["OutputFileName"]));
@@ -73,7 +73,7 @@ namespace DiscoursesFileProcessing.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Yes")]
+        [global::System.Configuration.DefaultSettingValueAttribute("NO")]
         public string AllSrc2OneOut {
             get {
                 return ((string)(this["AllSrc2OneOut"]));
@@ -85,7 +85,7 @@ namespace DiscoursesFileProcessing.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("F:\\Work\\Docs\\DiscoursesUA")]
+        [global::System.Configuration.DefaultSettingValueAttribute("F:\\Work\\Docs\\JatakasUA2")]
         public string InputFolder {
             get {
                 return ((string)(this["InputFolder"]));
@@ -97,7 +97,7 @@ namespace DiscoursesFileProcessing.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Discourses EN-UA_*.docx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("*Játaka.docx")]
         public string DocPattern {
             get {
                 return ((string)(this["DocPattern"]));
