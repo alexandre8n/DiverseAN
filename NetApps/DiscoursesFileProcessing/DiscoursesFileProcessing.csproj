@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Discourses2ManySplitter.cs" />
     <Compile Include="DiscourseTranslationExtractor.cs" />
     <Compile Include="ProgramDiscoursesFP.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -75,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Lib\Aspose.Words.dll" />
+    <Content Include="readMe.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

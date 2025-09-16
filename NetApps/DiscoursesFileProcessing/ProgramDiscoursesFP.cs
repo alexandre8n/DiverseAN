@@ -45,9 +45,20 @@ namespace DiscoursesFileProcessing
             // are extracted into one file: outputDoc, if allSrc2One=NO, every src gets sep. file
             // sep.file names will be generated as mentioned above, see outputDoc desc.
             string allSrc2One = Properties.Settings.Default.AllSrc2OneOut;
+            string oneSrc2ManyOut = Properties.Settings.Default.OneSrc2ManyOut;
+                        
 
             Aspose.Words.License licenseWords = new Aspose.Words.License();
             licenseWords.SetLicense(@"Lib\Aspose.Total.lic");
+
+            if(oneSrc2ManyOut.ToUpper() == "YES")
+            {
+                Console.WriteLine("One source to many output...");
+                Discourses2ManySplitter discourses2ManySplitter = new Discourses2ManySplitter(inputDocPath,
+                    outputDoc, selectFilePattern, templateName);
+                bool res1 = discourses2ManySplitter.ProcessSource();
+                return;
+            }
 
             DiscourseTranslationExtractor dte = new DiscourseTranslationExtractor(inputDocPath, 
                     outputDoc, selectFilePattern, templateName, allSrc2One);
