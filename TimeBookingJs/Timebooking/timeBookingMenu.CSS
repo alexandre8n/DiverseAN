@@ -1,0 +1,120 @@
+.burger {
+  display: flex;
+  position: relative;
+  z-index: 50;
+  align-items: center;
+  justify-content: flex-end;
+  width: 30px;
+  height: 16px;
+  color: blue;
+}
+
+.burger span {
+  height: 3px;
+  width: 80%;
+  transform: scale(1);
+  background-color: black;
+  /* #FAF6F2;*/
+}
+
+.burger::before,
+.burger::after {
+  content: "";
+  position: absolute;
+  height: 2px;
+  width: 100%;
+  background-color: black;
+  /* color of 2 upper and lower lines */
+  /* background-color: #FAF6F2; */
+  transition: all 0.3s ease 0s;
+}
+
+.burger::before {
+  top: 0;
+}
+
+.burger::after {
+  bottom: 0;
+}
+
+/* Добавляем класс active для анимации иконки бургера */
+.burger.active span {
+  transform: scale(0);
+}
+
+.burger.active::before {
+  top: 50%;
+  transform: rotate(-45deg) translate(0, -50%);
+}
+
+.burger.active::after {
+  bottom: 50%;
+  transform: rotate(45deg) translate(0, 50%);
+}
+
+.nav {
+  display: none;
+  flex-direction: column;
+  position: fixed;
+  height: auto;
+  width: 25%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  overflow-y: auto;
+  padding: 20px 0px;
+  background-color: rgb(163, 163, 146);
+  animation: burgerAnimation 0.4s;
+}
+
+@keyframes burgerAnimation {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.nav ul {
+  flex-direction: column;
+  width: auto;
+  list-style: none;
+  display: flex;
+  row-gap: 10px;
+  font-size: 1.1em;
+}
+
+.nav ul li a {
+  text-decoration: none;
+  color: white;
+}
+.nav ul li a:hover {
+  color: #007bff;
+  background-color: #f0f0f0;
+}
+
+.open {
+  display: flex !important;
+}
+
+.submenu li a {
+  font-size: 1em;
+}
+
+.submenu li.selected a {
+  /* Styles for the selected item */
+  position: relative;
+  padding-left: 20px;
+}
+
+.submenu li.selected a::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}

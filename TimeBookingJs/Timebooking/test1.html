@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page Layout</title>
+    <link rel="stylesheet" href="test1.css" />
+  </head>
+
+  <body>
+    <div class="tbInputContainers">
+      <div class="div1-left"></div>
+      <div class="div1-right"></div>
+    </div>
+    <p name="resultOfSubmit"></p>
+    <button id="openModalBtn">Open Modal1</button>
+    <button id="openModalBtn2" onclick="editclick()">Open Modal2</button>
+    <template id="editTBRecordTemplate">
+      <div class="div4TimeBookingEdit">
+        <!-- GRID content as before (labels, inputs, comment controls) -->
+        <label>Date:</label>
+        <input type="date" class="tbEdit" name="inputDate" />
+        <label>Comment:</label>
+
+        <label>Project:</label>
+        <select name="cmbProj" class="tbEdit">
+          <option value="AddNew">Add New Project...</option>
+          <!-- <option value="A">Learn CSS</option>
+                    <option value="B" selected="true">Learn Js</option>
+                    <option value="-">Other</option> -->
+        </select>
+        <textarea class="tbEdit" rows="3" name="inputComment"></textarea>
+
+        <label for="input-for-task">Task:</label>
+        <div style="display: inline-flex; margin: 0; padding: auto">
+          <input type="text" class="tbEdit" name="inputTask" />
+          <button style="margin-left: 6px">...</button>
+        </div>
+        <label>Effort:</label>
+        <input type="number" class="tbEdit" name="inputEffort" />
+        <button name="btnSubmit">Submit</button>
+      </div>
+    </template>
+    <dialog id="TaskSelectDlg">
+      <div class="TaskDlgHeader">
+        <div>Select Task</div>
+        <span class="close-btn" id="closeModalBtn">&times;</span>
+      </div>
+      <div class="TaskDlgBoddy">
+        <input
+          id="FilterTasks"
+          type="text"
+          placeholder="Search Tasks"
+          onkeyup="onKeyUpTaskFilter()"
+        />
+        <div class="TaskDlgTblContainer">
+          <table id="TaskTableId" class="TblInDlg">
+            <thead>
+              <tr>
+                <th>Task</th>
+                <th>Efforts</th>
+                <th>Last Modified</th>
+                <th>Select Command</th>
+              </tr>
+            </thead>
+            <tbody id="taskTblBodyId"></tbody>
+          </table>
+        </div>
+      </div>
+    </dialog>
+    <div id="emptyModal" class="EmptyModal">
+      <div>Header<span class="close">&times;</span></div>
+      <div class="EmptyModal-content">
+        <div id="emptyContainerInModal"></div>
+      </div>
+    </div>
+    <dialog id="tbRecEditDlg">
+      <div class="TaskDlgHeader">
+        <span>Edit Time Booking Record</span>
+        <button class="close-btn">&times;</button>
+      </div>
+      <div id="tbEditDivID" class="dialog-body">
+        <!-- TBRecEditor will be injected here -->
+      </div>
+    </dialog>
+    <script src="utl1.js"></script>
+    <script src="dateRange.js"></script>
+    <script src="selectTaskDlg.js"></script>
+    <script src="addNewDlg.js"></script>
+    <script src="tbRecEditor.js"></script>
+    <script>
+      let projsTemp = ["Test1", "Learn templates", "Git Mastering"];
+      const tasksTemp = [
+        {
+          id: "1",
+          project: "p1",
+          task: "Task1",
+          effort: 1,
+          date: "2025-01-01",
+          comment: "comment1",
+        },
+        {
+          id: "2",
+          project: "p1",
+          task: "Task2",
+          effort: 2,
+          date: "2025-01-02",
+          comment: "comment2",
+        },
+        {
+          id: "3",
+          project: "p1",
+          task: "Task3",
+          effort: 3,
+          date: "2025-01-03",
+          comment: "comment3",
+        },
+        {
+          id: "4",
+          project: "p1",
+          task: "Task1",
+          effort: 99,
+          date: "2025-01-04",
+          comment: "comment4",
+        },
+      ];
+      dateRangeInit(
+        ".div1-right",
+        "2024-01-01",
+        "2025-01-01",
+        onDateRangeChanged
+      );
+      tbAddInit();
+      initEmptyModal();
+
+      function tbAddInit() {
+        const tbEditDiv = loadTbRecEditDivFromTemplate();
+        const tbEditParent = document.querySelector(".div1-left");
+        tbEditParent.appendChild(tbEditDiv);
+        const settings = {
+          container: tbEditDiv,
+          record: tasksTemp[0],
+          projListGetter: getProjectsNamesTemp,
+          newProjectSaver: addProjectNameTemp,
+          taskListGetter: getTbListTemp,
+          onTbRecSubmitClick: onTbRecSubmiClick,
+          date: null,
+        };
+        tbEditDiv.tbEditor = new TBRecEditor(settings);
+      }
+
+      function onTbRecSubmiClick(rec) {
+        // this method gets the tbRecord specified by user
+        const pRes = document.querySelector('p[name="resultOfSubmit"]');
+        const strJson = JSON.stringify(rec);
+        pRes.innerHTML = strJson;
+      }
+
+      function onDateRangeChanged(dtFr, dtTo) {}
+
+      // edit form component: probably should be removed....
+      // (3, 4)
+      //
+      function onChangeClick(event) {
+        const p1 = document.querySelector(".date-range-inline p[name='view']");
+        const p2 = document.querySelector(
+          ".date-range-inline div[name='edit']"
+        );
+        if (p1.style.display == "") {
+          p1.style.display = "none";
+          p2.style.display = "inline-flex";
+        } else {
+          p1.style.display = "";
+          p2.style.display = "none";
+        }
+      }
+      function loadTbRecEditDivFromTemplate() {
+        const tbEditFormTemplate = document.getElementById(
+          "editTBRecordTemplate"
+        );
+        const editFormDivCont = tbEditFormTemplate.content.cloneNode(true);
+        const editFormDiv = editFormDivCont.querySelector(
+          ".div4TimeBookingEdit"
+        );
+        return editFormDiv;
+      }
+
+      ////////////// Mocks area remove in working version...
+      function getProjectsNamesTemp() {
+        return projsTemp;
+      }
+
+      function getTbListTemp() {
+        return tasksTemp;
+      }
+      function addProjectNameTemp(name) {
+        projsTemp.push(name);
+      }
+
+      function initEmptyModal() {
+        var modal = document.getElementById("emptyModal");
+        // Get the button that opens the modal
+        var btn = document.getElementById("openModalBtn");
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+        // When the user clicks the button, open the modal
+        btn.onclick = function () {
+          modal.style.display = "block";
+        };
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+          modal.style.display = "none";
+        };
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+          if (event.target == modal) {
+            modal.style.display = "none";
+          }
+        };
+        // init editing of the tbRec
+        const tbEditDiv = loadTbRecEditDivFromTemplate();
+        const tbEditParent = document.querySelector("#emptyContainerInModal");
+        tbEditParent.appendChild(tbEditDiv);
+        const onDlgEmptyDone = function (rec) {
+          const pRes = document.querySelector('p[name="resultOfSubmit"]');
+          const strJson = JSON.stringify(rec);
+          pRes.innerHTML = "Msg from empty Dlg:<br/>" + strJson;
+          modal.style.display = "none";
+        };
+        const settings = {
+          container: tbEditDiv,
+          record: tasksTemp[0],
+          projListGetter: getProjectsNamesTemp,
+          newProjectSaver: addProjectNameTemp,
+          taskListGetter: getTbListTemp,
+          onTbRecSubmitClick: onDlgEmptyDone,
+          date: null,
+        };
+        tbEditDiv.tbEditor = new TBRecEditor(settings);
+      }
+
+      function editclick() {
+        // modal2
+        const tbEditDiv = loadTbRecEditDivFromTemplate();
+        const modal2 = document.getElementById("tbRecEditDlg");
+        const tbEditParent = modal2.querySelector("#tbEditDivID");
+        removeAllChildNodes(tbEditParent);
+        tbEditParent.appendChild(tbEditDiv);
+
+        const onDlgEmptyDone = function (rec) {
+          const pRes = document.querySelector('p[name="resultOfSubmit"]');
+          const strJson = JSON.stringify(rec);
+          pRes.innerHTML = "Msg from empty Dlg:<br/>" + strJson;
+          modal2.close();
+        };
+        const onDlgCancel = function () {
+          modal2.close();
+        };
+        const closeBtn = modal2.querySelector(".close-btn");
+        closeBtn.onclick = onDlgCancel;
+
+        const settings = {
+          container: tbEditDiv,
+          record: tasksTemp[0],
+          projListGetter: getProjectsNamesTemp,
+          newProjectSaver: addProjectNameTemp,
+          taskListGetter: getTbListTemp,
+          onTbRecSubmitClick: onDlgEmptyDone,
+          date: new Date(),
+        };
+
+        tbEditDiv.tbEditor = new TBRecEditor(settings);
+        modal2.showModal();
+      }
+    </script>
+  </body>
+</html>

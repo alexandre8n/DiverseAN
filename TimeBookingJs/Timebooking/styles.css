@@ -1,0 +1,268 @@
+:root {
+  --bar-width: 50px;
+  --bar-height: 3px;
+  --hamburger-gap: 6px;
+  --foreground: #333;
+  --background: white;
+  --hamburger-margin: 8px;
+  --animation-timing: 200ms ease-in-out;
+  --hamburger-height: calc(var(--bar-height) * 3 + var(--hamburger-gap) * 2);
+}
+
+.hamburger-menu {
+  --x-width: calc(var(--hamburger-height) * 1.41421356237);
+  display: flex;
+  flex-direction: column;
+  gap: var(--hamburger-gap);
+  width: max-content;
+  /* position: absolute; */
+  top: var(--hamburger-margin);
+  left: var(--hamburger-margin);
+  z-index: 2;
+  cursor: pointer;
+}
+
+.hamburger-menu::before,
+.hamburger-menu::after,
+.hamburger-menu input {
+  content: "";
+  width: var(--bar-width);
+  height: var(--bar-height);
+  background-color: var(--foreground);
+  border-radius: 9999px;
+  transform-origin: left center;
+  transition: opacity var(--animation-timing), width var(--animation-timing),
+    rotate var(--animation-timing), translate var(--animation-timing),
+    background-color var(--animation-timing);
+
+  appearance: none;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  pointer-events: none;
+}
+
+/* step 3 */
+.hamburger-menu:has(input:checked)::before {
+  rotate: 45deg;
+  width: var(--x-width);
+  translate: 0 calc(var(--bar-height) / -2);
+}
+
+/* step 4 */
+.hamburger-menu:has(input:checked)::after {
+  rotate: -45deg;
+  width: var(--x-width);
+  translate: 0 calc(var(--bar-height) / 2);
+}
+/* step 5 */
+.hamburger-menu input:checked {
+  opacity: 0;
+  width: 0;
+}
+
+/* step 6 */
+.sidebar {
+  position: absolute;
+  transition: translate var(--animation-timing);
+  top: 0;
+  translate: -120%;
+  padding: 0.1rem 0.1rem;
+  padding-top: calc(
+    var(--hamburger-height) / 2 + var(--hamburger-margin) + 0.5rem
+  );
+  background-color: var(--foreground);
+  color: var(--background);
+  max-width: 20rem;
+  min-height: 100vh;
+  box-sizing: border-box; /* Prevent horizontal overflow */
+}
+
+/* step 7 */
+.hamburger-menu:has(input:checked) {
+  --foreground: white;
+  --background: #333;
+}
+
+.hamburger-menu:has(input:focus-visible)::before,
+.hamburger-menu:has(input:focus-visible)::after,
+.hamburger-menu input:focus-visible {
+  border: 1px solid var(--background);
+  box-shadow: 0 0 0 1px var(--foreground);
+}
+
+/* .hamburger-menu:has(input:checked) targets any 
+.hamburger-menu element that contains an input element that is checked. 
++ .sidebar element must be immediately adjacent (directly following) 
+to the .hamburger-menu element in the HTML structure */
+
+.hamburger-menu:has(input:checked) + .sidebar {
+  translate: -10px;
+}
+nav {
+  margin-right: 1em;
+}
+
+nav ul {
+  flex-direction: column;
+  width: auto;
+  list-style: none;
+  display: flex;
+  row-gap: 10px;
+  font-size: 1.1em;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: white;
+}
+nav ul li a:hover {
+  color: #007bff;
+  background-color: #f0f0f0;
+}
+
+.submenu li.selected a::before {
+  content: "✓";
+  position: absolute;
+  left: 4rem;
+  /* top: 50%; */
+  /* transform: translateY(-50%); */
+}
+.DtRange {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 7px;
+}
+.Calendar {
+  margin-top: 7px;
+}
+
+.sectionTopMargin {
+  margin-top: 7px;
+}
+.calContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 5px;
+  grid-template-rows: repeat(5, 50px);
+  max-width: 90%;
+  margin: 0 auto;
+  overflow: hidden;
+  height: 100%;
+}
+
+.tbOverviewHeader {
+  background-color: #7f56b2;
+  color: white;
+  font-weight: bold;
+  height: 100%;
+}
+.tbOverviewRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  /* background-color: white; */
+  border: 1px solid #1c0c0c;
+  padding: 2px 10px;
+  align-items: center;
+  height: 22px;
+  margin: 0;
+  padding: 0;
+}
+.btnDayEffDetailsCls {
+  border: none;
+  margin: 0;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 5px;
+  display: flex;
+  align-items: center; /* Vertically center content within the button */
+  justify-content: center; /* Horizontally center content within the button */
+  cursor: pointer; /* Show a hand cursor when hovered */
+  transition: background-color 0.3s ease, opacity 0.3s ease;
+  padding: 5px; /* Adjust padding for better fit */
+  height: auto; /* Allow the button to grow based on its content */
+  max-height: 20px; /* Ensure button doesn't exceed cell height */
+  justify-self: left; /* Horizontally center button in the grid cell */
+  align-self: center; /* Vertically center button in the grid cell */
+}
+.dayEffortHeader {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.tbRecEdit-Div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  max-width: 600px;
+  border: 2px solid #007bff;
+  margin: 10px auto;
+}
+
+.input-pair {
+  display: flex;
+  align-items: center;
+  /* Align label and input in the center vertically */
+  margin-bottom: 10px;
+  gap: 3px;
+}
+
+.input-pair input {
+  flex: 1;
+}
+
+.input-pair label {
+  width: 70px;
+}
+
+textarea {
+  margin-left: 0px;
+  margin-right: 10px;
+  width: 90%;
+}
+
+.tooltip {
+  position: absolute;
+  background-color: red;
+  /* rgba(0, 0, 0, 0.7); */
+  color: yellow;
+  opacity: 0.8;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  top: 0px;
+  /* Adjust position to appear near the input */
+  left: 0px;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.addNewDlg {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  color: black;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  z-index: 3;
+  /* Ensure it stays on top of the overlay */
+}
+.tooltip {
+  position: absolute;
+  background-color: red;
+  /* rgba(0, 0, 0, 0.7); */
+  color: yellow;
+  opacity: 0.8;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  top: 0px;
+  /* Adjust position to appear near the input */
+  left: 0px;
+  transition: opacity 0.3s ease-in-out;
+}

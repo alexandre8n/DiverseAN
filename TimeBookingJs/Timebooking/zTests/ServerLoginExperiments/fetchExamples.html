@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+    </style>
+    <title>fetch examples</title>
+</head>
+
+<body>
+    <div id="request">fetch examples</div>
+    <button onclick="test1Post()">test1Post</button>
+    <button onclick="sendLogin()">Send Login</button>
+    <button onclick="sendVerify()">Send Verify</button>
+    <button onclick="getUserById(98)">Get user by Id</button>
+    <div id="res"></div>
+    <script>
+        let token = "";
+        function test1Post() {
+            let ftchRes = fetch('http://localhost:3000/tb', {
+                method: 'POST',                   // метод POST для отправки данных
+                body: JSON.stringify({ privet: "B.P." })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Ошибка HTTP: ${response.status}`);
+                    }
+                    return response.json();           // парсим JSON из ответа сервера
+                })
+                .then(data => {
+                    console.log('Ответ сервера:', data);
+                    showRes(data);
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    showRes(error);
+                });
+
+        }
+        function sendVerify() {
+            let ftchRes = fetch('http://localhost:3000/tb/verifyUser', {
+                method: 'POST',                   // метод POST для отправки данных
+                headers: {
+                    'Authorization': `Bearer ${token}`,  // Include the token in the Authorization header
+                    'Content-Type': 'application/json' // тип данных, JSON
+                },
+                body: JSON.stringify({ user: "" })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Ошибка HTTP: ${response.status}`);
+                    }
+                    return response.json();           // парсим JSON из ответа сервера
+                })
+                .then(data => {
+                    console.log('Ответ сервера:', data);
+                    showRes(data);
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    showRes(error);
+                });
+        }
+
+        function sendLogin() {
+            const user = { name: "AG", pwd: "0" };
+
+            let ftchRes = fetch('http://localhost:3000/tb/login', {
+                method: 'POST',                   // метод POST для отправки данных
+                headers: {
+                    'Authorization': `Bearer ${token}`,  // Include the token in the Authorization header
+                    'Content-Type': 'application/json' // тип данных, JSON
+                },
+                body: JSON.stringify({ user: user })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Ошибка HTTP: ${response.status}`);
+                    }
+                    return response.json();           // парсим JSON из ответа сервера
+                })
+                .then(data => {
+                    console.log('Ответ сервера:', data);
+                    showRes(data);
+                    token = data.token;
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    showRes(error);
+                });
+            // show res
+
+
+        }
+        function showRes(tx) {
+            if (typeof tx === 'object' && tx !== null) {
+                tx = JSON.stringify(tx);
+            }
+            document.getElementById("res").innerHTML = tx;
+        }
+        function getUserById(id) {
+            const userId = 123;
+            fetch(`http://localhost:3000/api/user/${userId}`, {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json"
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("HTTP error " + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Ответ сервера:", data);
+                })
+                .catch(err => {
+                    console.error("Ошибка:", err);
+                });
+
+        }
+    </script>
+</body>
+
+</html>

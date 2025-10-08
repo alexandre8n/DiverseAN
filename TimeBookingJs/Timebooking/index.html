@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Dialog</title>
+    <link rel="stylesheet" href="login.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="TimeBooking.CSS" />
+    <link rel="stylesheet" href="pagination.css" />
+  </head>
+
+  <body>
+    <!-- Header Section style="position: relative;"-->
+    <header>
+      <label id="hamburgerId" class="hamburger-menu">
+        <input id="hamburger-menu-id" type="checkbox" />
+      </label>
+      <aside class="sidebar">
+        <nav>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li>
+              <a href="#">Views</a>
+              <ul class="submenu">
+                <li id="tbMain">
+                  <a href="#">Time booking - Main</a>
+                </li>
+                <li id="tbDRO"><a href="#">Date Range Overview</a></li>
+                <li id="tbPO">
+                  <a href="#">Project Overview</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+      <div class="header-left">
+        <h1>Time booking <span style="display: none">()</span></h1>
+      </div>
+      <div class="header-right">
+        <span id="userName"></span>
+        <button id="loginButton">Login</button>
+      </div>
+    </header>
+    <div id="tbMain-div" style="display: none">
+      <div class="tbInputContainers">
+        <div class="div1-left"></div>
+        <div class="div1-left-tempToremove" style="display: none">
+          <div class="div4TimeBookingEdit">
+            <!-- GRID content as before (labels, inputs, comment controls) -->
+            <label>Date:</label>
+            <input type="date" class="tbEdit" name="inputDate" />
+            <label>Comment:</label>
+
+            <label>Project:</label>
+            <select name="cmbProj" id="Project" onchange="onAddNew(event)">
+              <option value="AddNew" onclick="onNewProjClick(event)">
+                Add New Project...
+              </option>
+              <!-- <option value="A">Learn CSS</option>
+                  <option value="B" selected="true">Learn Js</option>
+                  <option value="-">Other</option> -->
+            </select>
+
+            <textarea class="tbEdit" rows="3" name="inputComment"></textarea>
+
+            <label for="input-for-task">Task:</label>
+            <div style="display: inline-flex; margin: 0; padding: auto">
+              <input type="text" class="tbEdit" name="inputTask" />
+              <button style="margin-left: 6px">...</button>
+            </div>
+            <label>Effort:</label>
+            <input type="number" class="tbEdit" name="inputEffort" />
+            <button name="btnSubmit">Submit</button>
+          </div>
+        </div>
+
+        <div class="div1-right"></div>
+      </div>
+
+      <!-- here are listed timb-bookings -->
+      <div class="table-container">
+        <table class="efforts-table">
+          <thead>
+            <tr>
+              <th style="width: 90px">Date</th>
+              <th style="width: 20%">Project</th>
+              <th>Task</th>
+              <th style="width: 80px">Efforts</th>
+              <th colspan="2">Command</th>
+            </tr>
+          </thead>
+          <tbody id="tblBodyId"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="tbDRO-div" style="display: none">
+      <div class="DtRange"></div>
+      <div id="calendarId" class="Calendar"></div>
+      <div class="pagination">
+        <!-- First and Previous buttons -->
+        <button id="firstPage" class="pagination-button">First</button>
+        <button id="prevPage" class="pagination-button">Previous</button>
+        <!-- Current page number / Total pages -->
+        <span>
+          Page <input type="number" id="pageInput" value="1" min="1" /> /
+          <span id="totalPages">1</span>
+        </span>
+        <!-- Next and Last buttons -->
+        <button id="nextPage" class="pagination-button">Next</button>
+        <button id="lastPage" class="pagination-button">Last</button>
+      </div>
+      <div class="DayList sectionTopMargin"></div>
+      <!-- in this section will be injected the TBRecEditor -->
+      <div class="TimeBookingEdit"></div>
+    </div>
+
+    <div id="tbPO-div" style="display: none">Project View</div>
+
+    <!-- cover to block access to main page part -->
+    <div class="cover"></div>
+
+    <dialog id="newProjectDlg">
+      <div class="ProjectDlgHeader">
+        Project <button onclick="closeProject()">&times;</button>
+      </div>
+      <div>
+        <label for="newPrj"> New Project:</label>
+        <!-- <input name="newPrj" type="text" id="editProject" /> -->
+        <textarea rows="1" cols="30" id="editProject" name="newPrj"></textarea>
+      </div>
+      <div id="newProjErr" style="visibility: hidden; color: red">
+        Error: the project <b><span id="prgNmId"></span></b> already exists or
+        empty!
+      </div>
+      <button class="btnClassik" onclick="saveNewProject2()">Ok</button
+      >&nbsp;&nbsp;
+      <button class="btnClassik" onclick="onCancelNewProj()">Cancel</button>
+    </dialog>
+
+    <dialog id="tbRecEditDlg">
+      <div class="TaskDlgHeader">
+        <span>Edit Time Booking Record</span>
+        <button class="close-btn">&times;</button>
+      </div>
+      <div id="tbEditDivID" class="dialog-body">
+        <!-- TBRecEditor will be injected here -->
+      </div>
+    </dialog>
+
+    <!-- Login Dialog -->
+    <div id="loginDialog" class="loginDialog">
+      <div class="dialog-content">
+        <h2>Login</h2>
+        <!-- Login Form -->
+        <div id="loginForm">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" required /><br />
+
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required /><br />
+
+          <button id="loginDone">Login</button>
+          <button id="closeDialog">Close</button>
+        </div>
+      </div>
+    </div>
+    <dialog id="TaskSelectDlg">
+      <div class="TaskDlgHeader">
+        <div>Select Task</div>
+        <span class="close-btn" id="closeModalBtn">&times;</span>
+      </div>
+      <div class="TaskDlgBoddy">
+        <input
+          id="FilterTasks"
+          type="text"
+          placeholder="Search Tasks"
+          onkeyup="onKeyUpTaskFilter()"
+        />
+        <div class="TaskDlgTblContainer">
+          <table id="TaskTableId" class="TblInDlg">
+            <thead>
+              <tr>
+                <th>Task</th>
+                <th>Efforts</th>
+                <th>Last Modified</th>
+                <th>Select Command</th>
+              </tr>
+            </thead>
+            <tbody id="taskTblBodyId"></tbody>
+          </table>
+        </div>
+      </div>
+    </dialog>
+
+    <template id="gridContTemplate">
+      <div class="calContainer"></div>
+    </template>
+    <template id="tbTblHeaderTemplate">
+      <div class="tbOverviewHeader tbOverviewRow">
+        <div>Date</div>
+        <div>Week Day</div>
+        <div>Efforts</div>
+        <div>Details</div>
+      </div>
+    </template>
+    <template id="tbOvRwTemplate">
+      <calendarRow class="tbOverviewRow">
+        <div>2025-01-01</div>
+        <div>Mon</div>
+        <div>8</div>
+        <div>
+          <button class="btnDayEffDetailsCls">
+            <span>&#8594;</span>
+          </button>
+        </div>
+      </calendarRow>
+    </template>
+    <template id="tasksListTemplate">
+      <!-- table, add-button, dynamicTaskAdd-edit -->
+      <div class="effortTableContainer">
+        <div class="dayEffortHeader">
+          Day: <span data-day></span> Efforts: <span data-effort>0</span>
+          <button>Add new record</button>
+          <button>Done</button>
+          <button>Cancel</button>
+        </div>
+        <table class="efforts-table sectionTopMargin" style="margin: 0 auto">
+          <thead>
+            <tr>
+              <th style="width: 90px">Date</th>
+              <th style="width: 20%">Project</th>
+              <th>Task</th>
+              <th style="width: 80px">Efforts</th>
+              <th colspan="2">Command</th>
+            </tr>
+          </thead>
+          <tbody id="tblBodyId"></tbody>
+        </table>
+      </div>
+    </template>
+    <template id="editTBRecordTemplate">
+      <div class="BookingEditHeader">Add booking record. Specify here...</div>
+      <div class="div4TimeBookingEdit">
+        <!-- GRID content as before (labels, inputs, comment controls) -->
+        <label>Date:</label>
+        <input type="date" class="tbEdit" name="inputDate" />
+        <label>Comment:</label>
+
+        <label>Project:</label>
+        <select name="cmbProj" class="tbEdit">
+          <option value="AddNew">Add New Project...</option>
+          <!-- <option value="A">Learn CSS</option>
+                    <option value="B" selected="true">Learn Js</option>
+                    <option value="-">Other</option> -->
+        </select>
+        <textarea class="tbEdit" rows="3" name="inputComment"></textarea>
+
+        <label for="input-for-task">Task:</label>
+        <div style="display: inline-flex; margin: 0; padding: auto">
+          <input type="text" class="tbEdit" name="inputTask" />
+          <button style="margin-left: 6px">...</button>
+        </div>
+        <label>Effort:</label>
+        <input type="number" class="tbEdit" name="inputEffort" />
+        <div class="div100pct">
+          <button name="btnSubmit">Submit</button>
+          <button name="btnCancel">Cancel</button>
+        </div>
+      </div>
+    </template>
+
+    <script src="utl1.js"></script>
+    <script src="globals.js"></script>
+    <script src="addNewDlg.js"></script>
+    <script src="tbRecEditor.js"></script>
+    <script src="login.js"></script>
+    <script src="index.js"></script>
+    <script src="pagination.js"></script>
+    <script src="testDataGeneration.js"></script>
+    <script src="storage.js"></script>
+    <script src="timeBooking.js"></script>
+    <script src="DateRangeView.js"></script>
+    <script src="dateRange.js"></script>
+    <script src="selectTaskDlg.js"></script>
+  </body>
+</html>

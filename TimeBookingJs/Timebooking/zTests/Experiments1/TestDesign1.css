@@ -1,0 +1,77 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  padding: 20px;
+  max-width: 90%;
+  /* max-width: 90%; 900px; */
+  margin: 0 auto;
+}
+
+h1 {
+  text-align: center;
+}
+
+.month-selector {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-gap: 10px;
+  margin-bottom: 20px;
+}
+
+.calendar-day {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.calendar-day:hover {
+  background-color: #f0f0f0;
+}
+
+.booking-details {
+  margin-top: 30px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  background-color: #fafafa;
+}
+
+#bookingForm input,
+#bookingForm textarea {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0 15px;
+  font-size: 14px;
+}
+
+#bookingForm button {
+  padding: 10px;
+  cursor: pointer;
+}
+
+#bookingList {
+  list-style-type: none;
+  padding: 0;
+}
+
+#bookingList li {
+  background-color: #f9f9f9;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.monthly-summary {
+  margin-top: 30px;
+  text-align: center;
+}

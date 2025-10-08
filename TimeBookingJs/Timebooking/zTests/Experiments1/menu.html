@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Menu with Submenu</title>
+    <style>
+        nav {
+            display: block;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            overflow-y: auto;
+            padding: 20px 0px;
+            background-color: yellow;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: auto;
+        }
+
+        nav ul li {
+            display: inline-block;
+            margin-right: 20px;
+            position: relative;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #333;
+            padding: 10px 15px;
+            display: block;
+
+            border-bottom: 2px solid transparent;
+            /* Added*/
+        }
+
+        nav ul li a:hover {
+            background-color: #f0f0f0;
+            border-bottom: 2px solid #007bff;
+            /* Change border color on hover */
+        }
+
+        .submenu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: auto;
+            background-color: #fff;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        nav ul li:hover .submenu {
+            display: block;
+        }
+
+        nav ul li .submenu li a {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Login/Logout</a></li>
+            <li>
+                <a href="#">Views</a>
+                <ul class="submenu">
+                    <li><a href="#">Booking List</a></li>
+                    <li><a href="#">Date Range Rummary</a></li>
+                </ul>
+            </li>
+            <li><a href="#">Settings</a></li>
+            <li><a href="#">About</a></li>
+        </ul>
+    </nav>
+
+    <script>
+        // You can use JavaScript to add more dynamic behavior, such as:
+        // - Smooth transitions for the submenu
+        // - Handling clicks on submenu items
+
+        // Example:
+        // const servicesItem = document.querySelector('nav ul li:nth-child(3)');
+        // const submenu = servicesItem.querySelector('.submenu');
+
+        // servicesItem.addEventListener('mouseenter', () => {
+        //     submenu.style.opacity = '1';
+        // });
+
+        // servicesItem.addEventListener('mouseleave', () => {
+        //     submenu.style.opacity = '0';
+        // });
+    </script>
+
+</body>
+
+</html>

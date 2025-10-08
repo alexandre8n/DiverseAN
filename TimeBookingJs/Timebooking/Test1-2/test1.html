@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Layout</title>
+  <link rel="stylesheet" href="test1.css">
+</head>
+
+<body>
+  <div class="div1">
+    <!-- div1-left containing the form -->
+    <div class="div1-left">
+      <div class="div1-left-L">
+        <!-- <form> -->
+        <div class="form-row">
+          <label for="input-for-date">Date:</label>
+          <input type="date" id="input-for-date">
+        </div>
+
+        <div class="form-row">
+          <label for="input-for-project">Project:</label>
+          <input type="text" id="input-for-project">
+        </div>
+
+        <div class="form-row">
+          <label for="input-for-task">Task:</label>
+          <input type="text" id="input-for-task">
+        </div>
+
+        <div class="form-row">
+          <label for="input-for-effort">Effort:</label>
+          <input type="number" id="input-for-effort">
+        </div>
+        <!-- </form> -->
+      </div>
+
+      <!-- div1-left-R for the Comment section and Submit button -->
+      <div class="div1-left-R">
+        <div class="form-row">
+          <label for="comment">Comment:</label>
+        </div>
+
+        <div class="form-row">
+          <textarea id="comment-text" rows="4"></textarea>
+        </div>
+
+        <button type="submit">Submit</button>
+      </div>
+    </div>
+
+    <!-- div1-right displaying the Date Range -->
+    <div class="div1-right">
+      <p>Date Range: <span>2024-01-01</span> To <span>2024-01-01</span></p>
+      <button>Change</button>
+    </div>
+  </div>
+</body>
+
+</html>

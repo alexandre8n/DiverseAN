@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overlay Example</title>
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <style>
+        header {
+            display: flex;
+            /*background-color: linen;*/
+            border: 5px solid rgb(153, 0, 255);
+            justify-content: space-between;
+            padding-left: 5px;
+            padding-right: 5px;
+            margin: 5px;
+        }
+
+        /* Basic styles for the page */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #content {
+            padding: 20px;
+        }
+
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Semi-transparent black */
+            display: none;
+            /* Initially hidden */
+            z-index: 1;
+        }
+
+        #floatingDiv {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ccc;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 2;
+            /* Ensure it stays on top of the overlay */
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        .burger {
+            display: flex;
+            position: relative;
+            z-index: 50;
+            align-items: center;
+            justify-content: flex-end;
+            width: 30px;
+            height: 18px;
+            color: blue;
+        }
+
+        .burger span {
+            height: 2px;
+            width: 80%;
+            transform: scale(1);
+            background-color: black;
+            /* #FAF6F2;*/
+        }
+
+        .burger::before,
+        .burger::after {
+            content: '';
+            position: absolute;
+            height: 2px;
+            width: 100%;
+            background-color: black;
+            /* color of 2 upper and lower lines */
+            /* background-color: #FAF6F2; */
+            transition: all 0.3s ease 0s;
+        }
+
+        .burger::before {
+            top: 0
+        }
+
+        .burger::after {
+            bottom: 0
+        }
+
+        /* Добавляем класс active для анимации иконки бургера */
+        .burger.active span {
+            transform: scale(0)
+        }
+
+        .burger.active::before {
+            top: 50%;
+            transform: rotate(-45deg) translate(0, -50%);
+        }
+
+        .burger.active::after {
+            bottom: 50%;
+            transform: rotate(45deg) translate(0, 50%);
+        }
+
+        /* При разрешении экрана 900px и ниже, выводим на экран иконку бургера */
+        @media (max-width: 900px) {
+            .burger {
+                display: flex
+            }
+
+            .nav {
+                display: none;
+                flex-direction: column;
+                position: fixed;
+                height: 100%;
+                width: 100%;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 50;
+                overflow-y: auto;
+                padding: 50px 40px;
+                background-color: black;
+                animation: burgerAnimation 0.4s;
+            }
+
+            .nav ul {
+                flex-direction: column;
+                row-gap: 30px;
+            }
+        }
+
+        @keyframes burgerAnimation {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        /* .nav {
+            display: flex;
+            width: 700px;
+            padding: 0 40px;
+        }
+
+        .nav ul {
+            width: 100%;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+        } */
+        .nav {
+            display: none;
+            flex-direction: column;
+            position: fixed;
+            height: 50%;
+            width: 20%;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            overflow-y: auto;
+            padding: 20px 0px;
+            background-color: yellow;
+            animation: burgerAnimation 0.4s;
+        }
+
+        .nav ul {
+            flex-direction: column;
+            width: auto;
+            list-style: none;
+            display: flex;
+            row-gap: 10px;
+        }
+
+        .open {
+            display: flex !important;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <!-- page menu -->
+        <nav class="nav">
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li>
+                    <a href="#">Services</a>
+                    <ul class="submenu">
+                        <li><a href="#">Service 1</a></li>
+                        <li><a href="#">Service 2</a></li>
+                        <li><a href="#">Service 3</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">About</a></li>
+            </ul>
+        </nav>
+
+        <div class="burger">
+            <span></span>
+        </div>
+
+        <div>Time-booking</div>
+        <div class="cont1">
+            <div>Alex H</div>
+            <div><button class="RoundBtn">AH</button></div>
+        </div>
+    </header>
+    <hr />
+
+    <div id="content">
+        <h2>Welcome to the Page</h2>
+        <p>Some other content goes here...</p>
+    </div>
+
+    <div id="overlay"></div>
+
+    <div id="floatingDiv">
+        <input type="text" id="userInput" placeholder="Enter something...">
+        <button id="toggleButton">Toggle Overlay</button>
+    </div>
+
+    <script>
+        // Get references to the elements
+        const overlay = document.getElementById('overlay');
+        const floatingDiv = document.getElementById('floatingDiv');
+        const toggleButton = document.getElementById('toggleButton');
+        const userInput = document.getElementById('userInput');
+
+        // Event listener for the button click
+        toggleButton.addEventListener('click', function () {
+            // Toggle the visibility of the overlay
+            if (overlay.style.display === 'none' || overlay.style.display === '') {
+                overlay.style.display = 'block'; // Show overlay
+                floatingDiv.style.zIndex = '2'; // Ensure the floating div stays on top
+            } else {
+                overlay.style.display = 'none'; // Hide overlay
+                userInput.value = ''; // Optionally clear the input field
+            }
+        });
+        document.querySelector('.burger').addEventListener('click', function () {
+            this.classList.toggle('active');
+            document.querySelector('.nav').classList.toggle('open');
+        })
+
+    </script>
+
+</body>
+
+</html>

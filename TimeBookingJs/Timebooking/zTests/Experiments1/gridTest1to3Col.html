@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Default grid layout for 3 columns */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            /* Default: 3 equal columns */
+            gap: 10px;
+            /* Space between grid items */
+            width: 100%;
+            /* Ensure the grid takes up full width of the container */
+            max-width: 800px;
+            /* Max width for the grid */
+            border: 2px solid #333;
+            /* Border around the grid */
+            padding: 10px;
+            /* Padding inside the grid */
+            background-color: #fff;
+            /* White background for the grid */
+            margin: 0 auto;
+        }
+
+        /* Case for 2 columns (adjust width to 70%) */
+        .grid.two-columns {
+            grid-template-columns: repeat(2, 1fr);
+            /* 2 equal columns */
+            width: 70%;
+            /* Set the width of the grid to 70% */
+        }
+
+        /* Case for 1 column (adjust width to 50%) */
+        .grid.one-column {
+            grid-template-columns: 1fr;
+            /* 1 column */
+            width: 50%;
+            /* Set the width of the grid to 50% */
+        }
+
+        /* Optional: Responsive Design for smaller screens */
+        @media (max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
+                /* For very small screens, stack items in 1 column */
+                width: 100%;
+            }
+        }
+    </style>
+    <title>Grid-1to3</title>
+</head>
+
+<body>
+    <div class="grid" id="myGrid">
+        <!-- Dynamically populate this grid with 1 to 3 columns -->
+        <div class="grid-item">Item 1</div>
+        <div class="grid-item">Item 2</div>
+        <div class="grid-item">Item 3</div>
+        <div class="grid-item">Item 4</div>
+        <div class="grid-item">Item 5</div>
+        <div class="grid-item">Item 6</div>
+    </div>
+    <script>
+        // Example function to set the grid layout based on the number of items
+        function setGridLayout() {
+            const grid = document.getElementById("myGrid");
+            const gridItems = grid.querySelectorAll(".grid-item");
+
+            // Remove any previous layout classes
+            grid.classList.remove("one-column", "two-columns");
+
+            // Apply appropriate class based on the number of grid items
+            if (gridItems.length === 1) {
+                grid.classList.add("one-column"); // 1 column layout
+            } else if (gridItems.length === 2) {
+                grid.classList.add("two-columns"); // 2 columns layout
+            } else {
+                grid.classList.add("grid"); // 3 columns (default)
+            }
+        }
+
+        // Call the function to set the layout
+        setGridLayout();
+
+    </script>
+</body>
+
+</html>

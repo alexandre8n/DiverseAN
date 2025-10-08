@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8" />
+    <title>JWT Demo Client</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        body {
+            font-family: system-ui, Arial, sans-serif;
+            margin: 24px;
+            line-height: 1.4;
+        }
+
+        .row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        input,
+        button {
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .btns {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        #log {
+            width: 100%;
+            height: 220px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: #fafafa;
+            overflow: auto;
+            white-space: pre-wrap;
+        }
+
+        label {
+            display: inline-block;
+            min-width: 90px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>JWT Client Demo</h1>
+
+    <div class="row">
+        <label for="baseUrl">Base URL:</label>
+        <input id="baseUrl" type="text" value="http://localhost:3000" size="40" />
+    </div>
+
+    <div class="row">
+        <label for="username">Логин:</label>
+        <input id="username" type="text" value="user1" />
+        <label for="password">Пароль:</label>
+        <input id="password" type="password" value="xxx" />
+    </div>
+
+    <div class="btns">
+        <button id="loginBtn">Login</button>
+        <button id="profileBtn">GET /api/profile</button>
+        <button id="updateBtn">POST /api/something</button>
+        <button id="logoutBtn">Logout</button>
+    </div>
+
+    <h3>Log</h3>
+    <div id="log"></div>
+
+    <!-- Твой клиентский код -->
+    <script type="module" src="./main.js"></script>
+
+    <!-- Небольшой помощник для вывода лога (не обязателен).
+       Если хочешь — в main.js можешь дергать window.appendLog(...) -->
+    <script>
+        const logEl = document.getElementById('log');
+        window.appendLog = (msg) => {
+            const time = new Date().toLocaleTimeString();
+            logEl.textContent += `[${time}] ${typeof msg === 'string' ? msg : JSON.stringify(msg, null, 2)}\n`;
+            logEl.scrollTop = logEl.scrollHeight;
+        };
+
+        // Если хочешь, чтобы main.js мог прочитать baseURL/логин/пароль из DOM:
+        window.getUiValues = () => ({
+            baseURL: document.getElementById('baseUrl').value.trim(),
+            username: document.getElementById('username').value.trim(),
+            password: document.getElementById('password').value
+        });
+    </script>
+</body>
+
+</html>

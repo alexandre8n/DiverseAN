@@ -1,0 +1,87 @@
+/* Container for the whole layout */
+.div1 {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  gap: 20px;
+}
+
+/* div1-left container layout */
+.div1-left {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2 columns for the form layout */
+  gap: 20px;
+  width: 65%; /* Adjust width as needed */
+}
+
+/* div1-left-L for labels and inputs */
+.div1-left-L {
+  display: grid;
+  grid-template-rows: repeat(4, auto); /* Four rows for labels and inputs */
+  gap: 20px; /* Vertical gap between inputs */
+}
+
+/* div1-left-R for the Comment and Submit button */
+.div1-left-R {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: 10px; /* Vertical gap between rows */
+  justify-items: start;
+  align-items: center; /* Center the content vertically */
+}
+
+/* Form row layout (labels and inputs aligned horizontally) */
+.form-row {
+  display: grid;
+  grid-template-columns: auto 1fr; /* Horizontally align label and input */
+  align-items: center;
+  gap: 10px;
+}
+
+/* Label styling */
+label {
+  font-size: 14px;
+}
+
+/* Textarea and Input styling */
+input,
+textarea {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+/* Button styling */
+button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* div1-right layout */
+.div1-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 30%;
+  text-align: center;
+}
+
+/* Ensures div1-right content is centered both vertically and horizontally */
+.div1-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%; /* Ensures it fills the div */
+  text-align: center;
+}

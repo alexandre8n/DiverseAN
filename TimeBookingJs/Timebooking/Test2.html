@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="TimeBooking.CSS" />
+    <style>
+      header {
+        display: flex;
+        /*background-color: linen;*/
+        border: 5px solid rgb(153, 0, 255);
+        justify-content: space-between;
+        padding-left: 5px;
+        padding-right: 5px;
+        margin: 5px;
+      }
+
+      .RoundBtn {
+        border-radius: 50%;
+        margin-left: 10px;
+      }
+    </style>
+    <title>TimeBooking</title>
+  </head>
+
+  <body>
+    <header>
+      <div>menu <button id="clearall" onclick="clearAll()">Clear</button></div>
+      <div>Time-booking</div>
+      <div class="tbInputContainers">
+        <div>Alex H</div>
+        <div><button class="RoundBtn">AH</button></div>
+      </div>
+    </header>
+    <hr />
+
+    <div class="tbInputContainers">
+      <div class="horFlex">
+        <div class="horFlex">
+          <table>
+            <tr>
+              <td>
+                <div>Project:</div>
+              </td>
+              <td>
+                <!-- onclick="onSelectClick(event)" -->
+                <select name="cmbProj" id="Project" onchange="onAddNew(event)">
+                  <option value="AddNew">Add New Project...</option>
+                  <!-- <option value="A">Learn CSS</option>
+                <option value="B" selected="true">Learn Js</option>
+                <option value="-">Other</option> -->
+                </select>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Task:</td>
+              <td>
+                <input type="text" id="task" /><button onclick="onSelectTask()">
+                  ...
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>Efforts(h):</td>
+              <td>
+                <input type="text" id="efforts" />
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="horFlex">
+          <table>
+            <tr>
+              <td>Date:</td>
+              <td><input name="dateInput" id="dateInput" type="date" /></td>
+            </tr>
+            <tr>
+              <td>Comment:</td>
+              <td>
+                <textarea
+                  rows="5"
+                  cols="30"
+                  id="comment"
+                  name="Comment"
+                ></textarea>
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>
+                <button onclick="onSubmit(this)">Submit</button>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="horFlex">
+        <div id="DateRangeView">
+          <div class="smallMargin">
+            Date Range:<span>2024-01-01</span> To <span>2024-01-01</span>
+            <button onclick="onDateRangeChange()">Change</button>
+          </div>
+        </div>
+        <div id="DateRangeEdit" style="display: none">
+          <div class="smallMargin">
+            Date Range: <input type="date" /> To <input type="date" />
+            <button onclick="onDateRangeDone()">Done</button>
+            <p style="display: none; color: red">
+              Error: Date from may not be greater then Date to
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cover"></div>
+    <div class="table-container">
+      <table class="efforts-table">
+        <thead>
+          <tr>
+            <th style="width: 90px">Date</th>
+            <th style="width: 20%">Project</th>
+            <th>Task</th>
+            <th style="width: 80px">Efforts</th>
+            <th colspan="2">Command</th>
+          </tr>
+        </thead>
+        <tbody id="tblBodyId">
+          <!-- <tr>
+                    <td>2024-09-29</td>
+                    <td>Project1</td>
+                    <td>Design Homepage</td>
+                    <td>5 hours</td>
+                    <td><button onclick="edit()">Edit</button></td>
+                    <td><button onclick="deleteD()">Delete</button></td>
+                </tr>
+                <tr>
+                    <td>2024-09-30</td>
+                    <td>Project2</td>
+                    <td>Fix Bugs</td>
+                    <td>3 hours</td>
+                    <td id="edit"><button onclick="edit()">Edit</button></td>
+                    <td id="delete"><button onclick="deleteD()">Delete</button></td>
+                </tr>
+                <tr>
+                    <td>2024-10-01</td>
+                    <td>Project3</td>
+                    <td>Client Meeting</td>
+                    <td>2 hours</td>
+                    <td><button onclick="edit()">Edit</button></td>
+                    <td><button onclick="deleteD()">Delete</button></td>
+                </tr> -->
+        </tbody>
+      </table>
+      <dialog id="newProjectDlg">
+        <div class="ProjectDlgHeader">
+          Project <button onclick="closeProject()">&times;</button>
+        </div>
+        <div>
+          <label for="newPrj"> New Project:</label>
+          <!-- <input name="newPrj" type="text" id="editProject" /> -->
+          <textarea
+            rows="1"
+            cols="30"
+            id="editProject"
+            name="newPrj"
+          ></textarea>
+        </div>
+        <div id="newProjErr" style="visibility: hidden; color: red">
+          Error: the project<b><span id="prgNmId"></span></b>already exists or
+          empty!
+        </div>
+        <button class="btnClassik" onclick="saveNewProject()">Ok</button
+        >&nbsp;&nbsp;
+        <button class="btnClassik" onclick="onCancelNewProj()">Cancel</button>
+      </dialog>
+
+      <dialog id="EditDlg">
+        <div class="EditDlgHeader">
+          Edit Record <button onclick="clouseEdit()">&times;</button>
+        </div>
+        <table>
+          <tr>
+            <td>
+              <div>Project:</div>
+            </td>
+            <td>
+              <select id="editPrjSelect">
+                <!-- <option value="A">Learn CSS</option>
+              <option value="B">Learn Js</option>
+              <option value="-">Other</option> -->
+              </select>
+            </td>
+          </tr>
+
+          <tr>
+            <td>Task:</td>
+            <td><input type="text" id="editTask" /><button>...</button></td>
+          </tr>
+          <tr>
+            <td>Efforts(h):</td>
+            <td>
+              <input type="text" id="editEfforts" /><button
+                onclick="onSubmitEdit(this)"
+              >
+                Submit
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td>Date:</td>
+            <td><input name="dateInput" id="editDateInput" type="date" /></td>
+          </tr>
+          <tr>
+            <td>Comment:</td>
+            <td>
+              <textarea
+                rows="5"
+                cols="30"
+                id="editComment"
+                name="Comment"
+              ></textarea>
+            </td>
+          </tr>
+        </table>
+      </dialog>
+      <dialog id="TaskSelectDlg">
+        <div class="TaskDlgHeader">
+          <div>Select Task</div>
+          <span class="close-btn" id="closeModalBtn">&times;</span>
+        </div>
+        <div class="TaskDlgBoddy">
+          <input
+            id="FilterTasks"
+            type="text"
+            placeholder="Search Tasks"
+            onkeyup="onKeyUpTaskFilter()"
+          />
+          <div class="TaskDlgTblContainer">
+            <table id="TaskTableId" class="TblInDlg">
+              <thead>
+                <tr>
+                  <th>Task</th>
+                  <th>Efforts</th>
+                  <th>Last Modified</th>
+                  <th>Select Command</th>
+                </tr>
+              </thead>
+              <tbody id="taskTblBodyId"></tbody>
+            </table>
+          </div>
+        </div>
+      </dialog>
+    </div>
+  </body>
+  <script src="utl1.js"></script>
+  <script src="testDataGeneration.js"></script>
+  <script src="storage.js"></script>
+  <script src="timeBooking.js"></script>
+  <script src="selectTaskDlg.js"></script>
+</html>

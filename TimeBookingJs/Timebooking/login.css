@@ -1,0 +1,120 @@
+/* Basic styling for the page */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  /* display: flex; */
+  /* align-items: center; */
+  /* height: 100vh; */
+  /* background-color: #f4f4f4; */
+  /* flex-direction: column; */
+}
+
+/* Header styling */
+header {
+  position: relative;
+  top: 0px;
+  padding: 0 10px;
+  width: 100%;
+  height: 60px;
+  background-color: #7f56b2;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box; /* Prevent horizontal overflow */
+}
+
+.header-left {
+  /* flex-grow: 1; */
+  margin-left: 1rem;
+}
+
+.header-right {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 1rem;
+}
+
+h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+#userName {
+  display: inline-block;
+  margin-right: 1rem;
+  padding: 10px 20px; /* Add padding inside the circle */
+  border-radius: 50%; /* Makes the element round */
+  background-color: #4caf50; /* Background color of the circle */
+  color: white; /* Text color */
+  font-size: 16px; /* Font size */
+  font-weight: bold;
+  border: 2px solid #fff; /* White border around the circle */
+  text-align: center; /* Center the text horizontally */
+  line-height: 1.2; /* Adjust line height to center text vertically */
+}
+
+#userName:hover {
+  background-color: #45a049; /* Slightly darker shade on hover */
+  cursor: pointer;
+}
+
+/* Styling for the login dialog */
+.loginDialog {
+  display: none; /* Hidden by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Transparent background */
+  justify-content: center;
+  align-items: center;
+}
+
+.loginDialog button {
+  padding: 10px;
+  margin: 5px;
+}
+
+.dialog-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  width: 300px;
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 15px;
+}
+
+#loginForm input {
+  width: 80%;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+#closeDialog {
+  background-color: #f44336;
+}
+
+#closeDialog:hover {
+  background-color: #e53935;
+}

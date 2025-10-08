@@ -1,0 +1,72 @@
+#TaskSelectDlg {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.8);
+  top: 0%;
+  left: 0%;
+  z-index: 100;
+  display: none;
+  max-width: 600px;
+  width: 100%;
+  max-height: 400px;
+}
+.TaskDlgHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 1px;
+  padding-right: 5px;
+  background-color: blue;
+  color: yellow;
+}
+#FilterTasks {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+.close-btn {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.TaskDlgTblContainer {
+  width: 600px;
+  height: 300px; /* Adjust as needed */
+  overflow-y: auto;
+  border: 1px solid #ccc;
+}
+
+/* Make sure table takes full width */
+.TblWithTasks {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+/* Table header styling */
+.TblWithTasks thead th {
+  position: sticky;
+  top: 0;
+  background: #f2f2f2;
+  z-index: 1; /* Ensure header stays on top of scrolling rows */
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+/* Table body styling */
+.TblWithTasks tbody td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+/* Optional hover effect on table rows */
+.TblWithTasks tbody tr:hover {
+  background: #f9f9f9;
+  cursor: pointer;
+}

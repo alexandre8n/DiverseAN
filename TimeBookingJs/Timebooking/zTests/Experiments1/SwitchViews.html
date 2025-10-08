@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Div Switching</title>
+    <style>
+        .container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .tbOverviewHeader {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+        }
+    </style>
+</head>
+
+<body>
+
+    <button id="switchButton">Switch</button>
+
+    <div id="parentDiv" class="container">
+        <div class="tbOverviewHeader">
+            <div>Date</div>
+            <div>Week Day</div>
+            <div>Efforts</div>
+            <div>Details</div>
+        </div>
+        <div class="childDiv" data-group="chld">Child Div 2</div>
+        <div class="childDiv" data-group="chld">Child Div 3</div>
+        <div class="childDiv" data-group="chld">Child Div 4</div>
+        <div class="childDiv" data-group="chld">Child Div 5</div>
+
+        <div class="otherDiv" data-group="othr" style="display: none;">Other Div 1</div>
+        <div class="otherDiv" data-group="othr" style="display: none;">Other Div 2</div>
+    </div>
+
+    <script>
+        const switchButton = document.getElementById('switchButton');
+        const childDivs = document.querySelectorAll('[data-group="chld"]');
+        const otherDivs = document.querySelectorAll('[data-group="othr"]');
+
+        switchButton.addEventListener('click', () => {
+            childDivs.forEach(div => {
+                div.style.display = div.style.display === 'none' ? 'block' : 'none';
+            });
+
+            otherDivs.forEach(div => {
+                div.style.display = div.style.display === 'none' ? 'block' : 'none';
+            });
+        });
+    </script>
+
+</body>
+
+</html>

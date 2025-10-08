@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Basic body styling */
+        body {
+            height: 100vh;
+            /* Full height of the viewport */
+            display: flex;
+            /* Use flexbox to center the grid */
+            justify-content: center;
+            /* Center horizontally */
+            align-items: center;
+            /* Center vertically */
+            margin: 0;
+            background-color: #f4f4f4;
+            /* Light background for better visibility */
+        }
+
+        .form-component {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            /* Make the form fill available width */
+            max-width: 400px;
+            /* Set a max width for the form */
+            background-color: #fff;
+        }
+
+        .input-pair {
+            display: flex;
+            align-items: center;
+            /* Align label and input in the center vertically */
+            margin-bottom: 10px;
+        }
+
+        label {
+            width: 120px;
+            /* Fixed width for the labels to align them */
+            margin-right: 10px;
+            /* Space between label and input */
+            text-align: right;
+            /* Align the label text to the right */
+        }
+
+        input {
+            flex: 1;
+            /* Let the input fill the remaining space */
+            padding: 8px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            /* Make the button fill the width */
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            /* Add some space above the button */
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <title>Form-template-usage</title>
+</head>
+
+<body>
+    <!-- Define the template for your reusable component -->
+    <template id="formComponentTemplate">
+        <div class="form-component">
+            <div class="input-pair">
+                <label for="input1">Label 1:</label>
+                <input type="text" id="input1" name="input1">
+            </div>
+            <div class="input-pair">
+                <label for="input2">Label 2:</label>
+                <input type="text" id="input2" name="input2">
+            </div>
+            <div class="input-pair">
+                <label for="input3">Label 3:</label>
+                <input type="text" id="input3" name="input3">
+            </div>
+            <button type="submit">Submit</button>
+        </div>
+    </template>
+
+    <!-- Placeholder where the form component will be inserted -->
+    <div id="formContainer"></div>
+
+    <!-- Button to add the form component dynamically -->
+    <button id="addFormBtn">Add Form Component</button>
+    <script>
+        // Get the template element
+        const formTemplate = document.getElementById('formComponentTemplate');
+
+        // Get the container where the form components will be inserted
+        const formContainer = document.getElementById('formContainer');
+
+        // Get the button to add new form components
+        const addFormBtn = document.getElementById('addFormBtn');
+
+        // Event listener for the button
+        addFormBtn.addEventListener('click', function () {
+            // Clone the template content (deep clone)
+            const newForm = formTemplate.content.cloneNode(true);
+
+            // Append the cloned form to the container
+            formContainer.appendChild(newForm);
+        });
+
+    </script>
+</body>
+
+</html>
