@@ -190,7 +190,7 @@ export default class AuthClient {
   }
 
   async _rawFetch(inputA, init) {
-    const input = `${this.baseURL}${inputA}`;
+    const input = this._abs(inputA); //`${this.baseURL}${inputA}`;
     if (!this.timeoutMs) return fetch(input, init);
     // Таймаут (если задан)
     return Promise.race([

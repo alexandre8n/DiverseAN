@@ -7,11 +7,14 @@ const api = new AuthClient({ baseURL: "http://localhost:3000" });
 // Логин
 document.querySelector("#loginBtn").addEventListener("click", async () => {
   try {
-    await api.login("user1", "xxx");
+    const user = document.querySelector("#username").value;
+    const pass = document.querySelector("#password").value;
+    await api.login(user, pass);
     console.log("Логин успешен");
     window.appendLog("Логин успешен");
   } catch (e) {
     console.error("Login error:", e.message);
+    window.appendLog("Login error:" + e.message);
   }
 });
 
@@ -40,3 +43,17 @@ document.querySelector("#logoutBtn").addEventListener("click", async () => {
   await api.logout();
   console.log("Вышли из системы");
 });
+
+document.querySelector("#tbRecsBtn").addEventListener("click", async () => {
+  const startDate = "2025-10-01";
+  const endDate = "2025-10-15";
+  const url = `/api/tbrecs?start=${encodeURIComponent(
+    startDate
+  )}&end=${encodeURIComponent(endDate)}`;
+  const resp = await api.get(url);
+  console.log("Ответ:", resp);
+  window.appendLog("api/tbrecs ответ: " + JSON.stringify(resp));
+});
+
+// Example usage
+//getTimeBookings('2025-10-01', '2025-10-15');

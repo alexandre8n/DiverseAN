@@ -5,10 +5,20 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "node",
-      "name": "Run Current File",
+      "name": "Launch Client",
+      "type": "pwa-chrome",
       "request": "launch",
-      "program": "f:\\Work\\GitHub\\DiverseAG\\TimeBooking\\zTests\\ServerLoginExperiments\\server.js"
+      "url": "http://127.0.0.1:5500/ClientToTestServerJwt/index.html",
+      "webRoot": "${workspaceFolder}/ClientToTestServerJwt"
+    },
+    {
+      "name": "Launch Server",
+      "type": "pwa-node",
+      "request": "launch",
+      "program": "${workspaceFolder}/server.js",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }

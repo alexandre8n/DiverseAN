@@ -1,0 +1,5 @@
+https://www.youtube.com/watch?v=Rku2F5OGPzU
+Как создать проект на React через Vite. Установка, настройка и структура проекта
+
+https://www.youtube.com/watch?v=8EXUlJ80Vec
+JSX в React: особенности синтаксиса, подводные камни, условный рендеринг и списки

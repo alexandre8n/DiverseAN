@@ -1,16 +1,27 @@
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+// require("dotenv").config();
+// const express = require("express");
+// const cors = require("cors");
+// const jwt = require("jsonwebtoken");
+// const bcrypt = require("bcrypt");
+//const { use } = require("react");
+import dotenv from "dotenv";
+import express from "express";
+import cors from "cors";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+
+// my modules
+// import utl1 from "./utl1.js";
+import TbDataManager from "./tbDataManager.js";
+
+const tbDataManager = new TbDataManager();
+
+dotenv.config();
 
 const app = express();
-app.use(
-  cors({
-    origin: "http://127.0.0.1:5500",
-    credentials: true,
-  })
-);
+app.use(cors({ origin: "http://127.0.0.1:5501", credentials: true }));
+//app.use(cors({origin: "http://127.0.0.1:5500",credentials: true,}));
+//app.use(cors()); // для тестов с любого источника
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
@@ -122,21 +133,38 @@ app.get("/api/profile", authenticate, (req, res) => {
     user: req.user,
   });
 });
-
-/** Пример защищённого маршрута с проверкой роли */
-function authorize(roles = []) {
-  return (req, res, next) => {
-    if (!roles.length || roles.includes(req.user.role)) return next();
-    return res.status(403).json({ error: "Forbidden" });
-  };
-}
 app.get("/api/admin", authenticate, authorize(["admin"]), (req, res) => {
   res.json({ message: "Hello, admin!" });
 });
 
-app.get("/tb", (req, res) => {
-  res.json({ message: "Hello, admin!" });
+app.get("/api/something", (req, res) => {
+  res.json({ message: "Hello from /api/something" });
 });
+
+app.get("/api/tbrecs", authenticate, (req, res) => {
+  const { start, end } = req.query;
+  if (!start || !end) {
+    return res.status(400).json({ error: "Missing start or end date" });
+  }
+  const tbRecs = tbDataManager.getTbRecords(start, end, req.user);
+  res.json({
+    message: "Hello from /api/tbrecs",
+    user: req.user,
+    start: start,
+    end: end,
+    tbRecords: tbRecs,
+  });
+});
+
+//   // Example response (replace with actual DB logic)
+//   res.json({
+//     user: req.user,
+//     bookings: [
+//       { date: "2025-10-03", time: "10:00", description: "Meeting with team" },
+//       { date: "2025-10-10", time: "14:00", description: "Client call" },
+//     ],
+//   });
+// });
 
 app.post("/tb", (req, res) => {
   const v1 = req.body;
@@ -146,3 +174,11 @@ app.post("/tb", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Auth server running on http://localhost:${PORT}`);
 });
+
+/** Пример защищённого маршрута с проверкой роли */
+function authorize(roles = []) {
+  return (req, res, next) => {
+    if (!roles.length || roles.includes(req.user.role)) return next();
+    return res.status(403).json({ error: "Forbidden" });
+  };
+}
