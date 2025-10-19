@@ -69,13 +69,23 @@
 
     <div class="btns">
       <button id="loginBtn">Login</button>
-      <button id="profileBtn">GET /api/profile</button>
       <button id="tbRecsBtn">GET /api/tbRecs</button>
-      <button id="updateBtn">POST /api/something</button>
+      <button id="tbRecByIdBtn">GET /api/tbRecById</button>
+      <button id="tbProjs">GET /api/tbGetProjects</button>
+      <button id="tbAddProj">Post /api/tbAddProject</button>
+      <button id="tbAddTbRec">Post /api/tbAddRec</button>
+      <button id="tbUpdRec">Post /api/tbUpdateRec</button>
+      <button id="tbDelRec">Post /api/tbDeleteRec</button>
 
+      <button id="updateBtn">POST /api/something</button>
       <button id="logoutBtn">Logout</button>
     </div>
-
+    <div class="adminCommands">
+      <h2>Admin commands:</h2>
+      <button id="usersListBtn">GET /api/tbAdmin_users</button>
+      <button id="tbAddUser">Post /api/tbAdmin_addUser</button>
+      <button id="tbDisableUser">Post /api/tbAdmin_changeUser</button>
+    </div>
     <h3>Log</h3>
     <div id="log"></div>
     <script>

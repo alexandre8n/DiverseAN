@@ -37,17 +37,6 @@ app.get("/", (req, res) => {
   });
 });
 
-// ⚠️ Демонстрационная «БД»
-const users = [
-  // пароль "xxx" захэширован (пример: bcrypt.hashSync("xxx", 10))
-  {
-    id: 1,
-    username: "user1",
-    passwordHash: bcrypt.hashSync("xxx", 10),
-    role: "user",
-  },
-];
-
 // ⚠️ В проде храните refresh-токены в БД (или вообще не храните и делайте ротацию по jti).
 const refreshStore = new Set();
 
@@ -78,7 +67,7 @@ function authenticate(req, res, next) {
 /** Логин: проверяем пользователя, выдаём пары токенов */
 app.post("/api/login", async (req, res) => {
   const { username, password } = req.body || {};
-  const user = users.find((u) => u.username === username);
+  const user = tbDataManager.getUserByName(username);
   if (!user) return res.status(401).json({ error: "Invalid credentials" });
 
   const ok = await bcrypt.compare(password, user.passwordHash);
@@ -108,7 +97,7 @@ app.post("/api/refresh", (req, res) => {
         .json({ error: "Invalid or expired refresh token" });
 
     // Получаем пользователя (минимум id в payload refresh)
-    const user = users.find((u) => u.id === decoded.id);
+    const user = tbDataManager.getUserById(decoded.id);
     if (!user) return res.status(401).json({ error: "User no longer exists" });
 
     const payload = { id: user.id, username: user.username, role: user.role };
@@ -126,13 +115,19 @@ app.post("/api/logout", (req, res) => {
 });
 
 /** Пример защищённого маршрута */
-app.get("/api/profile", authenticate, (req, res) => {
-  // req.user пришёл из access-токена
+app.get("/api/tbAdmin_users", authenticate, (req, res) => {
+  const user = req.user;
+  if (user !== "admin") {
+    return res
+      .status(400)
+      .json({ error: "Authorization failed: only for admin user allowed" });
+  }
   res.json({
     message: "Protected resource",
     user: req.user,
   });
 });
+
 app.get("/api/admin", authenticate, authorize(["admin"]), (req, res) => {
   res.json({ message: "Hello, admin!" });
 });

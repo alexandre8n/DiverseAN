@@ -1,8 +1,9 @@
 // main.js
 import AuthClient from "./authClient.js";
 
+const baseURL = "http://localhost:3000";
 // Инициализация
-const api = new AuthClient({ baseURL: "http://localhost:3000" });
+const api = new AuthClient({ baseURL: baseURL });
 
 // Логин
 document.querySelector("#loginBtn").addEventListener("click", async () => {
@@ -19,7 +20,7 @@ document.querySelector("#loginBtn").addEventListener("click", async () => {
 });
 
 // Запрос к защищённому маршруту (авторизация добавится сама)
-document.querySelector("#profileBtn").addEventListener("click", async () => {
+document.querySelector("#usersListBtn").addEventListener("click", async () => {
   try {
     const data = await api.get("/api/profile");
     console.log("Профиль:", data);
