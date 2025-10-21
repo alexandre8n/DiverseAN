@@ -1,9 +1,3 @@
-// require("dotenv").config();
-// const express = require("express");
-// const cors = require("cors");
-// const jwt = require("jsonwebtoken");
-// const bcrypt = require("bcrypt");
-//const { use } = require("react");
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
@@ -19,8 +13,8 @@ const tbDataManager = new TbDataManager();
 dotenv.config();
 
 const app = express();
-app.use(cors({ origin: "http://127.0.0.1:5501", credentials: true }));
-//app.use(cors({origin: "http://127.0.0.1:5500",credentials: true,}));
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+//app.use(cors({ origin: "http://127.0.0.1:5501", credentials: true }));
 //app.use(cors()); // для тестов с любого источника
 app.use(express.json());
 

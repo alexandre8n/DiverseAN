@@ -5,7 +5,8 @@ import {
   testGenBookings,
   testGetProjectNames,
 } from "./testDataGeneration.js";
-import utl1 from "./utl1.js";
+
+import utl1 from "../tbShared/utl1.js";
 
 export default class TbDataManager {
   mode = "local"; // 'local' | 'remote'

@@ -1,5 +1,6 @@
 // main.js
 import AuthClient from "./authClient.js";
+import utl1 from "./utl1.js";
 
 const baseURL = "http://localhost:3000";
 // Инициализация
@@ -22,10 +23,12 @@ document.querySelector("#loginBtn").addEventListener("click", async () => {
 // Запрос к защищённому маршруту (авторизация добавится сама)
 document.querySelector("#usersListBtn").addEventListener("click", async () => {
   try {
-    const data = await api.get("/api/profile");
-    console.log("Профиль:", data);
+    const data = await api.get("/api/tbAdmin_users");
+    console.log("Пользователи:", data);
+    window.appendLog("api/tbAdmin_users ответ: " + JSON.stringify(data));
   } catch (e) {
-    console.error("Profile error:", e.message);
+    window.appendLog("api/tbAdmin_users Error: " + JSON.stringify(e.message));
+    console.error("Get users request error:", e.message);
   }
 });
 
@@ -46,8 +49,9 @@ document.querySelector("#logoutBtn").addEventListener("click", async () => {
 });
 
 document.querySelector("#tbRecsBtn").addEventListener("click", async () => {
-  const startDate = "2025-10-01";
-  const endDate = "2025-10-15";
+  const dateRange = 15; // дней
+  const endDate = new Date();
+  const startDate = utl1.getRandomDate(today, -dateRange, 0);
   const url = `/api/tbrecs?start=${encodeURIComponent(
     startDate
   )}&end=${encodeURIComponent(endDate)}`;
@@ -58,3 +62,11 @@ document.querySelector("#tbRecsBtn").addEventListener("click", async () => {
 
 // Example usage
 //getTimeBookings('2025-10-01', '2025-10-15');
+// "tbRecByIdBtn"
+document.querySelector("#tbRecByIdBtn").addEventListener("click", async () => {
+  const recId = 1; // Пример ID записи
+  const url = `/api/tbRecById?id=${encodeURIComponent(recId)}`;
+  const resp = await api.get(url);
+  console.log("Ответ:", resp);
+  window.appendLog("api/tbRecById ответ: " + JSON.stringify(resp));
+});

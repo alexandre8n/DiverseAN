@@ -1,0 +1,44 @@
+{
+  "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "Debug Server & Client",
+      "configurations": ["Launch Server", "Debug Vite Client"]
+    }
+  ],
+  "configurations": [
+    {
+      "name": "Launch Server",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/tbServer/server.js",
+      "cwd": "${workspaceFolder}/tbServer",
+      "console": "integratedTerminal",
+      "preLaunchTask": "Start Vite Dev Server"
+    },
+    {
+      "name": "Launch Client",
+      "type": "pwa-chrome",
+      "request": "launch",
+      "url": "http://127.0.0.1:5501/tbCliTest/index.html",
+      "webRoot": "${workspaceFolder}/tbCliTest",
+      "sourceMapPathOverrides": {
+        "webpack:///./*": "${webRoot}/*",
+        "file:///*": "${webRoot}/*",
+        "http://127.0.0.1:5501/*": "${webRoot}/*"
+      }
+    },
+    {
+      "name": "Debug Vite Client",
+      "type": "pwa-chrome",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/tbCliTest",
+      "sourceMapPathOverrides": {
+        "webpack:///./*": "${webRoot}/*",
+        "file:///*": "${webRoot}/*",
+        "http://localhost:5173/*": "${webRoot}/*"
+      }
+    }
+  ]
+}
