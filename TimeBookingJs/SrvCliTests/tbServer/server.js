@@ -22,15 +22,6 @@ const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
 
-app.get("/", (req, res) => {
-  res.json({
-    message: "Timebooking Experiments server",
-    port: PORT,
-    jwtSecret: JWT_SECRET ? "✅ loaded" : "❌ not found",
-    jwtRefreshSecret: JWT_REFRESH_SECRET ? "✅ loaded" : "❌ not found",
-  });
-});
-
 // ⚠️ В проде храните refresh-токены в БД (или вообще не храните и делайте ротацию по jti).
 const refreshStore = new Set();
 
@@ -58,6 +49,25 @@ function authenticate(req, res, next) {
   });
 }
 
+/** Пример защищённого маршрута с проверкой роли */
+function authorize(roles = []) {
+  return (req, res, next) => {
+    if (!roles.length || roles.includes(req.user.role)) return next();
+    return res.status(403).json({ error: "Forbidden" });
+  };
+}
+
+// --- Area of test routes ---
+
+app.get("/", (req, res) => {
+  res.json({
+    message: "Timebooking Experiments server",
+    port: PORT,
+    jwtSecret: JWT_SECRET ? "✅ loaded" : "❌ not found",
+    jwtRefreshSecret: JWT_REFRESH_SECRET ? "✅ loaded" : "❌ not found",
+  });
+});
+
 /** Логин: проверяем пользователя, выдаём пары токенов */
 app.post("/api/login", async (req, res) => {
   const { username, password } = req.body || {};
@@ -74,6 +84,56 @@ app.post("/api/login", async (req, res) => {
   refreshStore.add(refreshToken);
 
   res.json({ accessToken, refreshToken });
+});
+
+app.post("/api/tbAddProject", async (req, res) => {
+  let user = req.user;
+  if (user.role === "admin") {
+    user = null; // admin can add project for all users
+  }
+  const { projectName } = req.body || {};
+  const project = tbDataManager.addProject(projectName, user);
+  if (!project)
+    return res
+      .status(400)
+      .json({ error: "Failed to add project, already exists" });
+  res.json({ message: "Project added successfully", project });
+});
+
+app.post("/api/tbAddRec", async (req, res) => {
+  const { tbRec } = req.body || {};
+  let user = req.user;
+  if (user.role === "admin") {
+    user = null; // admin can add project for all users
+  }
+  const tbRecAdded = tbDataManager.addTbRec(tbRec, user);
+  if (!tbRecAdded)
+    return res.status(400).json({ error: "Failed to add record" });
+  res.json({ message: "Record added successfully", tbRec: tbRecAdded });
+});
+
+app.post("/api/tbUpdateRec", async (req, res) => {
+  const { tbRec } = req.body || {};
+  let user = req.user;
+  if (user.role === "admin") {
+    user = null; // admin can add project for all users
+  }
+  const tbRecAdded = tbDataManager.updateTbRec(tbRec, user);
+  if (!tbRecAdded)
+    return res.status(400).json({ error: "Failed to add record" });
+  res.json({ message: "Record added successfully", tbRec: tbRecAdded });
+});
+
+app.post("/api/tbDeleteRec", async (req, res) => {
+  const { tbRec } = req.body || {};
+  let user = req.user;
+  if (user.role === "admin") {
+    user = null; // admin can add project for all users
+  }
+  const tbRecDeleted = tbDataManager.deleteTbRec(tbRec, user);
+  if (!tbRecDeleted)
+    return res.status(400).json({ error: "Failed to delete record" });
+  res.json({ message: "Record deleted successfully", tbRec: tbRecDeleted });
 });
 
 /** Обновление access-токена по refresh-токену */
@@ -108,7 +168,6 @@ app.post("/api/logout", (req, res) => {
   res.json({ success: true });
 });
 
-/** Пример защищённого маршрута */
 app.get("/api/tbAdmin_users", authenticate, (req, res) => {
   const user = req.user;
   if (user.role !== "admin") {
@@ -139,29 +198,40 @@ app.get("/api/tbrecs", authenticate, (req, res) => {
   });
 });
 
-//   // Example response (replace with actual DB logic)
-//   res.json({
-//     user: req.user,
-//     bookings: [
-//       { date: "2025-10-03", time: "10:00", description: "Meeting with team" },
-//       { date: "2025-10-10", time: "14:00", description: "Client call" },
-//     ],
-//   });
-// });
-
-app.post("/tb", (req, res) => {
-  const v1 = req.body;
-  res.json({ html: "<h1>Hi Sasha</h1><button>ABC</button>" });
+app.get("/api/tbRecById", authenticate, (req, res) => {
+  const { id } = req.query;
+  if (!id) {
+    return res.status(400).json({ error: "Missing record ID" });
+  }
+  const user = req.user;
+  let tbRec = null;
+  if (user.role === "admin") {
+    tbRec = tbDataManager.getTbRecordById(id, null);
+  } else {
+    tbRec = tbDataManager.getTbRecordById(id, user.username);
+  }
+  if (!tbRec) {
+    return res
+      .status(404)
+      .json({ error: "Record not found or you do not have access to it" });
+  }
+  res.json({
+    message: "Result from /api/tbRecById",
+    user: req.user,
+    tbRecord: tbRec,
+  });
+});
+//
+app.get("/api/tbGetProjects", authenticate, (req, res) => {
+  const user = req.user;
+  const projects = tbDataManager.getUserProjects(user);
+  res.json({
+    message: "List of projects",
+    user: req.user,
+    projects: projects,
+  });
 });
 
 app.listen(PORT, () => {
   console.log(`Auth server running on http://localhost:${PORT}`);
 });
-
-/** Пример защищённого маршрута с проверкой роли */
-function authorize(roles = []) {
-  return (req, res, next) => {
-    if (!roles.length || roles.includes(req.user.role)) return next();
-    return res.status(403).json({ error: "Forbidden" });
-  };
-}

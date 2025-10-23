@@ -10,6 +10,8 @@
 // main.js
 import AuthClient from "./authClient.js";
 import utl1 from "../tbShared/utl1.js";
+import { editObject } from "./editObj.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   console.log("main.js loaded");
   main();
@@ -64,14 +66,16 @@ function main() {
 
   // Логаут
   document.querySelector("#logoutBtn").addEventListener("click", async () => {
-    await api.logout();
+    const resp = await api.logout();
     console.log("Вышли из системы");
+    window.appendLog("log out is done" + JSON.stringify(resp));
   });
 
   document.querySelector("#tbRecsBtn").addEventListener("click", async () => {
     const dateRange = 15; // дней
     const endDate = utl1.dateToStdStr(new Date());
     const startDate = utl1.getRandomDate(endDate, -dateRange, 0);
+    // the tb - data from the logged in user will be returned
     const url = `/api/tbrecs?start=${encodeURIComponent(
       startDate
     )}&end=${encodeURIComponent(endDate)}`;
@@ -86,10 +90,87 @@ function main() {
   document
     .querySelector("#tbRecByIdBtn")
     .addEventListener("click", async () => {
-      const recId = 1; // Пример ID записи
+      const obj = { id: 1 }; // Пример объекта
+      const resultObj = await editObject(obj, "Edit Record ID");
+      const recId = resultObj.id;
       const url = `/api/tbRecById?id=${encodeURIComponent(recId)}`;
-      const resp = await api.get(url);
-      console.log("Ответ:", resp);
-      window.appendLog("api/tbRecById ответ: " + JSON.stringify(resp));
+      try {
+        const resp = await api.get(url);
+        console.log("record by id:", resp);
+        window.appendLog("api/tbRecById ответ: " + JSON.stringify(resp));
+      } catch (e) {
+        window.appendLog("api/tbRecById Error: " + JSON.stringify(e.message));
+      }
     });
+
+  document.querySelector("#tbProjsBtn").addEventListener("click", async () => {
+    const url = `/api/tbGetProjects`;
+    try {
+      const resp = await api.get(url);
+      window.appendLog("api/tbGetProjects ответ: " + JSON.stringify(resp));
+    } catch (e) {
+      window.appendLog("api/tbGetProjects Error: " + JSON.stringify(e.message));
+    }
+  });
+  document.querySelector("#tbProjsBtn").addEventListener("click", async () => {
+    const url = `/api/tbGetProjects`;
+    try {
+      const resp = await api.get(url);
+      window.appendLog("api/tbGetProjects ответ: " + JSON.stringify(resp));
+    } catch (e) {
+      window.appendLog("api/tbGetProjects Error: " + JSON.stringify(e.message));
+    }
+  });
+  document
+    .querySelector("#tbAddProjBtn")
+    .addEventListener("click", async () => {
+      const projObj = await editObject(
+        { projectName: "" },
+        "Enter project name:"
+      );
+      if (!projObj) return;
+
+      const url = `/api/tbAddProject`;
+      try {
+        const resp = await api.post(url, projObj);
+        window.appendLog("api/tbAddProject ответ: " + JSON.stringify(resp));
+      } catch (e) {
+        window.appendLog(
+          "api/tbAddProject Error: " + JSON.stringify(e.message)
+        );
+      }
+    });
+  document
+    .querySelector("#tbAddTbRecBtn")
+    .addEventListener("click", async () => {
+      const user = document.querySelector("#username").value;
+      const tbRec = await editObject(
+        {
+          user: user,
+          date: utl1.dateToStdStr(new Date()),
+          project: "",
+          task: "",
+          effort: "0",
+          comment: "",
+        },
+        "Specify timebooking details:"
+      );
+      if (!tbRec) return;
+
+      const url = `/api/tbAddRec`;
+      try {
+        const resp = await api.post(url, { tbRec: tbRec });
+        window.appendLog("api/tbAddRec ответ: " + JSON.stringify(resp));
+      } catch (e) {
+        window.appendLog(
+          "api/tbAddProject Error: " + JSON.stringify(e.message)
+        );
+      }
+    });
+  //todo:      <button id="tbUpdRec">Post /api/tbUpdateRec</button>
+  // todo: button id="tbDelRec">Post /api/tbDeleteRec</button>
+  // <button id="tbAddUser">Post /api/tbAdmin_addUser</button>
+  // <button id="tbDisableUser">Post /api/tbAdmin_changeUser</button>
+
+  // End of main()
 }

@@ -59,7 +59,52 @@ export default class TbDataManager {
     const recs = this.timeBookings.filter(
       (x) => utl1.isDateInRange(x.date, fr, to) && x.user == user.username
     );
-
     return recs;
+  }
+  getTbRecordById(id, username) {
+    const rec = this.timeBookings.find((x) => x.id == id);
+    if (!username || (rec && rec.user === username)) {
+      return rec;
+    }
+    return null;
+  }
+  getUserProjects(user) {
+    return this.projects;
+  }
+  addProject(projName, user) {
+    // user is for future use
+    if (this.projects.includes(projName)) {
+      return null; // already exists
+    }
+    this.projects.push(projName);
+    return projName;
+  }
+  addTbRec(tbRec, user) {
+    // user is for future use
+    tbRec.id = utl1.generateUUIDv4();
+    const clonedObj = utl1.cloneObj(tbRec);
+    this.timeBookings.push(clonedObj);
+    return tbRec;
+  }
+  updateTbRec(tbRec, user) {
+    const index = this.timeBookings.findIndex((x) => x.id === tbRec.id);
+    const rec = index !== -1 ? this.timeBookings[index] : null;
+    const isAllowed = !userName || (rec && rec.user === user.username);
+    if (rec && isAllowed) {
+      const clonedObj = utl1.cloneObj(tbRec);
+      this.timeBookings[index] = clonedObj;
+      return tbRec;
+    }
+    return null;
+  }
+  deleteTbRec(tbRec, user) {
+    const index = this.timeBookings.findIndex((x) => x.id === tbRec.id);
+    const rec = index !== -1 ? this.timeBookings[index] : null;
+    const isAllowed = !user || (rec && rec.user === user.username);
+    if (rec && isAllowed) {
+      this.timeBookings.splice(index, 1);
+      return tbRec;
+    }
+    return null;
   }
 }
