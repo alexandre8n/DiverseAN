@@ -12,6 +12,8 @@ import AuthClient from "./authClient.js";
 import utl1 from "../tbShared/utl1.js";
 import { editObject } from "./editObj.js";
 
+let lastLoadedTbRec = null;
+
 document.addEventListener("DOMContentLoaded", () => {
   console.log("main.js loaded");
   main();
@@ -27,9 +29,9 @@ function main() {
   // Логин
   document.querySelector("#loginBtn").addEventListener("click", async () => {
     try {
-      const user = document.querySelector("#username").value;
+      const userName = document.querySelector("#username").value;
       const pass = document.querySelector("#password").value;
-      await api.login(user, pass);
+      await api.login(userName, pass);
       console.log("Логин успешен");
       window.appendLog("Логин успешен");
     } catch (e) {
@@ -82,6 +84,8 @@ function main() {
     const resp = await api.get(url);
     console.log("Ответ:", resp);
     window.appendLog("api/tbrecs ответ: " + JSON.stringify(resp));
+    const tbRecs = resp.tbRecords;
+    lastLoadedTbRec = tbRecs.length > 0 ? tbRecs[0] : lastLoadedTbRec;
   });
 
   // Example usage
@@ -101,6 +105,7 @@ function main() {
       } catch (e) {
         window.appendLog("api/tbRecById Error: " + JSON.stringify(e.message));
       }
+      lastLoadedTbRec = resp.tbRecord;
     });
 
   document.querySelector("#tbProjsBtn").addEventListener("click", async () => {
@@ -143,16 +148,9 @@ function main() {
   document
     .querySelector("#tbAddTbRecBtn")
     .addEventListener("click", async () => {
-      const user = document.querySelector("#username").value;
+      const userName = document.querySelector("#username").value;
       const tbRec = await editObject(
-        {
-          user: user,
-          date: utl1.dateToStdStr(new Date()),
-          project: "",
-          task: "",
-          effort: "0",
-          comment: "",
-        },
+        getEmptyTbRec(userName),
         "Specify timebooking details:"
       );
       if (!tbRec) return;
@@ -161,16 +159,75 @@ function main() {
       try {
         const resp = await api.post(url, { tbRec: tbRec });
         window.appendLog("api/tbAddRec ответ: " + JSON.stringify(resp));
+        lastLoadedTbRec = resp.tbRec;
       } catch (e) {
         window.appendLog(
           "api/tbAddProject Error: " + JSON.stringify(e.message)
         );
       }
     });
-  //todo:      <button id="tbUpdRec">Post /api/tbUpdateRec</button>
-  // todo: button id="tbDelRec">Post /api/tbDeleteRec</button>
-  // <button id="tbAddUser">Post /api/tbAdmin_addUser</button>
-  // <button id="tbDisableUser">Post /api/tbAdmin_changeUser</button>
+  document
+    .querySelector("#tbUpdTbRecBtn")
+    .addEventListener("click", async () => {
+      const userName = document.querySelector("#username").value;
+      if (!lastLoadedTbRec) {
+        window.appendLog("Please load a timebooking record first (by ID)");
+        return;
+      }
+      let tbRec = lastLoadedTbRec;
+      tbRec = await editObject(
+        tbRec,
+        "Specify timebooking details to be updated:"
+      );
+      if (!tbRec) return;
+      lastLoadedTbRec = tbRec;
+      const url = `/api/tbUpdRec`;
+      try {
+        const resp = await api.post(url, { tbRec: tbRec });
+        window.appendLog("api/tbUpdRec ответ: " + JSON.stringify(resp));
+      } catch (e) {
+        window.appendLog(
+          "api/tbAddProject Error: " + JSON.stringify(e.message)
+        );
+      }
+    });
+  document
+    .querySelector("#tbDelTbRecBtn")
+    .addEventListener("click", async () => {
+      const user = document.querySelector("#username").value;
+      if (!lastLoadedTbRec) {
+        window.appendLog("Please load a timebooking record first (by ID)");
+        return;
+      }
+      let tbRec = lastLoadedTbRec;
+      tbRec = await editObject(
+        tbRec,
+        "You are about to delete this record, Press Ok to confirm..."
+      );
+      if (!tbRec) return;
+      const url = `/api/tbDelRec`;
+      try {
+        const resp = await api.post(url, { tbRec: tbRec });
+        window.appendLog("api/tbDelRec ответ: " + JSON.stringify(resp));
+      } catch (e) {
+        window.appendLog(
+          "api/tbDelProject Error: " + JSON.stringify(e.message)
+        );
+      }
+    });
 
+  function getEmptyTbRec(userName) {
+    return {
+      id: null,
+      user: userName,
+      date: utl1.dateToStdStr(new Date()),
+      project: "",
+      task: "",
+      effort: "0",
+      comment: "",
+    };
+  }
   // End of main()
 }
+// todo: <button id="tbAddUser">Post /api/tbAdmin_addUser</button>
+// todo: <button id="tbChangeUser">Post /api/tbAdmin_changeUser</button>

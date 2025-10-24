@@ -61,13 +61,12 @@ export default class TbDataManager {
     );
     return recs;
   }
-  getTbRecordById(id, username) {
+  getTbRecordById(id, user) {
     const rec = this.timeBookings.find((x) => x.id == id);
-    if (!username || (rec && rec.user === username)) {
-      return rec;
-    }
-    return null;
+    const isAllowed = !user || (rec && rec.user === user.username);
+    return isAllowed ? rec : null;
   }
+
   getUserProjects(user) {
     return this.projects;
   }
@@ -89,7 +88,7 @@ export default class TbDataManager {
   updateTbRec(tbRec, user) {
     const index = this.timeBookings.findIndex((x) => x.id === tbRec.id);
     const rec = index !== -1 ? this.timeBookings[index] : null;
-    const isAllowed = !userName || (rec && rec.user === user.username);
+    const isAllowed = !user || (rec && rec.user === user.username);
     if (rec && isAllowed) {
       const clonedObj = utl1.cloneObj(tbRec);
       this.timeBookings[index] = clonedObj;

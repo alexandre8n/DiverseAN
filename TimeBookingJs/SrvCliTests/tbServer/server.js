@@ -86,7 +86,7 @@ app.post("/api/login", async (req, res) => {
   res.json({ accessToken, refreshToken });
 });
 
-app.post("/api/tbAddProject", async (req, res) => {
+app.post("/api/tbAddProject", authenticate, async (req, res) => {
   let user = req.user;
   if (user.role === "admin") {
     user = null; // admin can add project for all users
@@ -100,9 +100,10 @@ app.post("/api/tbAddProject", async (req, res) => {
   res.json({ message: "Project added successfully", project });
 });
 
-app.post("/api/tbAddRec", async (req, res) => {
+app.post("/api/tbAddRec", authenticate, async (req, res) => {
   const { tbRec } = req.body || {};
   let user = req.user;
+
   if (user.role === "admin") {
     user = null; // admin can add project for all users
   }
@@ -112,19 +113,20 @@ app.post("/api/tbAddRec", async (req, res) => {
   res.json({ message: "Record added successfully", tbRec: tbRecAdded });
 });
 
-app.post("/api/tbUpdateRec", async (req, res) => {
+app.post("/api/tbUpdRec", authenticate, async (req, res) => {
   const { tbRec } = req.body || {};
   let user = req.user;
   if (user.role === "admin") {
     user = null; // admin can add project for all users
   }
-  const tbRecAdded = tbDataManager.updateTbRec(tbRec, user);
-  if (!tbRecAdded)
-    return res.status(400).json({ error: "Failed to add record" });
-  res.json({ message: "Record added successfully", tbRec: tbRecAdded });
+  const tbRecUpdated = tbDataManager.updateTbRec(tbRec, user);
+  if (!tbRecUpdated)
+    return res.status(400).json({ error: "Failed to update record" });
+  res.json({ message: "Record updated successfully", tbRec: tbRecUpdated });
 });
 
-app.post("/api/tbDeleteRec", async (req, res) => {
+// delete tb record...
+app.post("/api/tbDelRec", authenticate, async (req, res) => {
   const { tbRec } = req.body || {};
   let user = req.user;
   if (user.role === "admin") {
@@ -208,7 +210,7 @@ app.get("/api/tbRecById", authenticate, (req, res) => {
   if (user.role === "admin") {
     tbRec = tbDataManager.getTbRecordById(id, null);
   } else {
-    tbRec = tbDataManager.getTbRecordById(id, user.username);
+    tbRec = tbDataManager.getTbRecordById(id, user);
   }
   if (!tbRec) {
     return res
@@ -235,3 +237,5 @@ app.get("/api/tbGetProjects", authenticate, (req, res) => {
 app.listen(PORT, () => {
   console.log(`Auth server running on http://localhost:${PORT}`);
 });
+// todo: add user,
+// todo: update user,
