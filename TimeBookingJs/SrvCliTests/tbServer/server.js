@@ -170,21 +170,6 @@ app.post("/api/logout", (req, res) => {
   res.json({ success: true });
 });
 
-app.get("/api/tbAdmin_users", authenticate, (req, res) => {
-  const user = req.user;
-  if (user.role !== "admin") {
-    return res
-      .status(400)
-      .json({ error: "Authorization failed: only for admin user allowed" });
-  }
-  const users = tbDataManager.getUsers();
-  res.json({
-    message: "List of users",
-    user: req.user,
-    users: users,
-  });
-});
-
 app.get("/api/tbrecs", authenticate, (req, res) => {
   const { start, end } = req.query;
   if (!start || !end) {
@@ -232,6 +217,60 @@ app.get("/api/tbGetProjects", authenticate, (req, res) => {
     user: req.user,
     projects: projects,
   });
+});
+
+app.get("/api/tbAdmin_users", authenticate, (req, res) => {
+  const user = req.user;
+  if (user.role !== "admin") {
+    return res
+      .status(400)
+      .json({ error: "Authorization failed: only for admin user allowed" });
+  }
+  const users = tbDataManager.getUsers();
+  res.json({
+    message: "List of users",
+    user: req.user,
+    users: users,
+  });
+});
+
+app.post("/api/tbAdmin_addUser", authenticate, async (req, res) => {
+  const user = req.user;
+  const { tbUser } = req.body || {};
+  if (!user) return res.status(400).json({ error: "No user data provided" });
+  if (user.role !== "admin") {
+    return res.status(400).json({
+      error: "Authorization failed: only for admin user allowed to add users",
+    });
+  }
+
+  const newUser = await tbDataManager.addUser(tbUser);
+  if (!newUser)
+    return res
+      .status(400)
+      .json({ error: "Failed to add user, possibly due to existing username" });
+
+  res.json({ message: "User added successfully", user: newUser });
+});
+
+app.post("/api/tbAdmin_updUser", authenticate, async (req, res) => {
+  const user = req.user;
+
+  const { tbUser } = req.body || {};
+  if (!tbUser) return res.status(400).json({ error: "No user data provided" });
+  if (user.role !== "admin") {
+    return res.status(400).json({
+      error: "Authorization failed: only for admin user allowed to add users",
+    });
+  }
+
+  const newUser = await tbDataManager.updateUser(tbUser);
+  if (!newUser)
+    return res.status(400).json({
+      error: "Failed to update user, possibly due to existing username",
+    });
+
+  res.json({ message: "User updated successfully", user: newUser });
 });
 
 app.listen(PORT, () => {

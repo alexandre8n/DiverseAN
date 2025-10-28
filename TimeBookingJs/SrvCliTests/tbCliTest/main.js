@@ -215,19 +215,99 @@ function main() {
         );
       }
     });
+  document
+    .querySelector("#tbAddUserBtn")
+    .addEventListener("click", async () => {
+      const user = document.querySelector("#username").value;
+      let userObj = {
+        username: "",
+        password: "",
+        role: "user",
+        isActive: true,
+      };
+      userObj = await editObject(userObj, "Specify user to add:");
+      userObj = verifyUserObject(userObj);
+      if (!userObj) return;
+      const url = `/api/tbAdmin_addUser`;
+      try {
+        const resp = await api.post(url, { tbUser: userObj });
+        window.appendLog("api/tbAdmin_addUser ответ: " + JSON.stringify(resp));
+      } catch (e) {
+        window.appendLog(
+          "api/tbAdmin_addUser Error: " + JSON.stringify(e.message)
+        );
+      }
+    });
 
-  function getEmptyTbRec(userName) {
-    return {
-      id: null,
-      user: userName,
-      date: utl1.dateToStdStr(new Date()),
-      project: "",
-      task: "",
-      effort: "0",
-      comment: "",
-    };
-  }
-  // End of main()
+  document
+    .querySelector("#tbUpdUserBtn")
+    .addEventListener("click", async () => {
+      const user = document.querySelector("#username").value;
+      let userObj = {
+        username: "",
+        password: "",
+        role: "user",
+        isActive: true,
+      };
+      userObj = await editObject(userObj, "Specify user to update:");
+      if (!userObj) return;
+      if (userObj.password.trim() === "") {
+        // it means no password change
+        userObj.password = "ignoredUserObj.password";
+      }
+      userObj = verifyUserObject(userObj);
+      if (!userObj) return;
+      const url = `/api/tbAdmin_UpdUser`;
+      try {
+        const resp = await api.post(url, { tbUser: userObj });
+        window.appendLog(
+          "api/tbAdmin_changeUser ответ: " + JSON.stringify(resp)
+        );
+      } catch (e) {
+        window.appendLog(
+          "api/tbAdmin_changeUser Error: " + JSON.stringify(e.message)
+        );
+      }
+    });
 }
-// todo: <button id="tbAddUser">Post /api/tbAdmin_addUser</button>
-// todo: <button id="tbChangeUser">Post /api/tbAdmin_changeUser</button>
+function getEmptyTbRec(userName) {
+  return {
+    id: null,
+    user: userName,
+    date: utl1.dateToStdStr(new Date()),
+    project: "",
+    task: "",
+    effort: "0",
+    comment: "",
+  };
+}
+function verifyUserObject(userObj) {
+  if (!userObj) return null;
+  if (!userObj.username || userObj.username.trim() === "") {
+    window.appendLog("Username cannot be empty");
+    return null;
+  }
+  if (!userObj.password || userObj.password.trim() === "") {
+    window.appendLog("Password cannot be empty");
+    return null;
+  }
+  if (!["user", "admin"].includes(userObj.role)) {
+    window.appendLog("Role must be either 'user' or 'admin'");
+    return null;
+  }
+  if (typeof userObj.isActive !== "boolean") {
+    if (userObj.isActive === "true") {
+      userObj.isActive = true;
+    } else if (userObj.isActive === "false") {
+      userObj.isActive = false;
+    } else {
+      window.appendLog("isActive must be a boolean value");
+      return null;
+    }
+    return userObj;
+  }
+}
+// End of main()
+
+// todo: button id="tbAddUser"
+// todo: button id="tbChangeUser"
