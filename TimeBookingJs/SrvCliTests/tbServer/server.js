@@ -73,6 +73,8 @@ app.post("/api/login", async (req, res) => {
   const { username, password } = req.body || {};
   const user = tbDataManager.getUserByName(username);
   if (!user) return res.status(401).json({ error: "Invalid credentials" });
+  if (!user.isActive)
+    return res.status(401).json({ error: "User is not active" });
 
   const ok = await bcrypt.compare(password, user.passwordHash);
   if (!ok) return res.status(401).json({ error: "Invalid credentials" });
@@ -276,5 +278,4 @@ app.post("/api/tbAdmin_updUser", authenticate, async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Auth server running on http://localhost:${PORT}`);
 });
-// todo: add user,
-// todo: update user,
+// todo: add user, userId, should be added.

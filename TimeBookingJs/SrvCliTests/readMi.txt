@@ -1,0 +1,8 @@
+timebookingRecords:{
+    id, userId, date, project, task, effort, comment
+    , lastModified // optional?
+}
+
+user: {id, name, role, isActive, passwordHash, lastModified}
+
+project: justName, at the moment it will be suficient.

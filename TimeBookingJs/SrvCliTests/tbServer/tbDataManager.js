@@ -28,14 +28,14 @@ export default class TbDataManager {
     this.users = [
       // пароль "xxx" захэширован (пример: bcrypt.hashSync("xxx", 10))
       {
-        id: 1,
+        id: utl1.generateUUIDv4(),
         username: "user1",
         passwordHash: bcrypt.hashSync("xxx", 10),
         role: "user",
         isActive: true,
       },
       {
-        id: 2,
+        id: utl1.generateUUIDv4(),
         username: "admin",
         passwordHash: bcrypt.hashSync("admin", 10),
         role: "admin",
@@ -58,7 +58,7 @@ export default class TbDataManager {
     // delete attribute user.password; // remove plain password
     delete user.password;
 
-    user.id = this.users.length + 1;
+    user.id = utl1.generateUUIDv4();
     user.passwordHash = bcrypt.hashSync(userToAdd.password, 10);
     this.users.push(user);
     return user;
